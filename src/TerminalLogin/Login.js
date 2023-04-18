@@ -1,74 +1,111 @@
 
-import {AppBar,Toolbar,Typography,Button } from '@mui/material';
+import {MenuItem, Toolbar,Typography,styled } from '@mui/material';
 import './Login.css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Data from '../GetData';
-import Box from '@mui/material/Box';
+import {Button,Box} from "@mui/material"
 import { Formik, Form, ErrorMessage, Field ,useFormik} from "formik";
 import * as yup from "yup";
-import CustomInput from './Custominput';
+import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
 
-const BoxStyle ={border:"1px solid #9cdb9e",boxShadow:"0",}
 
+const HeaderBox =styled(Box)(({theme}) => ({
+	border:"1px solid #9cdb9e",
+	boxShadow:"0",
+	width:"70vw",
+	minWidth:350,
+
+}))
+const FormBox =styled(Box)(({theme}) =>({
+	border:"1px solid #9cdb9e",
+	boxShadow:"0",
+	width:"50vw",
+	minWidth:250,
+	display: "flex",
+	flexDirection:"column",
+	justifyContent:"space-around",
+	alignContent:"space-around"
+}))
 const advancedSchema = yup.object().shape({
-  username: yup
-    .string()
-    .min(3, "Username must be at least 3 characters long")
-    .required("Required"),
-  jobType: yup
-    .string()
-    .oneOf(["designer", "developer", "manager", "other"], "Invalid Job Type")
-    .required("Required"),
-  acceptedTos: yup
-    .boolean()
-    .oneOf([true], "Please accept the terms of service"),
+	terminal: yup
+	  .string()
+	  .min(3, "Username must be at least 3 characters long")
+	  .required("Required"),
+	sicil: yup
+	  .string()
+	  .oneOf(["designer", "developer", "manager", "other"], "Invalid Job Type")
+	  .required("Required"),
+	password:yup
+	.string()
+	.required("required"),
+	montaj:yup
+	.string()
+	.required("required")
 });
+const onSubmit = async (values, actions) => {
+	await new Promise((resolve) => setTimeout(resolve, 1000));
+	actions.resetForm();
+	console.log(values)
+};
+  
+  const AdvancedForm = () => {
 
-
-
-export default function Login(){ 
-
-  const navigate = useNavigate()
-  const handleButtonClick =() => {navigate(-1)}
-
-  return(<>
-    <Box color='secondary' sx={BoxStyle} >
+	const navigate = useNavigate()
+	const handleButtonClick =() => {navigate(-1)}
+	return (
+	<>
+	<HeaderBox color='secondary' >
         <Toolbar sx={{display:"flex",justifyContent:"center"}}>
         <Typography variant='kazil' >CVGS(TMMT)</Typography>
         </Toolbar>
-    </Box>
+    </HeaderBox>
 
-    <div className='form'>
-  <Formik 
-       initialValues={{ username: '', JobType: "", acceptedTos: false }}
-       validationSchema={advancedSchema}
-     >
-       {props => (
-         <Form onSubmit={props.handleSubmit}>
-          <CustomInput 
-            label="Username"
-            name="username"
-            type="text"
-            placeholder = "Enter your username"
-          />
-          <CustomSelect 
-          label="Job Type"
-          name="JobType"
-          type = "text"
-          placeholder ="Select job type"
-          >
-            <option value="">Please select a job type</option>
-            <option value="developer">Developer</option>
-            <option value="designer">Designer</option>
-            <option value="manager">Product Manager</option>
-            <option value="other">Other</option>
-          </CustomSelect>
-           <button type="submit">Submit</button>
-         </Form>
-       )}
-     </Formik>
-     </div>
-     </>
-)}
+	<FormBox>
+	  <Formik
+		initialValues={{ terminal:"",sicil:"",password:"",montaj:""}}
+		validationSchema={advancedSchema}
+		onSubmit={onSubmit}
+	  >
+		{({ isSubmitting }) => (
+		  <Form>
+			<CustomSelect
+			  label="Terminal Listesi"
+			  name="terminal"
+			>
+			  <option value="developer">Developer</option>
+			  <option value="keveloper">keveloper</option>
+			</CustomSelect>
+
+			<CustomInput
+			  label="Sicil No"
+			  name="sicil"
+			  type="text"
+			  placeholder="Sicil No"			  
+			/>
+			<CustomInput
+			  label="Şifre"
+			  name="password"
+			  type="password"
+			  placeholder="Şifre"			  
+			/>
+			<CustomInput
+			  label="Montaj No"
+			  name="montaj"
+			  type="text"
+			  placeholder="Montaj No"			  
+			/>
+
+			<Button disabled={isSubmitting} type="submit">
+			  Submit
+			</Button>
+		  </Form>
+		)}
+
+	  </Formik>
+	</FormBox>
+	
+	</>
+	);
+  };
+  export default AdvancedForm;
