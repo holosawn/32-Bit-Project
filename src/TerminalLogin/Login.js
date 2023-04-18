@@ -21,7 +21,7 @@ const FormBox =styled(Box)(({theme}) =>({
 	border:"1px solid #9cdb9e",
 	boxShadow:"0",
 	width:"50vw",
-	minWidth:250,
+	minWidth:325,
 	display: "flex",
 	flexDirection:"column",
 	justifyContent:"space-around",
@@ -30,11 +30,11 @@ const FormBox =styled(Box)(({theme}) =>({
 const advancedSchema = yup.object().shape({
 	terminal: yup
 	  .string()
-	  .min(3, "Username must be at least 3 characters long")
+	  .oneOf(["designer", "developer", "manager", "other"], "Invalid Job Type")
 	  .required("Required"),
 	sicil: yup
 	  .string()
-	  .oneOf(["designer", "developer", "manager", "other"], "Invalid Job Type")
+	  .min(3, "Username must be at least 3 characters long")
 	  .required("Required"),
 	password:yup
 	.string()
@@ -43,9 +43,14 @@ const advancedSchema = yup.object().shape({
 	.string()
 	.required("required")
 });
+const mainInputStyle={
+	width:"350px",
+	minWidth:"180px",
+	margin:1
+}
+const optionss=["designer","developer","manager"]
 const onSubmit = async (values, actions) => {
 	await new Promise((resolve) => setTimeout(resolve, 1000));
-	actions.resetForm();
 	console.log(values)
 };
   
@@ -72,31 +77,33 @@ const onSubmit = async (values, actions) => {
 			<CustomSelect
 			  label="Terminal Listesi"
 			  name="terminal"
-			>
-			  <option value="developer">Developer</option>
-			  <option value="keveloper">keveloper</option>
-			</CustomSelect>
+			  options={optionss}
+			  style={mainInputStyle}
+			/>
 
 			<CustomInput
 			  label="Sicil No"
 			  name="sicil"
 			  type="text"
-			  placeholder="Sicil No"			  
+			  placeholder="Sicil No"
+			  style={mainInputStyle}			  
 			/>
 			<CustomInput
 			  label="Şifre"
 			  name="password"
 			  type="password"
-			  placeholder="Şifre"			  
+			  placeholder="Şifre"	
+			  style={mainInputStyle}		  
 			/>
 			<CustomInput
 			  label="Montaj No"
 			  name="montaj"
 			  type="text"
-			  placeholder="Montaj No"			  
+			  placeholder="Montaj No"	
+			  style={mainInputStyle}		  
 			/>
 
-			<Button disabled={isSubmitting} type="submit">
+			<Button disabled={isSubmitting} variant='contained' type="submit">
 			  Submit
 			</Button>
 		  </Form>
