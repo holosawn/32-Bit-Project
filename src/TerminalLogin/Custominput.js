@@ -1,22 +1,32 @@
 import { Field, useField } from "formik"
 import { TextField,Box, FormControl } from "@mui/material"
-import InputLabel from '@mui/material/InputLabel';
-import { labelStyle } from "../Styles"
-import { formBoxStyle } from "../Styles";
+import InputLabel from '@mui/material/InputLabel'
+
+const OutlineColor =(color) => {
+    return {"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: color }}}       
 
 
 const CustomInput = ({label,style,...props}) => {
 
+
+
     const[field,meta]=useField(props)
 
     return(
-    <Box sx={formBoxStyle}> 
-            <InputLabel sx={labelStyle}>{label}</InputLabel>
-            <TextField sx={style}  {...field} {...props}
-            className={meta.touched && meta.error ? "input-error" : ""}
+    <Box> 
+            <TextField 
+            sx={{...style ,"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                borderColor: "primary",
+              }}} 
+
+            color="third"
+            size="small" 
+            {...field} {...props}
+            helperText={meta.touched && meta.error && `${meta.error}`}
+            FormHelperTextProps={{ sx: { color: "red" } }}
             />
     
-            {meta.touched && meta.error && <div className="error">{meta.error}</div>}
+            
     </Box>
     )
 }

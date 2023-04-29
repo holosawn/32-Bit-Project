@@ -19,7 +19,9 @@ const theme = createTheme({
     secondary:{
       main:"#c6ffc8",
       secondary:"white"
-    }   
+    },third:{
+      main:"#000000"
+    }  
   },
   typography:{
     kazil:{
