@@ -11,23 +11,8 @@ const CustomSelect = ({options,style,...props}) => {
     
     
     const[field,meta]=useField(props)
-    const children =props.children
-
-    const tarih =Date.prototype.getFullYear
-
-    useEffect(()=>{
-        if(options.length === 1){
-            props.defaultValue = options[0]
-        }
-        {field.onChange({
-            target:{
-                name:field.name,
-                value:props.defaultValue}}
-        )}}
-        ,[])
 
 
-                console.log(meta.error && meta.touched)
     return(
     <Box>
         <Select 
