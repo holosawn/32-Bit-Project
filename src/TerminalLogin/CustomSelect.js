@@ -1,48 +1,49 @@
 import { Field, useField } from "formik"
-import {InputLabel,NativeSelect,Box, OutlinedInput} from '@mui/material'
+import {Box, OutlinedInput,Select, MenuItem,FormHelperText} from '@mui/material'
 import { useEffect } from "react"
-import { labelStyle } from "../Styles"
-import { formBoxStyle } from "../Styles"
+
+const OutlineColor =(color) => {
+    return {"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: color }}} 
 
 
-const selectStyle={
-m:1,width:"223px"
-}
 
-const CustomSelect = ({label,options,style,...props}) => {
+const CustomSelect = ({options,style,...props}) => {
+    
     
     const[field,meta]=useField(props)
     const children =props.children
 
+    const tarih =Date.prototype.getFullYear
+
     useEffect(()=>{
-        field.onChange({
+        if(options.length === 1){
+            props.defaultValue = options[0]
+        }
+        {field.onChange({
             target:{
                 name:field.name,
-                value:options[0]
-            }
-        })}
+                value:props.defaultValue}}
+        )}}
         ,[])
-        console.log(style)
 
+
+                console.log(meta.error && meta.touched)
     return(
-    <Box sx={formBoxStyle} overflow={"auto"}>  
-        <InputLabel sx={labelStyle}>
-            {label}
-        </InputLabel>
-        
-        <NativeSelect 
-        sx={style}
-        input={<OutlinedInput/>}
-        {...field} 
-        className={meta.touched && meta.error ? "input-error" : ""}>
+    <Box>
+        <Select 
+            variant="outlined"
+            color="third"
+            sx={{...style, borderColor:"secondary" , ...(meta.error && meta.touched ? OutlineColor("red") : OutlineColor("black"))}}
+            size="small"
+            {...field} 
+        >
             {options.map((value) => {
-                return <option value={value}>
+                return <MenuItem value={value}>
                 {value}
-                </option>
+                </MenuItem>
             })}
-        </NativeSelect>
-        {meta.touched && meta.error && <div className="error">{meta.error}</div>}
-    </Box>
+        </Select>
+        </Box>
     )
     }
 export default CustomSelect
