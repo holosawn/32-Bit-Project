@@ -13,21 +13,21 @@ const CustomInput = ({label,style,...props}) => {
     const[field,meta]=useField(props)
 
     return(
-    <Box> 
+    <> 
             <TextField 
-            sx={{...style ,"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                borderColor: "primary",
-              }}} 
-
+            sx={{...style ,...(meta.touched && meta.error ? OutlineColor("#ff0000") : null)
+            }}
+            autoComplete
             color="third"
             size="small" 
+            onChange={console.log("changed")}
             {...field} {...props}
-            helperText={meta.touched && meta.error && `${meta.error}`}
+            helperText={(meta.touched && meta.error) ? `${meta.error}` : " "} 
             FormHelperTextProps={{ sx: { color: "red" } }}
             />
     
             
-    </Box>
+    </>
     )
 }
 export default CustomInput

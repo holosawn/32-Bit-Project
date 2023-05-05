@@ -8,10 +8,14 @@ import { Formik, Form} from "formik";
 import * as yup from "yup";
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
-import { formBoxStyle } from "../Styles"
-import { labelStyle } from "../Styles"
-import { BorderColor } from '@mui/icons-material';
 
+const labelStyle={
+    fontWeight:700,
+    whiteSpace:"normal",
+    width:"%100",
+    minWidth:"125px",
+    marginBlockStart:2
+}
 const HeaderBox =styled(Box)(({theme}) => ({
 	border:"1px solid #9cdb9e",
 	boxShadow:"0",
@@ -22,12 +26,14 @@ const HeaderBox =styled(Box)(({theme}) => ({
 const FormBox =styled(Box)(({theme}) =>({
 	border:"1px solid #9cdb9e",
 	boxShadow:"0",
-	width:"50vw",
-	minWidth:325,
+	width:"70vw",
+	minWidth:380,
 	display: "flex",
 	flexDirection:"column",
 	justifyContent:"space-around",
-	alignContent:"space-around"
+	alignContent:"space-around",
+	alignItems: "center",
+	
 }))
 const initialValues={ 
 	terminal:"",
@@ -51,14 +57,24 @@ const advancedSchema = yup.object().shape({
 	.string()
 	.required("required")
 });
+const formBoxStyle={
+    marginInlineEnd:2,
+    width:"50vw",
+    minWidth:"363px",
+    maxWidth:"470px",
+    display:"flex",
+    justifyContent:"space-between",
+	overflow:"hidden"
+}
 const mainInputStyle={
-	width:"auto",
 	minWidth:"223px",
 	margin:1,
+	display:"flex",
+	flexGrow:1,
+	flexBasis:0
 	}
-
 	
-const optionss=["developer","designer","manager"]
+const optionss=["developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult"]
 const onSubmit = async (values, actions) => {
 	await new Promise((resolve) => setTimeout(resolve, 1000));
 	console.log(values)
@@ -69,32 +85,34 @@ const onSubmit = async (values, actions) => {
 
 	const navigate = useNavigate()
 	const handleButtonClick =() => {navigate(-1)}
+
+	
+
 	return (
-	<>
+	<Box>
 	<HeaderBox color='secondary' >
         <Toolbar sx={{display:"flex",justifyContent:"center"}}>
         <Typography variant='kazil' >CVGS(TMMT)</Typography>
         </Toolbar>
     </HeaderBox>
 
-	<FormBox>
+	<FormBox >
 	  <Formik
 		initialValues={{ terminal:"",sicil:"",password:"",montaj:""}}
 		validationSchema={advancedSchema}
 		onSubmit={onSubmit}
 	  >
 		{({ isSubmitting }) => (
-		  <Form>
+		  <Form >
 
 		<Box sx={formBoxStyle} overflow={"auto"}>  
-			<InputLabel  sx={labelStyle}>
-            	Terminal Listesi
+			<InputLabel  sx={{...labelStyle}}>
+            	Terminal
         	</InputLabel>
 			<CustomSelect
 			  name="terminal"
 			  options={optionss}
 			  style={mainInputStyle}
-			  defaultValue={optionss[0]}
 			/>
 		</Box>
 
@@ -152,7 +170,7 @@ const onSubmit = async (values, actions) => {
 	  </Formik>
 	</FormBox>
 	
-	</>
+	</Box>
 	);
   };
   export default AdvancedForm;

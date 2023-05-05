@@ -1,0 +1,59 @@
+<Select
+  // ...
+  MenuProps={{
+    PaperProps: {
+      sx: {
+        maxHeight: '50vh',
+        position: 'relative',
+      },
+    },
+    MenuListProps: {
+      sx: {
+        position: 'relative',
+      },
+    },
+    getContentAnchorEl: null,
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+    transformOrigin: {
+      vertical: 'top',
+      horizontal: 'left',
+    },
+  }}
+>
+  <Paper sx={{ position: 'relative' }}>
+    <IconButton
+      sx={{ position: 'absolute', top: 0, right: 0 }}
+      onClick={() => {
+        const menuList = document.getElementById('scrollable-menu-list');
+        if (menuList) {
+          menuList.scrollTop -= 100;
+        }
+      }}
+    >
+      <KeyboardArrowUpIcon />
+    </IconButton>
+    <MenuList
+      id="scrollable-menu-list"
+      sx={{
+        maxHeight: 'calc(50vh - 48px)',
+        overflowY: 'auto',
+      }}
+    >
+      {/* options */}
+    </MenuList>
+    <IconButton
+      sx={{ position: 'absolute', bottom: 0, right: 0 }}
+      onClick={() => {
+        const menuList = document.getElementById('scrollable-menu-list');
+        if (menuList) {
+          menuList.scrollTop += 100;
+        }
+      }}
+    >
+      <KeyboardArrowDownIcon />
+    </IconButton>
+  </Paper>
+</Select>
