@@ -1,4 +1,5 @@
-import { Field, useField } from "formik"
+import { Field, useField, useFormikContext } from "formik"
+import { useEffect,React } from "react"
 import { TextField,Box, FormControl } from "@mui/material"
 import InputLabel from '@mui/material/InputLabel'
 
@@ -11,6 +12,13 @@ const CustomInput = ({label,style,...props}) => {
 
 
     const[field,meta]=useField(props)
+    const {setFieldValue} = useFormikContext()
+
+    useEffect(()=>{
+        setFieldValue(props.name,props.value)
+    },[props.value])
+
+    console.log(field)
 
     return(
     <> 
@@ -20,7 +28,6 @@ const CustomInput = ({label,style,...props}) => {
             autoComplete
             color="third"
             size="small" 
-            onChange={console.log("changed")}
             {...field} {...props}
             helperText={(meta.touched && meta.error) ? `${meta.error}` : " "} 
             FormHelperTextProps={{ sx: { color: "red" } }}

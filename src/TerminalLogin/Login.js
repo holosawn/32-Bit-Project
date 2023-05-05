@@ -1,13 +1,15 @@
 
-import {InputLabel, Toolbar,Typography,styled } from '@mui/material';
+import {InputLabel, Toolbar,Typography,styled ,TextField, FormControl} from '@mui/material';
 import './Login.css';
-import React from 'react';
+import {React, useState, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Button,Box,Select} from "@mui/material"
 import { Formik, Form} from "formik";
 import * as yup from "yup";
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
+import Keyboard from "react-simple-keyboard";
+import "react-simple-keyboard/build/css/index.css";
 
 const labelStyle={
     fontWeight:700,
@@ -85,8 +87,39 @@ const onSubmit = async (values, actions) => {
 
 	const navigate = useNavigate()
 	const handleButtonClick =() => {navigate(-1)}
+	const [inputs, setInputs] = useState({});
+	const [layoutName, setLayoutName] = useState("default");
+	const [inputName, setInputName] = useState("default");
+	const keyboard = useRef();
+  
+	 const onChangeAll = inputs => {
+    setInputs({ ...inputs });
+  };
 
-	
+  const handleShift = () => {
+    const newLayoutName = layoutName === "default" ? "shift" : "default";
+    setLayoutName(newLayoutName);
+  };
+
+  const onKeyPress = button => {
+    if (button === "{shift}" || button === "{lock}") handleShift();
+  };
+
+  const onChangeInput = event => {
+    const inputVal = event.target.value;
+
+    setInputs({
+      ...inputs,
+      [inputName]: inputVal
+    });
+
+    keyboard.current.setInput(inputVal);
+  };
+
+  const getInputValue = inputName => {
+    return inputs[inputName] || "";
+  };
+
 
 	return (
 	<Box>
@@ -124,7 +157,10 @@ const onSubmit = async (values, actions) => {
 			  name="sicil"
 			  type="text"
 			  placeholder="Sicil No"
-			  style={mainInputStyle}			  
+			  style={mainInputStyle}	
+			  value={getInputValue("sicil")}
+			  onFocus={() => setInputName("sicil")}
+			  onChange={onChangeInput}		  
 			/>
 		</Box>
 
@@ -135,8 +171,11 @@ const onSubmit = async (values, actions) => {
 			<CustomInput
 			  name="password"
 			  type="password"
-			  placeholder="Şifre"	
+			  placeholder="şifre"	
 			  style={mainInputStyle}		  
+			  value={getInputValue("password")}
+			  onFocus={() => setInputName("password")}
+			  onChange={onChangeInput}
 			/>
 		</Box>
 
@@ -145,10 +184,14 @@ const onSubmit = async (values, actions) => {
             	Montaj No
         	</InputLabel>
 			<CustomInput
+			  id="montaj"
 			  name="montaj"
 			  type="text"
-			  placeholder="Montaj No"	
+			  placeholder="montaj"	
 			  style={mainInputStyle}		  
+			  value={getInputValue("montaj")}
+			  onFocus={() => setInputName("montaj")}
+			  onChange={onChangeInput}
 			/>
 		</Box>
 
@@ -169,7 +212,14 @@ const onSubmit = async (values, actions) => {
 
 	  </Formik>
 	</FormBox>
-	
+
+      <Keyboard
+          keyboardRef={r => (keyboard.current = r)}
+          inputName={inputName}
+          layoutName={layoutName}
+          onChangeAll={onChangeAll}
+          onKeyPress={onKeyPress}
+      />
 	</Box>
 	);
   };
