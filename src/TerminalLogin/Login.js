@@ -1,15 +1,13 @@
 
-import {InputLabel, Toolbar,Typography,styled ,TextField, FormControl} from '@mui/material';
+import {InputLabel, Toolbar,Typography,styled } from '@mui/material';
 import './Login.css';
-import {React, useState, useRef} from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Button,Box,Select} from "@mui/material"
-import { Formik, Form} from "formik";
+import { Formik, Form, useFormikContext, FormikContext} from "formik";
 import * as yup from "yup";
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
-import Keyboard from "react-simple-keyboard";
-import "react-simple-keyboard/build/css/index.css";
 
 const labelStyle={
     fontWeight:700,
@@ -42,6 +40,12 @@ const initialValues={
 	sicil:"",
 	password:"",
 	montaj:"",
+	tarih: {
+		year:new Date().getFullYear(),
+		month:new Date().getMonth(),
+		day:new Date().getDate()
+	},
+	shift:""
 }
 const advancedSchema = yup.object().shape({
 	terminal: yup
@@ -57,7 +61,15 @@ const advancedSchema = yup.object().shape({
 	.required("required"),
 	montaj:yup
 	.string()
-	.required("required")
+	.required("required"),
+	tarih: yup.object().shape({
+		year: yup.number().required("Yıl seçiniz"),
+		month: yup.number().required("Ay seçiniz"),
+		day: yup.number().required("Gün seçiniz")
+	  }),
+	shift:yup
+	.string()
+	.required()
 });
 const formBoxStyle={
     marginInlineEnd:2,
@@ -75,51 +87,19 @@ const mainInputStyle={
 	flexGrow:1,
 	flexBasis:0
 	}
-	
+
+
 const optionss=["developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult"]
 const onSubmit = async (values, actions) => {
 	await new Promise((resolve) => setTimeout(resolve, 1000));
 	console.log(values)
-	actions.resetForm()
+	actions.resetForm({ values: initialValues })
 };
   
   const AdvancedForm = () => {
 
 	const navigate = useNavigate()
 	const handleButtonClick =() => {navigate(-1)}
-	const [inputs, setInputs] = useState({});
-	const [layoutName, setLayoutName] = useState("default");
-	const [inputName, setInputName] = useState("default");
-	const keyboard = useRef();
-  
-	 const onChangeAll = inputs => {
-    setInputs({ ...inputs });
-  };
-
-  const handleShift = () => {
-    const newLayoutName = layoutName === "default" ? "shift" : "default";
-    setLayoutName(newLayoutName);
-  };
-
-  const onKeyPress = button => {
-    if (button === "{shift}" || button === "{lock}") handleShift();
-  };
-
-  const onChangeInput = event => {
-    const inputVal = event.target.value;
-
-    setInputs({
-      ...inputs,
-      [inputName]: inputVal
-    });
-
-    keyboard.current.setInput(inputVal);
-  };
-
-  const getInputValue = inputName => {
-    return inputs[inputName] || "";
-  };
-
 
 	return (
 	<Box>
@@ -131,11 +111,11 @@ const onSubmit = async (values, actions) => {
 
 	<FormBox >
 	  <Formik
-		initialValues={{ terminal:"",sicil:"",password:"",montaj:""}}
-		validationSchema={advancedSchema}
+		initialValues={initialValues}
+		validationSchema={advancedSchema}	
 		onSubmit={onSubmit}
 	  >
-		{({ isSubmitting }) => (
+		{({ isSubmitting , initialValues}) => (
 		  <Form >
 
 		<Box sx={formBoxStyle} overflow={"auto"}>  
@@ -157,10 +137,7 @@ const onSubmit = async (values, actions) => {
 			  name="sicil"
 			  type="text"
 			  placeholder="Sicil No"
-			  style={mainInputStyle}	
-			  value={getInputValue("sicil")}
-			  onFocus={() => setInputName("sicil")}
-			  onChange={onChangeInput}		  
+			  style={mainInputStyle}			  
 			/>
 		</Box>
 
@@ -171,11 +148,8 @@ const onSubmit = async (values, actions) => {
 			<CustomInput
 			  name="password"
 			  type="password"
-			  placeholder="şifre"	
+			  placeholder="Şifre"	
 			  style={mainInputStyle}		  
-			  value={getInputValue("password")}
-			  onFocus={() => setInputName("password")}
-			  onChange={onChangeInput}
 			/>
 		</Box>
 
@@ -184,23 +158,49 @@ const onSubmit = async (values, actions) => {
             	Montaj No
         	</InputLabel>
 			<CustomInput
-			  id="montaj"
 			  name="montaj"
 			  type="text"
-			  placeholder="montaj"	
+			  placeholder="Montaj No"	
 			  style={mainInputStyle}		  
-			  value={getInputValue("montaj")}
-			  onFocus={() => setInputName("montaj")}
-			  onChange={onChangeInput}
+			   
 			/>
 		</Box>
 
-		<Box sx={formBoxStyle} overflow={"auto"}>
+		<Box sx={{...formBoxStyle}} overflow={"auto"}>
 			<InputLabel sx={labelStyle}>
 				Tarih
 			</InputLabel>
-			<Box>
-				
+			<Box sx={{display:"flex",flexDirection:"row"}}>
+					<CustomSelect
+					name="tarih.day"
+					isDaySelect={true}
+					defaultValue={new Date().getDate()}
+					options={Array.from({length: new Date(initialValues.tarih.year, initialValues.tarih.month, 0).getDate()}, (_, i) => i + 1)}
+					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					/>
+					<CustomSelect
+					name="tarih.month"
+					defaultValue={new Date().getMonth() + 1}
+					options={Array.from({length: 12}, (_, i) => i + 1)}
+					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					/>
+					<CustomSelect
+					name="tarih.year"
+					defaultValue={new Date().getFullYear()}
+					options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
+					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					/>
+
+					<InputLabel sx={{...labelStyle,minWidth:"30px",marginInline:1.5,marginInlineEnd:3}}>
+						Shift
+					</InputLabel>
+					<CustomSelect
+					name="shift"
+					defaultValue="M"
+					options={["B","M","K"]}
+					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					/>
+			
 			</Box>
 		</Box>
 
@@ -212,14 +212,7 @@ const onSubmit = async (values, actions) => {
 
 	  </Formik>
 	</FormBox>
-
-      <Keyboard
-          keyboardRef={r => (keyboard.current = r)}
-          inputName={inputName}
-          layoutName={layoutName}
-          onChangeAll={onChangeAll}
-          onKeyPress={onKeyPress}
-      />
+	
 	</Box>
 	);
   };

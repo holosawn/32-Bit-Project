@@ -17,11 +17,11 @@ const cellStyle ={border:"1px solid #9cdb9e",boxShadow:"0"}
 const TerminalList= () => {
 const navigate = useNavigate()
 
-  const data = Data("https://v2.jokeapi.dev/joke/Any")
- 
-
-
-    return data ==="empty" ? <h1></h1>:(
+  let data = Data()
+  if (data && data.terminalsData && data.terminalsData.data) {
+    data = data.terminalsData.data
+  } 
+    return data ==="empty" ? <h1>EMPTY</h1>:(
 
       <Box sx={{bgColor:"primary" }}>
       <AppBar position='static' color='secondary'   sx={cellStyle}>
