@@ -7,7 +7,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const scrollButtonStyle={minWidth:"15vw",border:"1.5px solid #9cdb9e",borderRadius:1}
 
-const CustomSelect = ({name,options,style,isDaySelect,otherProps,defaultValue}) => {
+const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,defaultValue}) => {
     
     const { values,setFieldValue } = useFormikContext();
     const [field, meta] = useField(name);
@@ -15,26 +15,28 @@ const CustomSelect = ({name,options,style,isDaySelect,otherProps,defaultValue}) 
     const selectRef=useRef(null)
     const dropdownRef= useRef(null)
     const [optionss,setOptionss] = useState([...options])
-    
-      useEffect(()=>{
-        if(isDaySelect){
-          setOptionss(Array.from({length: new Date(values.tarih.year, values.tarih.month, 0).getDate()}, (_, i) => i + 1))
-        }
-      },[values.tarih.year,values.tarih.month])
-   
 
-    const handleChange = evt => {
-      const { value } = evt.target;
-      setFieldValue(name, value);
-    };
+  
+    
+    useEffect(()=>{
+      if(isDaySelect){
+        setOptionss(Array.from({length: new Date(values.tarih.year, values.tarih.month, 0).getDate()}, (_, i) => i + 1))
+      }
+    },[values.tarih.year,values.tarih.month])
+   
 
     useEffect(()=>{
       if(defaultValue){
         setFieldValue(name,defaultValue)
-      }else{
-        setFieldValue(name,optionss[0])
       }},[])
 
+    const modifiedOnChange =shiftChange ? 
+    (event) =>{
+      setFieldValue(name,event.target.value)
+      shiftChange(event.target.value)}
+    :(event) =>{
+      setFieldValue(name,event.target.value)
+    }
 
     const configSelect = {
       ...field,
@@ -42,7 +44,7 @@ const CustomSelect = ({name,options,style,isDaySelect,otherProps,defaultValue}) 
       size : "small",
       variant: 'outlined',
       color:(meta.touched && meta.error ? "primary" : "third"),
-      onChange: handleChange
+ 
     };
   
     if (meta && meta.touched && meta.error) {
@@ -72,13 +74,14 @@ const CustomSelect = ({name,options,style,isDaySelect,otherProps,defaultValue}) 
       clearInterval(selectRef.current)
     }
 
+
     return (
       <>
         <Box>
 
           <Select defaultValue={optionss[0]} sx={{...style}} {...configSelect}
               open={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} 
-              ref={dropdownRef}
+              ref={dropdownRef} onChange={modifiedOnChange}
               >
               {optionss.map(val => {
               return <MenuItem value = {val} >{val}</MenuItem>
