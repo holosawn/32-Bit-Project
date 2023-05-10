@@ -28,7 +28,10 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
     useEffect(()=>{
       if(defaultValue){
         setFieldValue(name,defaultValue)
-      }},[])
+      }
+      if(shiftChange){shiftChange(values.shift)}
+    
+      },[])
 
     const modifiedOnChange =shiftChange ? 
     (event) =>{
@@ -77,9 +80,9 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
 
     return (
       <>
-        <Box>
+    
 
-          <Select defaultValue={optionss[0]} sx={{...style}} {...configSelect}
+          <Select  sx={{...style}} {...configSelect}
               open={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} 
               ref={dropdownRef} onChange={modifiedOnChange}
               >
@@ -121,7 +124,7 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
 
             </Box>
           </Popper>
-        </Box>  
+    
 
       </>
     )
