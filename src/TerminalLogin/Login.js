@@ -15,6 +15,7 @@ import { clear } from '@testing-library/user-event/dist/clear';
 
 const labelStyle={
     fontWeight:700,
+	fontSize:"1rem",
     whiteSpace:"normal",
     width:"%100",
     minWidth:"125px",
@@ -23,14 +24,28 @@ const labelStyle={
 const HeaderBox =styled(Box)(({theme}) => ({
 	border:"1px solid #9cdb9e",
 	boxShadow:"0",
-	width:"70vw",
+	padding:0,
+	margin:0,
+	width: "100vw",
+		[theme.breakpoints.up("sm")]: {
+		  width: "80vw",
+		},
+		[theme.breakpoints.up("md")]: {
+		  width: "70vw",
+		},
 	minWidth:350,
-
 }))
 const FormBox =styled(Box)(({theme}) =>({
 	border:"1px solid #9cdb9e",
 	boxShadow:"0",
-	width:"70vw",
+	width: "99vw",
+		[theme.breakpoints.up("sm")]: {
+		  width: "80vw",
+		},
+		[theme.breakpoints.up("md")]: {
+		  width: "70vw",
+		},
+	marginInlineStart:{xs:1,sm:0},
 	minWidth:380,
 	display: "flex",
 	flexDirection:"column",
@@ -49,7 +64,7 @@ const initialValues={
 		month:new Date().getMonth() +1,
 		day:new Date().getDate()
 	},
-	shift:""
+	shift:"M"
 }
 const advancedSchema = yup.object().shape({
 	terminal: yup
@@ -75,16 +90,17 @@ const advancedSchema = yup.object().shape({
 	.required()
 });
 const formBoxStyle={
-    marginInlineEnd:2,
-    width:"50vw",
-    minWidth:"363px",
-    maxWidth:"470px",
+    marginInlineEnd:1,
+    marginInlineStart:1,
+	width:{xs:"99vw",sm:"70vw"},
+    minWidth:"312px",
+    maxWidth:"500px",
     display:"flex",
     justifyContent:"space-between",
 	overflow:"hidden"
 }
 const mainInputStyle={
-	minWidth:"223px",
+	width:{xs:"%100",sm:"%100",md:"%70"},
 	margin:1,
 	display:"flex",
 	flexGrow:1,
@@ -99,7 +115,7 @@ const mainInputStyle={
 	const [layoutName, setLayoutName] = useState("default");
 	const [inputName, setInputName] = useState("default");
 	const keyboard = useRef();
-	const [shift,setShift] = useState(true)
+	const [bgColor,setBgColor] = useState()
 
 	const clearingInputsOnSubmit = () => {
 		setInputs({});
@@ -110,6 +126,7 @@ const mainInputStyle={
 	const onSubmit = async (values, actions) => {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		clearingInputsOnSubmit()
+		console.log(values)
 		actions.resetForm({values : initialValues})
 	};
 
@@ -161,7 +178,8 @@ const mainInputStyle={
 	  };
 
 	return data== "empty" ? <h1>Loading...</h1> : (
-	<Box>
+	<Box sx={{display:"flex", flexDirection:"column" ,alignItems:"center" ,justifyContent:"center",width:{xs:"100vw",sm:"100vw",md:"70vw"},
+	}}>
 	<HeaderBox color='secondary' >
         <Toolbar sx={{display:"flex",justifyContent:"center"}}>
         <Typography variant='kazil' >CVGS(TMMT)</Typography>
@@ -175,12 +193,12 @@ const mainInputStyle={
 		validationSchema={advancedSchema}	
 		onSubmit={onSubmit}
 	  >
-		{({ isSubmitting , initialValues}) => (
-		  <Form >
+		{({ isSubmitting}) => (
+		  <Form>
 
 		<Box sx={formBoxStyle} overflow={"auto"}>  
 			<InputLabel  sx={{...labelStyle}}>
-            	Terminal
+            	Terminal Listesi
         	</InputLabel>
 			<CustomSelect
 			  name="terminal"
@@ -236,44 +254,53 @@ const mainInputStyle={
 			/>
 		</Box>
 
-		<Box sx={{...formBoxStyle}} overflow={"auto"}>
-			<InputLabel sx={labelStyle}>
-				Tarih
-			</InputLabel>
+
+		<Box sx={{...formBoxStyle,flexDirection:{xs:"column",md:"row"},backgroundColor: bgColor,borderRadius:1}} overflow={"auto"}>
 			<Box sx={{display:"flex",flexDirection:"row"}}>
+				<InputLabel sx={labelStyle}>
+					Tarih
+				</InputLabel>
+			
 					<CustomSelect
 					name="tarih.day"
 					isDaySelect={true}
 					options={Array.from({length: new Date(initialValues.tarih.year, initialValues.tarih.month, 0).getDate()}, (_, i) => i + 1)}
-					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
+					
 					/>
 					<CustomSelect
 					name="tarih.month"
 					options={Array.from({length: 12}, (_, i) => i + 1)}
-					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
 					/>
 					<CustomSelect
 					name="tarih.year"
 					options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
-					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					style={{...mainInputStyle,minWidth:"85px",margin:0.25}}
 					/>
-
-					<InputLabel sx={{...labelStyle,minWidth:"25px",marginInline:1.5,marginInlineEnd:3}}>
+			</Box>
+			<Box sx={{display:"flex",flexDirection:"row"}}>
+					<InputLabel sx={{...labelStyle,
+						minWidth:{xs:0,md:"25px"},
+						marginInlineStart:{xs:0,md:1.35},
+						marginInlineEnd:{xs:11,md:1.5},
+					}}>
 						Shift
 					</InputLabel>
 					<CustomSelect
 					name="shift"
-					shiftChange={shift => {setShift(shift)
+					shiftChange={shift => {setBgColor(ShiftOptions.find(obj => obj.shiftCode == shift).rgbColor)
 						}}
 					options={
 						ShiftOptions.map(obj => {
 							const {shiftCode } = obj 
 							return shiftCode 
 						})}
-					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
+					
+					style={{...mainInputStyle,minWidth:"20px",margin:0.25}}
 					/>
-			
 			</Box>
+			
 		</Box>
 
 			<Button disabled={isSubmitting} variant='contained' type="submit">
