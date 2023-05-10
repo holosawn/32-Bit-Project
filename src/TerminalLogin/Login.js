@@ -1,13 +1,17 @@
 
 import {InputLabel, Toolbar,Typography,styled } from '@mui/material';
 import './Login.css';
-import React from 'react';
+import Data from '../GetData';
+import {React , useState , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Button,Box,Select} from "@mui/material"
-import { Formik, Form, useFormikContext, FormikContext} from "formik";
+import { Formik, Form,useFormik, useFormikContext, FormikContext} from "formik";
 import * as yup from "yup";
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
+import Keyboard from "react-simple-keyboard";
+import "react-simple-keyboard/build/css/index.css";
+import { clear } from '@testing-library/user-event/dist/clear';
 
 const labelStyle={
     fontWeight:700,
@@ -42,7 +46,7 @@ const initialValues={
 	montaj:"",
 	tarih: {
 		year:new Date().getFullYear(),
-		month:new Date().getMonth(),
+		month:new Date().getMonth() +1,
 		day:new Date().getDate()
 	},
 	shift:""
@@ -50,7 +54,6 @@ const initialValues={
 const advancedSchema = yup.object().shape({
 	terminal: yup
 	  .string()
-	  .oneOf(["designer", "developer", "manager", "other"], "Invalid Job Type")
 	  .required("Required"),
 	sicil: yup
 	  .string()
@@ -87,27 +90,84 @@ const mainInputStyle={
 	flexGrow:1,
 	flexBasis:0
 	}
-
-
-const optionss=["developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult","developer","designer","manager","student","ak","kızıl","cult"]
-const onSubmit = async (values, actions) => {
-	await new Promise((resolve) => setTimeout(resolve, 1000));
-	console.log(values)
-	actions.resetForm({ values: initialValues })
-};
   
   const AdvancedForm = () => {
 
 	const navigate = useNavigate()
-	const handleButtonClick =() => {navigate(-1)}
+	const handleNavigateClick =() => {navigate(-1)}
+	const [inputs, setInputs] = useState({ });
+	const [layoutName, setLayoutName] = useState("default");
+	const [inputName, setInputName] = useState("default");
+	const keyboard = useRef();
+	const [shift,setShift] = useState(true)
 
-	return (
+	const clearingInputsOnSubmit = () => {
+		setInputs({});
+		Object.keys(inputs).forEach(inputName =>
+		  keyboard.current.setInput("", inputName)
+		);
+	  };
+	const onSubmit = async (values, actions) => {
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		clearingInputsOnSubmit()
+		actions.resetForm({values : initialValues})
+	};
+
+	let terminalOptions
+	let ShiftOptions
+	let data = Data()
+		if (data && data.LoginPage ) {
+		data = data.LoginPage
+
+		terminalOptions=(data.LoginInfo.data).map(obj => {
+			const{  termName} = obj 
+			return termName
+		})
+
+		ShiftOptions= (data.ShiftInfo.data).map(obj => {
+			const {shiftCode , rgbColor} = obj 
+			return {shiftCode , rgbColor}
+		})
+
+		initialValues.terminal=terminalOptions[0]
+		initialValues.shift=ShiftOptions[0].shiftCode
+		}
+		
+
+	  const onChangeAll = inputs => {
+			setInputs({ ...inputs });
+		}
+	  const handleShift = () => {
+		const newLayoutName = layoutName === "default" ? "shift" : "default";
+		setLayoutName(newLayoutName);
+	  };
+	  const onKeyPress = button => {
+		if (button === "{shift}" || button === "{lock}") handleShift();
+	  };
+
+	  const onChangeInput = event => {
+		const inputVal = event.target.value;
+	
+		setInputs(prev => ({
+		  ...prev,
+		  [inputName]: inputVal
+		}));
+	
+		keyboard.current.setInput(inputVal);
+	  };
+
+	  const getInputValue = inputName => {
+		return inputs[inputName] || "";
+	  };
+
+	return data== "empty" ? <h1>Loading...</h1> : (
 	<Box>
 	<HeaderBox color='secondary' >
         <Toolbar sx={{display:"flex",justifyContent:"center"}}>
         <Typography variant='kazil' >CVGS(TMMT)</Typography>
         </Toolbar>
     </HeaderBox>
+
 
 	<FormBox >
 	  <Formik
@@ -124,8 +184,9 @@ const onSubmit = async (values, actions) => {
         	</InputLabel>
 			<CustomSelect
 			  name="terminal"
-			  options={optionss}
+			  options={terminalOptions}
 			  style={mainInputStyle}
+			  placeholder="Terminal"
 			/>
 		</Box>
 
@@ -136,8 +197,12 @@ const onSubmit = async (values, actions) => {
 			<CustomInput
 			  name="sicil"
 			  type="text"
+			  value={getInputValue("sicil")}
+			  onFocus={() => setInputName("sicil")}
+			  extraOnChange={onChangeInput}	
 			  placeholder="Sicil No"
-			  style={mainInputStyle}			  
+			  style={mainInputStyle}		
+			    
 			/>
 		</Box>
 
@@ -147,7 +212,9 @@ const onSubmit = async (values, actions) => {
         	</InputLabel>
 			<CustomInput
 			  name="password"
-			  type="password"
+			  type="password"value={getInputValue("password")}
+			  onFocus={() => setInputName("password")}
+			  extraOnChange={onChangeInput}	
 			  placeholder="Şifre"	
 			  style={mainInputStyle}		  
 			/>
@@ -160,6 +227,9 @@ const onSubmit = async (values, actions) => {
 			<CustomInput
 			  name="montaj"
 			  type="text"
+			  value={getInputValue("montaj")}
+			  onFocus={() => setInputName("montaj")}
+			  extraOnChange={onChangeInput}	
 			  placeholder="Montaj No"	
 			  style={mainInputStyle}		  
 			   
@@ -174,30 +244,32 @@ const onSubmit = async (values, actions) => {
 					<CustomSelect
 					name="tarih.day"
 					isDaySelect={true}
-					defaultValue={new Date().getDate()}
 					options={Array.from({length: new Date(initialValues.tarih.year, initialValues.tarih.month, 0).getDate()}, (_, i) => i + 1)}
 					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
 					/>
 					<CustomSelect
 					name="tarih.month"
-					defaultValue={new Date().getMonth() + 1}
 					options={Array.from({length: 12}, (_, i) => i + 1)}
 					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
 					/>
 					<CustomSelect
 					name="tarih.year"
-					defaultValue={new Date().getFullYear()}
 					options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
 					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
 					/>
 
-					<InputLabel sx={{...labelStyle,minWidth:"30px",marginInline:1.5,marginInlineEnd:3}}>
+					<InputLabel sx={{...labelStyle,minWidth:"25px",marginInline:1.5,marginInlineEnd:3}}>
 						Shift
 					</InputLabel>
 					<CustomSelect
 					name="shift"
-					defaultValue="M"
-					options={["B","M","K"]}
+					shiftChange={shift => {setShift(shift)
+						}}
+					options={
+						ShiftOptions.map(obj => {
+							const {shiftCode } = obj 
+							return shiftCode 
+						})}
 					style={{...mainInputStyle,minWidth:"25px",margin:0.25}}
 					/>
 			
@@ -207,12 +279,21 @@ const onSubmit = async (values, actions) => {
 			<Button disabled={isSubmitting} variant='contained' type="submit">
 			  Submit
 			</Button>
+			<Button variant='contained' onClick={handleNavigateClick}>
+			  İptal
+			</Button>
 		  </Form>
 		)}
 
 	  </Formik>
 	</FormBox>
-	
+	<Keyboard
+        keyboardRef={r => (keyboard.current = r)}
+        inputName={inputName}
+        layoutName={layoutName}
+        onChangeAll={onChangeAll}
+        onKeyPress={onKeyPress}
+      />
 	</Box>
 	);
   };
