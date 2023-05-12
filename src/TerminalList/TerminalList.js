@@ -1,8 +1,7 @@
-import './TerminalList.css';
 import React from 'react';
 import Data from "../GetData"
 import Box from '@mui/material/Box';
-import {AppBar,Toolbar,Typography,Button } from '@mui/material';
+import {AppBar,Toolbar,Typography,Button,Container } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -21,8 +20,10 @@ const navigate = useNavigate()
   if (data && data.terminalsData && data.terminalsData.data) {
     data = data.terminalsData.data
   } 
+  document.body.style.backgroundColor = "#c6ffc8"
+  
     return data ==="empty" ? <h1>EMPTY</h1>:(
-
+     
       <Box sx={{bgColor:"primary" }}>
       <AppBar position='static' color='secondary'   sx={cellStyle}>
         <Toolbar >
