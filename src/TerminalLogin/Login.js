@@ -1,17 +1,15 @@
-
-import {InputLabel, Toolbar,Typography,styled } from '@mui/material';
-import './Login.css';
+import {InputLabel, Toolbar,Typography,styled } from '@mui/material'
 import Data from '../GetData';
 import {React , useState , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Button,Box,Select} from "@mui/material"
-import { Formik, Form,useFormik, useFormikContext, FormikContext} from "formik";
+import {Button,Box,Container} from "@mui/material"
+import { Formik, Form} from "formik";
 import * as yup from "yup";
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
-import { clear } from '@testing-library/user-event/dist/clear';
+import axios from "axios"
 
 const labelStyle={
     fontWeight:700,
@@ -105,12 +103,23 @@ const mainInputStyle={
 	display:"flex",
 	flexGrow:1,
 	flexBasis:0
-	}
-  
+}
+const buttonBoxStyle={
+	width:"%100",
+	margin:2,
+	marginBlock:0.5,
+	display:"flex",
+	alignItems:"center",
+}
+const buttonStyle={
+	width: "%100",
+	flex:1
+}
   const AdvancedForm = () => {
 
+	document.body.style.backgroundColor = "#c6ffc8"
+
 	const navigate = useNavigate()
-	const handleNavigateClick =() => {navigate(-1)}
 	const [inputs, setInputs] = useState({ });
 	const [layoutName, setLayoutName] = useState("default");
 	const [inputName, setInputName] = useState("default");
@@ -128,6 +137,15 @@ const mainInputStyle={
 		clearingInputsOnSubmit()
 		console.log(values)
 		actions.resetForm({values : initialValues})
+
+		try{
+		axios.post("/postShift", {color : `${bgColor}`})
+		} 
+		catch(error){
+			console.error(error)
+		}
+
+		navigate(`hata-giris`)
 	};
 
 	let terminalOptions
@@ -178,150 +196,154 @@ const mainInputStyle={
 	  };
 
 	return data== "empty" ? <h1>Loading...</h1> : (
-	<Box sx={{display:"flex", flexDirection:"column" ,alignItems:"center" ,justifyContent:"center",width:{xs:"100vw",sm:"100vw",md:"70vw"},
-	}}>
-	<HeaderBox color='secondary' >
-        <Toolbar sx={{display:"flex",justifyContent:"center"}}>
-        <Typography variant='kazil' >CVGS(TMMT)</Typography>
-        </Toolbar>
-    </HeaderBox>
+	
+	<Container sx={{display:"flex",justifyContent:"center"}}>
+		<Box sx={{display:"flex", flexDirection:"column" ,alignItems:"center" ,justifyContent:"center",width:{xs:"100vw",sm:"100vw",md:"70vw"},
+		}}>
+		<HeaderBox color='secondary' >
+			<Toolbar sx={{display:"flex",justifyContent:"center"}}>
+			<Typography variant='kazil' >CVGS(TMMT)</Typography>
+			</Toolbar>
+		</HeaderBox>
 
 
-	<FormBox >
-	  <Formik
-		initialValues={initialValues}
-		validationSchema={advancedSchema}	
-		onSubmit={onSubmit}
-	  >
-		{({ isSubmitting}) => (
-		  <Form>
+		<FormBox >
+		<Formik
+			initialValues={initialValues}
+			validationSchema={advancedSchema}	
+			onSubmit={onSubmit}
+		>
+			{({ isSubmitting}) => (
+			<Form>
 
-		<Box sx={formBoxStyle} overflow={"auto"}>  
-			<InputLabel  sx={{...labelStyle}}>
-            	Terminal Listesi
-        	</InputLabel>
-			<CustomSelect
-			  name="terminal"
-			  options={terminalOptions}
-			  style={mainInputStyle}
-			  placeholder="Terminal"
-			/>
-		</Box>
-
-		<Box sx={formBoxStyle} overflow={"auto"}>
-			<InputLabel sx={labelStyle}>
-            	Sicil No
-        	</InputLabel>
-			<CustomInput
-			  name="sicil"
-			  type="text"
-			  value={getInputValue("sicil")}
-			  onFocus={() => setInputName("sicil")}
-			  extraOnChange={onChangeInput}	
-			  placeholder="Sicil No"
-			  style={mainInputStyle}		
-			    
-			/>
-		</Box>
-
-		<Box sx={formBoxStyle} overflow={"auto"}>
-			<InputLabel sx={labelStyle}>
-            	Şifre
-        	</InputLabel>
-			<CustomInput
-			  name="password"
-			  type="password"value={getInputValue("password")}
-			  onFocus={() => setInputName("password")}
-			  extraOnChange={onChangeInput}	
-			  placeholder="Şifre"	
-			  style={mainInputStyle}		  
-			/>
-		</Box>
-
-		<Box sx={formBoxStyle} overflow={"auto"}>
-			<InputLabel sx={labelStyle}>
-            	Montaj No
-        	</InputLabel>
-			<CustomInput
-			  name="montaj"
-			  type="text"
-			  value={getInputValue("montaj")}
-			  onFocus={() => setInputName("montaj")}
-			  extraOnChange={onChangeInput}	
-			  placeholder="Montaj No"	
-			  style={mainInputStyle}		  
-			   
-			/>
-		</Box>
-
-
-		<Box sx={{...formBoxStyle,flexDirection:{xs:"column",md:"row"},backgroundColor: bgColor,borderRadius:1}} overflow={"auto"}>
-			<Box sx={{display:"flex",flexDirection:"row"}}>
-				<InputLabel sx={labelStyle}>
-					Tarih
+			<Box sx={formBoxStyle} overflow={"auto"}>  
+				<InputLabel  sx={{...labelStyle}}>
+					Terminal Listesi
 				</InputLabel>
-			
-					<CustomSelect
-					name="tarih.day"
-					isDaySelect={true}
-					options={Array.from({length: new Date(initialValues.tarih.year, initialValues.tarih.month, 0).getDate()}, (_, i) => i + 1)}
-					style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
-					
-					/>
-					<CustomSelect
-					name="tarih.month"
-					options={Array.from({length: 12}, (_, i) => i + 1)}
-					style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
-					/>
-					<CustomSelect
-					name="tarih.year"
-					options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
-					style={{...mainInputStyle,minWidth:"85px",margin:0.25}}
-					/>
+				<CustomSelect
+				name="terminal"
+				options={terminalOptions}
+				style={mainInputStyle}
+				placeholder="Terminal"
+				/>
 			</Box>
-			<Box sx={{display:"flex",flexDirection:"row"}}>
-					<InputLabel sx={{...labelStyle,
-						minWidth:{xs:0,md:"25px"},
-						marginInlineStart:{xs:0,md:1.35},
-						marginInlineEnd:{xs:11,md:1.5},
-					}}>
-						Shift
+
+			<Box sx={formBoxStyle} overflow={"auto"}>
+				<InputLabel sx={labelStyle}>
+					Sicil No
+				</InputLabel>
+				<CustomInput
+				name="sicil"
+				type="text"
+				value={getInputValue("sicil")}
+				onFocus={() => setInputName("sicil")}
+				extraOnChange={onChangeInput}	
+				placeholder="Sicil No"
+				style={mainInputStyle}		
+					
+				/>
+			</Box>
+
+			<Box sx={formBoxStyle} overflow={"auto"}>
+				<InputLabel sx={labelStyle}>
+					Şifre
+				</InputLabel>
+				<CustomInput
+				name="password"
+				type="password"value={getInputValue("password")}
+				onFocus={() => setInputName("password")}
+				extraOnChange={onChangeInput}	
+				placeholder="Şifre"	
+				style={mainInputStyle}		  
+				/>
+			</Box>
+
+			<Box sx={formBoxStyle} overflow={"auto"}>
+				<InputLabel sx={labelStyle}>
+					Montaj No
+				</InputLabel>
+				<CustomInput
+				name="montaj"
+				type="text"
+				value={getInputValue("montaj")}
+				onFocus={() => setInputName("montaj")}
+				extraOnChange={onChangeInput}	
+				placeholder="Montaj No"	
+				style={mainInputStyle}		  
+				
+				/>
+			</Box>
+
+
+			<Box sx={{...formBoxStyle,flexDirection:{xs:"column",md:"row"},backgroundColor: bgColor,borderRadius:1}} overflow={"auto"}>
+				<Box sx={{display:"flex",flexDirection:"row"}}>
+					<InputLabel sx={labelStyle}>
+						Tarih
 					</InputLabel>
-					<CustomSelect
-					name="shift"
-					shiftChange={shift => {setBgColor(ShiftOptions.find(obj => obj.shiftCode == shift).rgbColor)
-						}}
-					options={
-						ShiftOptions.map(obj => {
-							const {shiftCode } = obj 
-							return shiftCode 
-						})}
-					
-					style={{...mainInputStyle,minWidth:"20px",margin:0.25}}
-					/>
+				
+						<CustomSelect
+						name="tarih.day"
+						isDaySelect={true}
+						options={Array.from({length: new Date(initialValues.tarih.year, initialValues.tarih.month, 0).getDate()}, (_, i) => i + 1)}
+						style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
+						
+						/>
+						<CustomSelect
+						name="tarih.month"
+						options={Array.from({length: 12}, (_, i) => i + 1)}
+						style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
+						/>
+						<CustomSelect
+						name="tarih.year"
+						options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
+						style={{...mainInputStyle,minWidth:"85px",margin:0.25}}
+						/>
+				</Box>
+				<Box sx={{display:"flex",flexDirection:"row"}}>
+						<InputLabel sx={{...labelStyle,
+							minWidth:{xs:0,md:"25px"},
+							marginInlineStart:{xs:0,md:1.35},
+							marginInlineEnd:{xs:11,md:1.5},
+						}}>
+							Shift
+						</InputLabel>
+						<CustomSelect
+						name="shift"
+						shiftChange={shift => {setBgColor(ShiftOptions.find(obj => obj.shiftCode == shift).rgbColor)
+							}}
+						options={
+							ShiftOptions.map(obj => {
+								const {shiftCode } = obj 
+								return shiftCode 
+							})}
+						
+						style={{...mainInputStyle,minWidth:"20px",margin:0.25}}
+						/>
+				</Box>
+				
 			</Box>
-			
+			<Box sx={buttonBoxStyle}>
+				<Button sx={{...buttonStyle,backgroundColor:"#0f0f0f"}} disabled={isSubmitting} variant='contained' type="submit">
+				Giriş yap
+				</Button>
+				<Button sx={buttonStyle} variant='contained' onClick={() => navigate(-1)}>
+				Geri
+				</Button>
+			</Box>
+			</Form>
+			)}
+
+		</Formik>
+		</FormBox>
+		<Keyboard
+			keyboardRef={r => (keyboard.current = r)}
+			inputName={inputName}
+			layoutName={layoutName}
+			onChangeAll={onChangeAll}
+			onKeyPress={onKeyPress}
+		/>
 		</Box>
-
-			<Button disabled={isSubmitting} variant='contained' type="submit">
-			  Submit
-			</Button>
-			<Button variant='contained' onClick={handleNavigateClick}>
-			  İptal
-			</Button>
-		  </Form>
-		)}
-
-	  </Formik>
-	</FormBox>
-	<Keyboard
-        keyboardRef={r => (keyboard.current = r)}
-        inputName={inputName}
-        layoutName={layoutName}
-        onChangeAll={onChangeAll}
-        onKeyPress={onKeyPress}
-      />
-	</Box>
-	);
+		</Container>
+		);
   };
   export default AdvancedForm;
