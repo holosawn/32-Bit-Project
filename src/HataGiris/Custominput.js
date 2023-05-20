@@ -26,14 +26,13 @@ const CustomInput = ({label,extraOnChange,style,...props}) => {
     return(
     <> 
             <TextField 
-            sx={{...style ,...(meta.touched && meta.error ? OutlineColor("#ff0000") : null)
+            sx={{...style ,...(meta.touched && meta.error ? OutlineColor("#ff0000") : null) , backgroundColor:"white"
             }}
             autoComplete
             color="third"
             size="small" 
             {...field} {...props}
             onChange={newOnChange}
-            helperText={(meta.touched && meta.error) ? `${meta.error}` : " "} 
             FormHelperTextProps={{ sx: { color: "red" } }}
             />
     

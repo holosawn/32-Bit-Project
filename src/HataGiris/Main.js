@@ -1,11 +1,12 @@
 import {React , useState , useEffect , useRef} from 'react';
-import {Box, Card, CardMedia, Checkbox, Container, TextField, Button } from "@mui/material"
-import Typography from '@mui/material/Typography';
+import {Box, Card, CardMedia, Checkbox, Container, Input, Button} from "@mui/material"
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Typography from '@mui/material/Typography';
 import styled from '@emotion/styled';
 import axios from "axios"
 import {firstButtons,secondButton,Veri,Veri2} from './data';
 import ButtonWithMenu from './CustomButton';
+import PopperMenu from './PopperMenu';
 
 const HeaderBox =styled(Box)(() => ({
     display:"flex",
@@ -27,10 +28,12 @@ const OrdinaryBox=styled(Button)(() => ({
     flexGrow:1,
     display:"flex",
     justifyContent:"center",
-    alignItems:"center"
+    alignItems:"center",
+    height:"3em"
 }))
 const OrdinaryTypography=styled(Typography)(() => ({
-    fontSize:"inherit",
+    fontSize:"1rem",
+    fontWeight:"500",
     margin:"0.4em",
     marginBlock:"1em ",
     textAlign:"center",
@@ -41,17 +44,16 @@ const HataGiris = () => {
     const [data, setData] = useState("#ffffff")
     const [imgId , setImgId] = useState(71835)
     const [currentButtons , setCurrrentButtons] = useState(firstButtons)
-    const [ChoosenDefect, setChoosenDefect] = useState()
+    const [defect, setDefect] = useState({part : null , defect : null})
     const canvasRef = useRef(null);
     const ctxRef = useRef(null)
     const [defectCoords , setDefectCoords] = useState({x:0 ,y:0})
+    const [isPopperOpen, setPopperOpen] = useState(false);
     
     const isMediumScreen = useMediaQuery('(max-width:899px)');
     const someData= {}
     const images = { 71835 : 'https://vehq.com/wp-content/uploads/2021/08/An-underside-of-a-car-at-the-car-shop.jpg' ,
                      87897 : "https://splashandgocarwash.com/wp-content/uploads/cars-undercarriage-1024x683.jpg",}
-    console.log(Veri)
-    console.log(Veri2)
 
     const kutucukProps=(obj)=>({
         position: 'absolute',
@@ -90,13 +92,13 @@ const HataGiris = () => {
             setImgId(71835)
             setCurrrentButtons(firstButtons)
             eraseLine()
-            setChoosenDefect()
+            setDefect({part : null, defect : null})
+            setDefectCoords({x:0 , y:0})
         }
     }
 
     const handleCoordClick = (event) => {
         const { clientX, clientY } = event;
-        console.log("coords",clientX , clientY)
         setDefectCoords({ x: clientX, y: clientY });
       };
      
@@ -145,13 +147,25 @@ const HataGiris = () => {
             drawLine(boxX ,boxY , lineX ,lineY)
             }
         })
-    },[currentButtons])
+    },[currentButtons , defect.part])
 
 
     return data == "empty" ? <h1>Loading...</h1> : ( 
-    <Container>
-        <Box sx={{display:"flex",flexDirection:"row",justifyContent:"space-between"}} >
-            <Box sx={{display:"flex",flexDirection:"column",flex:"1",justifyContent:{xs:"space-between",md:"none"}}}>
+    <Container sx={{position:"relative"}}>
+
+
+    {isPopperOpen && 
+        <Box sx={{position:"absolute" , zIndex:200 ,minWidth:"600px", width:"90vw" ,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)"}}>
+            <PopperMenu/>
+        </Box>}
+
+
+
+        <Box sx={{display:"flex",flexDirection:"row",justifyContent:"center"}} >
+            <Box sx={{display:"flex",flexDirection:"column",flex:"1",justifyContent:{xs:"space-between",md:"none" , maxWidth:"800px"}}}>
 
                 <Box sx={{ display: "flex", justifyContent:"space-between",}}>
 
@@ -177,7 +191,7 @@ const HataGiris = () => {
                 </Box>
 
                 
-                <Card sx={{position:"relative",width:"800px",height:"600px"}} {...((ChoosenDefect && (defectCoords.x == 0)) ? onGettingCoords : {})} >
+                <Card sx={{position:"relative",width:"800px",height:"600px"}} {...((!(defect.defect == null) && (defectCoords.x == 0)) ? onGettingCoords : {})} >
                     <CardMedia 
                     sx={{objectFit: "fill" , height:"600px" }}
                     component={"img"}
@@ -185,7 +199,7 @@ const HataGiris = () => {
                     alt="car img"
                     />
                     <canvas ref={canvasRef} style={{ position: "absolute", top: 0, left: 0 ,}} />
-                    {!  ChoosenDefect && currentButtons.map(obj => {
+                    {(defect.defect == null) && currentButtons.map(obj => {
                         
 
                         return (!(obj.List)) ? (
@@ -197,7 +211,14 @@ const HataGiris = () => {
                         )
 
                         :(<ButtonWithMenu style={kutucukProps(obj)}
-                        setDefect={(defect) => {setChoosenDefect(defect)}}
+                        setDefect={(defect) => {
+                            setDefect(prev => ({
+                            ...prev , defect:defect
+                        }))}}
+
+                        setPart={() => setDefect(prev => ({
+                            ...prev , part:obj.labelText
+                        }))}
                         options={obj.List}
                         >
                             <Typography {...kutucukTextStyle}>{obj.labelText}</Typography>   
@@ -207,7 +228,7 @@ const HataGiris = () => {
                     
                 </Card>
 
-                <Box sx={{display:"flex",fontSize:{xs:"1rem",md:"1.2rem"}}}>
+                <Box sx={{display:"flex",fontSize:"1.2rem"}}>
                     <OrdinaryBox>
                         <OrdinaryTypography >
                             Çıkış
@@ -239,10 +260,16 @@ const HataGiris = () => {
                         </OrdinaryTypography>
                     </OrdinaryBox>
                 </Box>
+
+                <Box sx={{display:"flex" , justifyContent:"start"}}>
+                    <Typography sx={{fontWeight:"700" , fontSize:"1.5em"}}>
+                        {defect.part}
+                    </Typography>
+                </Box>
             </Box>
 
-            <Box fontSize={{xs:"0.9rem",md:"1.1em",lg:"1.2rem"}} sx={{flex:"none",display:"flex",flexDirection:"column",flexWrap:{xs:"wrap",lg:"nowrap",},justifyContent:"space-between"}}>
-                <Box>
+        <Box fontSize={{xs:"1.1em"}} sx={{flex:"none",display:"flex",flexDirection:"column",flexWrap:{xs:"wrap",lg:"nowrap",},justifyContent:"space-between"}}>
+            <Box>
                     <HeaderBox >
                         <Typography sx={{display:"flex",justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600} >
                             YUSUF ZİYA BAŞBUĞ(AI)
@@ -251,69 +278,81 @@ const HataGiris = () => {
 
                     <Box   sx={{display:"flex",flexDirection:{xs:"column",lg:"row"}, justifyContent:"space-around"}}>
                         <Box sx={{display:"flex", alignItems:"center"}}>
-                            <Checkbox size={isMediumScreen ? "small" :"large"}/> 
+                            <Checkbox size={"large"}/> 
                             <Typography fontSize={"1.1em"}>Harigami</Typography>
                         </Box>
                         
                         <Box sx={{display:"flex" , alignItems:"center"}}>
-                            <Checkbox size={isMediumScreen ? "small" :"large"}/> 
+                            <Checkbox size={"large"}/> 
                             <Typography  fontSize={"1.1em"}>RDD</Typography>
                         </Box>
                     </Box>
 
-                    <OrdinaryBox disabled sx={{height:{xs:"2em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox disabled sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
                         <OrdinaryTypography>
                             Hızlı Kaydet
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox disabled sx={{height:{xs:"3em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox disabled sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
                         <OrdinaryTypography>
                             Kaydet Ve Geç
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox disabled={ChoosenDefect == null} sx={{height:{xs:"2em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox disabled={defectCoords.x == 0} sx={{height:{xs:"3em"},width:{xs:"9em",lg:"11em"}}}
+                                 onClick={() => setPopperOpen(true)}   
+                    >
                         <OrdinaryTypography>
                             Hata Kayıt
                         </OrdinaryTypography>
                     </OrdinaryBox>
 
-                    <HeaderBox alignItems={"center"} sx={{width:{md:"160px",lg:"270px"}}}>
-                        <Typography variant='h6'  >MONTAJ NO</Typography>
-                        <TextField size='small'  sx={{width:{xs:"3.5em",md:"4em",lg:"7em"},fontSize:"2em",backgroundColor:"white"}}/>
+                    <HeaderBox alignItems={"center"} sx={{width:{xs:"9em",lg:"11em"}}}>
+                        <Typography variant='h6'>MONTAJ NO</Typography>
+                        <Input size='small' sx={{  fontSize:"2em",backgroundColor:"white"}}/>
                     </HeaderBox>
 
-                    <OrdinaryBox sx={{height:{xs:"2em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
                         <OrdinaryTypography>
                             Ara
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox sx={{height:{xs:"3em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em" ,lg:"11em"}}}>
                         <OrdinaryTypography>
                             Terminal İlk Resmi
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox sx={{height:{xs:"3em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
                         <OrdinaryTypography>
                             Sık Gelen Hata
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox sx={{height:{xs:"2em",md:"3em"},width:{xs:"9em",lg:"14em"}}}>
+                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
                         <OrdinaryTypography>
                             Manifest
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                </Box>
+            </Box>
 
-                <Box sx={{display:"flex",flexDirection:{xs:"column",lg:"row"},justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600}>
+            <Box sx={{display:"flex" , justifyContent:"start", paddingInlineStart:2}}>
+                    <Typography sx={{fontWeight:"700" , fontSize:"1.5em"}}>
+                        {defect.defect}
+                    </Typography>
+            </Box>
+
+            <Box sx={{display:"flex",flexDirection:{xs:"column",lg:"row"},justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600}>
                     <Typography fontSize={"0.8rem"} sx={{marginInlineEnd:"2px"}}  >
                         TEKNİK DESTEK 
                     </Typography>
                     <Typography color={"black"} fontSize={"0.8rem"} sx={{marginInlineStart:"2px"}} >
                         CVGS (TMMT)
                     </Typography>
-                </Box> 
-            </Box>
+            </Box> 
         </Box>
+        
+        </Box>
+
+
+                
     </Container>
     )
 }
