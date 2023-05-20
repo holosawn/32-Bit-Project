@@ -4,7 +4,7 @@ import {IconButton} from "@mui/material"
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const ButtonWithMenu = ({options,style,otherProps,setDefect}) => {
+const ButtonWithMenu = ({options,style,otherProps,setDefect,setPart}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const iconRef = useRef(null)
   const [optionss,setOptionss] = useState(options)
@@ -14,10 +14,10 @@ const ButtonWithMenu = ({options,style,otherProps,setDefect}) => {
 
   const handleButtonClick = (event) => {
     setAnchorEl(event.currentTarget);
+    setPart()
   };
 
   const handleMenuItemClick = (item) => {
-    console.log(item)
     setDefect(item);
     setAnchorEl(null);
   };
