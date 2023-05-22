@@ -1,9 +1,8 @@
-import {InputLabel, Toolbar,Typography,styled , Checkbox , Paper} from '@mui/material'
+import {InputLabel,Typography,styled , Checkbox , Paper} from '@mui/material'
 import Data from '../GetData';
 import {React , useState , useRef} from 'react';
-import { useNavigate } from 'react-router-dom';
 import {Button,Box,Container} from "@mui/material"
-import { Formik, Form} from "formik";
+import { Formik, Form, Field} from "formik";
 import * as yup from "yup";
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
@@ -43,7 +42,7 @@ const formBoxStyle={
   marginInlineEnd:1,
   marginInlineStart:1,
   width:"100%",
-  maxWidth:"500px",
+  maxWidth:"1000px",
   display:"flex",
   justifyContent:"space-between",
 overflow:"hidden"
@@ -70,13 +69,13 @@ flex:1
 
 const initialValues={ 
 	HataSorumlusu:"",
-  Harigami: undefined ,
+  Harigami: false ,
 	HataSınıfı:"",
 	ExitDepartment:"",
 	Açıklama:"",
 	Yapılanİşlem:"",
   AltSorumlu:"",
-  SıkGelenHata : undefined ,
+  SıkGelenHata : false ,
   RDD :""
 }
 const advancedSchema = yup.object().shape({
@@ -93,17 +92,18 @@ const advancedSchema = yup.object().shape({
     .string()
     .required("required"),
   Açıklama: yup
-    .string(),
+    .string()
+    .required("required"),
   Yapılanİşlem: yup
     .string(),
   AltSorumlu: yup
-    .string()
-    .required("required"),
+    .string(),
   RDD: yup
     .string()
     .required("required"),
 });
-  const PopperMenu = () => {
+  const PopperMenu = ({toCancel , defect , defectCoords , toMainPage}) => {
+
 
   const isMediumScreen = useMediaQuery('(max-width:899px)');
 	const [inputs, setInputs] = useState({ });
@@ -121,8 +121,10 @@ const advancedSchema = yup.object().shape({
 	const onSubmit = async (values, actions) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     clearingInputsOnSubmit();
-    console.log(values);
+    console.log(defect , defectCoords , values);
     actions.resetForm({ values: initialValues });
+    onCancel()
+    toMainPage()
   };
 
 	let terminalOptions
@@ -170,6 +172,10 @@ const advancedSchema = yup.object().shape({
 		return inputs[inputName] || "";
 	  };
 
+    const onCancel = () => {
+      toCancel();
+    }
+
     const optionss=["keke" ,"kkeke", "kekee"]
 	return data== "empty" ? <h1>Loading...</h1> : (
 	
@@ -193,16 +199,25 @@ const advancedSchema = yup.object().shape({
               <Typography sx={{marginInlineStart:1}} fontWeight={"600"} fontSize={"1.2em"}>CVGS(TMMT)</Typography>
 
               <Box sx={{display:"flex", alignItems:"center" }}>
-                <Checkbox 
-                size={isMediumScreen ? "small" :"large"}
-                name='SıkGelenHata'
-                /> 
-                <Typography fontSize={"1.1em"}>Sık Gelen Hata</Typography>
+                    <InputLabel  sx={{...labelStyle , marginBlock:0}}>
+                        Sık Gelen Hata
+                    </InputLabel>
+
+                    <Field name="SıkGelenHata">
+                      {({ field }) => (
+                        <Checkbox
+                        size={isMediumScreen ? "small" : "large"}
+                          checked={field.value}
+                          onChange={field.onChange("SıkGelenHata")}
+                          onBlur={field.onBlur}
+                        />
+                      )}
+                    </Field>
               </Box>
 
         </HeaderBox>
 
-        <Box sx={{display:"flex" , width:"100%"}}>
+        <Box sx={{display:"flex" , width:"100%" , margin:1}}>
 
           <Box sx={{display:"flex" , flexDirection:"column" , width:"100%"}}>
             <Box sx={formBoxStyle} overflow={"auto"}>  
@@ -242,16 +257,25 @@ const advancedSchema = yup.object().shape({
           </Box>
 
 
-          <Box sx={{display:"flex" , flexDirection:"column", justifyContent:"center" , width:"100%"}}>
+          <Box sx={{display:"flex" , flexDirection:"column", justifyContent:"center" , width:"100%" , margin:2}}>
               <Box sx={{display:"flex"}}>
 
-                  <Box sx={{display:"flex", alignItems:"center"}}>
-                    <Checkbox 
-                    size={isMediumScreen ? "small" :"large"}
-                    name='Harigami'
-                    /> 
-                    <Typography fontSize={"1.1em"}>Harigami</Typography>
-                  </Box>
+                <Box sx={{display:"flex", alignItems:"center"}}> 
+                      <InputLabel  sx={{...labelStyle , marginBlock:0}}>
+                        Harigami
+                      </InputLabel>
+                  <Field name="Harigami">
+                    {({ field }) => (
+                      <Checkbox
+                      size={isMediumScreen ? "small" : "large"}
+                        checked={field.value}
+                        onChange={field.onChange("Harigami")}
+                        onBlur={field.onBlur}
+                      />
+                    )}
+                  </Field>
+
+                </Box>
 
                   <Box sx={formBoxStyle} overflow={"auto"}>  
                       <InputLabel  sx={{...labelStyle}}>
@@ -267,15 +291,15 @@ const advancedSchema = yup.object().shape({
               </Box>
               
               <Box sx={{width:"%100" , display:"flex" , justifyContent:"space-between"}}>
-                <Button variant='contained'  sx={{width:"100%"}} type="submit" >Kaydet</Button>
-                <Button variant='contained' sx={{width:"100%"}}>iptal</Button>
+                <Button variant='contained' disabled={isSubmitting} sx={{width:"100%"}} type="submit" >Kaydet</Button>
+                <Button variant='contained' sx={{width:"100%"}} onClick={onCancel} >iptal</Button>
 
               </Box>
           </Box>
 
         </Box>
 
-        <Box sx={{display:"flex" , flexDirection:"column" , width:"100%"}}>
+        <Box sx={{display:"flex" , flexDirection:"column" , width:"100%" , marginInlineEnd:1}}>
 
             <Box sx={formBoxStyle} >  
               <InputLabel  sx={{...labelStyle}}>
@@ -288,12 +312,13 @@ const advancedSchema = yup.object().shape({
               onFocus={() => setInputName("Açıklama")}
               extraOnChange={onChangeInput}	
               style={mainInputStyle}
+              placeholder="örnek açıklama"
               />
             </Box>
 
             <Box sx={formBoxStyle}>  
-              <InputLabel  sx={{...labelStyle}}>
-                Yapılan İşlem
+              <InputLabel  sx={{...labelStyle, color:"red"}}>
+                Yapılan İşlem*
               </InputLabel>
               <CustomInput
               name="Yapılanİşlem"
@@ -306,13 +331,14 @@ const advancedSchema = yup.object().shape({
             </Box>
 
             <Box sx={formBoxStyle} overflow={"auto"}>
-              <InputLabel sx={labelStyle}>
-                Alt Sorumlu
+              <InputLabel sx={{...labelStyle, color:"red"}}>
+                Alt Sorumlu*
               </InputLabel>
               <CustomSelect
               name="AltSorumlu"
               options={["keke", "keke"]}
               style={mainInputStyle}		  
+              isOptional={true}
               />
             </Box>
         </Box>
@@ -330,6 +356,10 @@ const advancedSchema = yup.object().shape({
         onChangeAll={onChangeAll}
         onKeyPress={onKeyPress}
         />
+        <Box sx={{display:"flex" , justifyContent:"space-between"}}>
+          <Typography color={"red"}>Teknik Destek</Typography>
+          <Typography fontWeight={"600"}>6.2.192-CVQSTerminal</Typography>
+        </Box>
     </Paper>
   );
 };

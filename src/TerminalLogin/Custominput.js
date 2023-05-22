@@ -9,8 +9,6 @@ const OutlineColor =(color) => {
 
 const CustomInput = ({label,extraOnChange,style,...props}) => {
 
-  
-
     const[field,meta]=useField(props)
     const { setFieldValue } = useFormikContext();
 
@@ -34,7 +32,6 @@ const CustomInput = ({label,extraOnChange,style,...props}) => {
             {...field} {...props}
             onChange={newOnChange}
             helperText={(meta.touched && meta.error) ? `${meta.error}` : " "} 
-            FormHelperTextProps={{ sx: { color: "red" } }}
             />
     
             
