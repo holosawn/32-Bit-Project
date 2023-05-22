@@ -7,7 +7,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const scrollButtonStyle={minWidth:"15vw",border:"1.5px solid #9cdb9e",borderRadius:1}
 
-const CustomSelect = ({name,options,style,shiftChange,otherProps,defaultValue}) => {
+const CustomSelect = ({name,options,style,isOptional,otherProps,defaultValue}) => {
     
     const { values,setFieldValue } = useFormikContext();
     const [field, meta] = useField(name);
@@ -15,14 +15,14 @@ const CustomSelect = ({name,options,style,shiftChange,otherProps,defaultValue}) 
     const selectRef=useRef(null)
     const dropdownRef= useRef(null)
 
-
     useEffect(()=>{
-      if(defaultValue){
-        setFieldValue(name,defaultValue)
-      }
-      if(shiftChange){shiftChange(values.shift)}
-    
-      },[])
+      if(!isOptional){
+        if(defaultValue){
+          setFieldValue(name,defaultValue)
+        }else{
+          setFieldValue(name,options[0])}
+      
+      }},[])
 
       const modifiedOnChange =(event) =>{
         setFieldValue(name,event.target.value)
@@ -62,7 +62,6 @@ const CustomSelect = ({name,options,style,shiftChange,otherProps,defaultValue}) 
     const handleMouseUp= () => {
       clearInterval(selectRef.current)
     }
-
 
     return (
       <>

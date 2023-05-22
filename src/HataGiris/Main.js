@@ -2,9 +2,10 @@ import {React , useState , useEffect , useRef} from 'react';
 import {Box, Card, CardMedia, Checkbox, Container, Input, Button} from "@mui/material"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import axios from "axios"
-import {firstButtons,secondButton,Veri,Veri2} from './data';
+import { firstButtons , secondButton , headerData, defectScreen2 } from './data';
 import ButtonWithMenu from './CustomButton';
 import PopperMenu from './PopperMenu';
 
@@ -40,6 +41,7 @@ const OrdinaryTypography=styled(Typography)(() => ({
 }))
 
 const HataGiris = () => {
+
     document.body.style.backgroundColor = "#c6ffc8" 
     const [data, setData] = useState("#ffffff")
     const [imgId , setImgId] = useState(71835)
@@ -49,11 +51,12 @@ const HataGiris = () => {
     const ctxRef = useRef(null)
     const [defectCoords , setDefectCoords] = useState({x:0 ,y:0})
     const [isPopperOpen, setPopperOpen] = useState(false);
+    const navigate = useNavigate()
+    const [unnecessary , setUnnecessary] = useState(true)
     
     const isMediumScreen = useMediaQuery('(max-width:899px)');
-    const someData= {}
-    const images = { 71835 : 'https://vehq.com/wp-content/uploads/2021/08/An-underside-of-a-car-at-the-car-shop.jpg' ,
-                     87897 : "https://splashandgocarwash.com/wp-content/uploads/cars-undercarriage-1024x683.jpg",}
+    const images = { [defectScreen2.data[0].motherPictureId] : 'https://vehq.com/wp-content/uploads/2021/08/An-underside-of-a-car-at-the-car-shop.jpg' ,
+                     [defectScreen2.data[0].lastPictureId] : "https://splashandgocarwash.com/wp-content/uploads/cars-undercarriage-1024x683.jpg",}
 
     const kutucukProps=(obj)=>({
         position: 'absolute',
@@ -74,16 +77,22 @@ const HataGiris = () => {
         fontSize:"0.6rem", fontWeight:"600", sx:({backgroundColor:"white",position:"absolute",width:"70px",
     })}
 
+
     useEffect(() => {
         axios.get("/getShift")
         .then(res => setData(res.data.shiftColor.color) )
     },[])
 
-    const handleFirstButtonClick= (childPicID) => {
+    const handleFirstButtonClick= (childPicID , color) => {
         if(images[childPicID]){
             setImgId(childPicID)
             eraseLine()
             setCurrrentButtons(secondButton)
+        }
+        if(!(color == "blue")){
+            setDefect({part : "" , defect : ""})
+            eraseLine()
+            setCurrrentButtons([])
         }
     }
 
@@ -138,18 +147,36 @@ const HataGiris = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
         }
     },)
-    
-    useEffect(()=>{
+
+    const DrawLines = () => {
         currentButtons.map(obj => {
+            console.log("drawed")
             
             const {boxX ,boxY , lineX ,lineY} = obj
             if(!(lineX === -100 || lineY === -100)){
             drawLine(boxX ,boxY , lineX ,lineY)
             }
         })
-    },[currentButtons , defect.part])
+    }
+    
+    useEffect(()=>{
+        DrawLines()
+    },[defect.part,currentButtons , unnecessary])
 
+    const toCancel = ()=> {
+        setPopperOpen(false)
+        setDefectCoords({x:0 ,y:0})
+        setDefect({part : null , defect : null})
+    }
 
+    const toClear = ()=>{
+        if(!currentButtons[0]){
+            setCurrrentButtons(firstButtons)
+        }
+        setDefectCoords({x:0 ,y:0})
+        setDefect({part : null , defect : null})
+        setUnnecessary(prev => !prev)
+    }
     return data == "empty" ? <h1>Loading...</h1> : ( 
     <Container sx={{position:"relative"}}>
 
@@ -159,7 +186,7 @@ const HataGiris = () => {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)"}}>
-            <PopperMenu/>
+            <PopperMenu toCancel={toCancel} defect={defect} defectCoords={defectCoords} toMainPage={handleBackClick} />
         </Box>}
 
 
@@ -172,20 +199,20 @@ const HataGiris = () => {
                     <Box sx={{ display: "flex"}}>
                         <HeaderBox>
                             <HeaderTypography variant='h6' marginX={1.5}>Montaj No</HeaderTypography>
-                            <HeaderTypography variant='h6' marginX={1}>222</HeaderTypography>
+                            <HeaderTypography variant='h6' marginX={1}>{headerData.assyNo}</HeaderTypography>
                         </HeaderBox>
                         <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:`${data}`}}>
                             <HeaderTypography variant='h6' marginX={1.5}>Body No</HeaderTypography>
-                            <HeaderTypography variant='h6' marginX={1}>25073</HeaderTypography>
+                            <HeaderTypography variant='h6' marginX={1}>{headerData.bodyNo}</HeaderTypography>
                         </HeaderBox>
                         <HeaderBox>
                             <HeaderTypography variant='h5' marginX={1.5}>Hata Giriş Ekranı</HeaderTypography>
                         </HeaderBox>
                     </Box>
 
-                    <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:"red"}}>
-                        <HeaderTypography variant='h6' color="white" marginX={1}>3U5</HeaderTypography>
-                        <HeaderTypography variant='h6' color="white" marginX={1.5}>Renk</HeaderTypography>
+                    <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:headerData.bgColor}}>
+                        <HeaderTypography variant='h6' color="white" marginX={1}>Renk</HeaderTypography>
+                        <HeaderTypography variant='h6' color="white" marginX={1.5}>{headerData.extCode}</HeaderTypography>
                     </HeaderBox>
                     
                 </Box>
@@ -200,11 +227,10 @@ const HataGiris = () => {
                     />
                     <canvas ref={canvasRef} style={{ position: "absolute", top: 0, left: 0 ,}} />
                     {(defect.defect == null) && currentButtons.map(obj => {
-                        
 
                         return (!(obj.List)) ? (
                         <Button style={kutucukProps(obj)}
-                            onClick={(  ) => handleFirstButtonClick(obj.childPicID)}
+                            onClick={(  ) => handleFirstButtonClick(obj.childPicID , obj.boxColor)}
                         >
                             <Typography {...kutucukTextStyle}>{obj.labelText}</Typography>   
                         </Button>
@@ -216,20 +242,20 @@ const HataGiris = () => {
                             ...prev , defect:defect
                         }))}}
 
-                        setPart={() => setDefect(prev => ({
+                        setPart={() =>{
+                            setDefect(prev => ({
                             ...prev , part:obj.labelText
-                        }))}
+                        }))}}
                         options={obj.List}
-                        >
-                            <Typography {...kutucukTextStyle}>{obj.labelText}</Typography>   
-                        </ButtonWithMenu>)
+                        label={<Typography {...kutucukTextStyle}>{obj.labelText}</Typography>}
+                        />)
                         
                         })}
                     
                 </Card>
 
                 <Box sx={{display:"flex",fontSize:"1.2rem"}}>
-                    <OrdinaryBox>
+                    <OrdinaryBox onClick={() => navigate(-1)}>
                         <OrdinaryTypography >
                             Çıkış
                         </OrdinaryTypography>
@@ -249,7 +275,7 @@ const HataGiris = () => {
                             Hata Listesi
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox>
+                    <OrdinaryBox onClick={toClear}>
                         <OrdinaryTypography>
                             Temizle
                         </OrdinaryTypography>
@@ -272,7 +298,7 @@ const HataGiris = () => {
             <Box>
                     <HeaderBox >
                         <Typography sx={{display:"flex",justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600} >
-                            YUSUF ZİYA BAŞBUĞ(AI)
+                            {headerData.firstname} {headerData.lastname}
                         </Typography>
                     </HeaderBox>
 
@@ -308,7 +334,7 @@ const HataGiris = () => {
 
                     <HeaderBox alignItems={"center"} sx={{width:{xs:"9em",lg:"11em"}}}>
                         <Typography variant='h6'>MONTAJ NO</Typography>
-                        <Input size='small' sx={{  fontSize:"2em",backgroundColor:"white"}}/>
+                        <input defaultValue={headerData.seqNo} style={{fontSize:"2em",backgroundColor:"white",width:"4em"}}/>
                     </HeaderBox>
 
                     <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
@@ -344,7 +370,7 @@ const HataGiris = () => {
                         TEKNİK DESTEK 
                     </Typography>
                     <Typography color={"black"} fontSize={"0.8rem"} sx={{marginInlineStart:"2px"}} >
-                        CVGS (TMMT)
+                        {headerData.companyName}
                     </Typography>
             </Box> 
         </Box>

@@ -9,8 +9,6 @@ const OutlineColor =(color) => {
 
 const CustomInput = ({label,extraOnChange,style,...props}) => {
 
-  
-
     const[field,meta]=useField(props)
     const { setFieldValue } = useFormikContext();
 
@@ -33,7 +31,6 @@ const CustomInput = ({label,extraOnChange,style,...props}) => {
             size="small" 
             {...field} {...props}
             onChange={newOnChange}
-            FormHelperTextProps={{ sx: { color: "red" } }}
             />
     
             
