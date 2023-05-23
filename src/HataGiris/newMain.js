@@ -1,15 +1,12 @@
 import {React , useState , useEffect , useRef} from 'react';
-import {Box, Card, CardMedia, Checkbox, Container, Input, Button} from "@mui/material"
+import {Box, Card, CardMedia, Checkbox, Container, Button} from "@mui/material"
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import axios from "axios"
-import { firstButtons , secondButton , headerData, defectScreen2 } from './data';
 import ButtonWithMenu from './CustomButton';
 import PopperMenu from './PopperMenu';
-import Data from '../GetData';
 import PrepareData from './PrepareData';
-
 
 const HeaderBox =styled(Box)(() => ({
     display:"flex",
@@ -41,12 +38,31 @@ const OrdinaryTypography=styled(Typography)(() => ({
     marginBlock:"1em ",
     textAlign:"center",
 }))
+const kutucukProps=(obj)=>({
+    position: 'absolute',
+    color:obj.labelColor,
+    top: obj.boxY,
+    left: obj.boxX,
+    height:obj.boxHeight,
+    width:obj.boxWidth, 
+    border:`7px solid`,
+    borderColor:obj.boxColor,
+    display:"flex",
+    flexDirection:"column",
+    justifyContent:"start",
+    alignItems:"center",
+    padding:0,
+    })
+const kutucukTextStyle={
+    fontSize:"0.6rem", fontWeight:"600", sx:({backgroundColor:"white",position:"absolute",width:"70px",
+})}
 
-const HataGiris = () => {
-
+const NewHataGiris = () => {
+    
     document.body.style.backgroundColor = "#c6ffc8" 
-    const [bgColor, setBgColor] = useState("#ffffff")
-    const [imgId , setImgId] = useState(71835)
+    const [data , setData] = useState()
+    const [bgColor, setBgColor] = useState()
+    const [imgId , setImgId] = useState()
     const [currentButtons , setCurrrentButtons] = useState([])
     const [defect, setDefect] = useState({part : null , defect : null})
     const canvasRef = useRef(null);
@@ -55,98 +71,40 @@ const HataGiris = () => {
     const [isPopperOpen, setPopperOpen] = useState(false);
     const navigate = useNavigate()
     const [unnecessary , setUnnecessary] = useState(true)
-
-    let handleBackClick
-    let toClear
-    let images = { [defectScreen2.data[0].motherPictureId] : 'https://vehq.com/wp-content/uploads/2021/08/An-underside-of-a-car-at-the-car-shop.jpg' ,
-                 [defectScreen2.data[0].lastPictureId] : "https://splashandgocarwash.com/wp-content/uploads/cars-undercarriage-1024x683.jpg",}
-
-    let handleFirstButtonClick
-    let data = Data().DefectPage
-    if (data ) {
-        data = PrepareData(data)
-
-        handleBackClick = ()=>{
-            if(currentButtons == secondButton){
-                setImgId(71835)
-                setCurrrentButtons(firstButtons)
-                eraseLine()
-                setDefect({part : null, defect : null})
-                setDefectCoords({x:0 , y:0})
-            }
-        }
-
-        toClear = ()=>{
-            if(!currentButtons[0]){
-                setCurrrentButtons(firstButtons)
-            }
-            setDefectCoords({x:0 ,y:0})
-            setDefect({part : null , defect : null})
-            setUnnecessary(prev => !prev)
-        }
-        console.log(data.defectScreen2.data[0].lastPictureId)
-        
-        handleFirstButtonClick= (childPicID , color) => {
-            if(images[childPicID]){
-                setImgId(childPicID)
-                eraseLine()
-                setCurrrentButtons(secondButton)
-            }
-            if(!(color == "blue")){
-                setDefect({part : "" , defect : ""})
-                eraseLine()
-                setCurrrentButtons([])
-            }
-        }
-    }
-
+    const [images , setImages] = useState({})
     
-    const kutucukProps=(obj)=>({
-        position: 'absolute',
-        color:obj.labelColor,
-        top: obj.boxY,
-        left: obj.boxX,
-        height:obj.boxHeight,
-        width:obj.boxWidth, 
-        border:`7px solid`,
-        borderColor:obj.boxColor,
-        display:"flex",
-        flexDirection:"column",
-        justifyContent:"start",
-        alignItems:"center",
-        padding:0,
-        })
-    const kutucukTextStyle={
-        fontSize:"0.6rem", fontWeight:"600", sx:({backgroundColor:"white",position:"absolute",width:"70px",
-    })}
+      
+      useEffect(() => {
+        axios.post("/login")
+          .then(() => axios.get("/user"))
+          .then(res => {setData(PrepareData(res.data.DefectPage))
+                    return PrepareData(res.data.DefectPage)     })
+          .then(res => {
+                setImages(prev => ({
+                    ...prev,
+                    [res.firstButtons[0].picId]: 'https://vehq.com/wp-content/uploads/2021/08/An-underside-of-a-car-at-the-car-shop.jpg',
+                    [res.secondButton[0].picId]: "https://splashandgocarwash.com/wp-content/uploads/cars-undercarriage-1024x683.jpg",
+                }));
+                setImgId([res.firstButtons[0].picId])
+                setCurrrentButtons(res.firstButtons)
+                })
+        }, []);
+      
+      console.log(bgColor)
+      
 
 
-    useEffect(() => {
+      useEffect(() => {
         axios.get("/getShift")
         .then(res => setBgColor(res.data.shiftColor.color) )
-        setCurrrentButtons(firstButtons)
     },[])
-
-
-    const handleCoordClick = (event) => {
-        const { clientX, clientY } = event;
-        setDefectCoords({ x: clientX, y: clientY });
-    };
-     
-    const onGettingCoords = {
-          style:{ cursor: "pointer" },
-          onClick: (e) => {
-              e.preventDefault()
-              handleCoordClick(e)}
-    };
-  
-
+    
     let canvas;
     let ctx;
     let drawLine;
-    let eraseLine;
+    let eraseLine
     useEffect(() => {
-            canvas = canvasRef.current
+            if(data && data.firstButtons){canvas = canvasRef.current
             ctx = canvas.getContext("2d");
             ctxRef.current = ctx;
             canvas.style.width = "100%";
@@ -167,7 +125,7 @@ const HataGiris = () => {
 
         eraseLine=() => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-        }
+        }}
     })
 
     const DrawLines = () => {
@@ -180,19 +138,54 @@ const HataGiris = () => {
             }
         })
     }
-    
     useEffect(()=>{
-        DrawLines()
+        DrawLines()    
     },[defect.part,currentButtons , unnecessary])
 
+    const onGettingCoords = {
+        style:{ cursor: "pointer" },
+        onClick: (e) => {
+            e.preventDefault()
+            handleCoordClick(e)}
+     };
+    const handleFirstButtonClick= (childPicID , color , newButtonsArr) => {
+        if(images[childPicID]){
+            setImgId(childPicID)
+            eraseLine()
+            setCurrrentButtons(newButtonsArr)
+        }
+        if(!(color == "blue")){
+            setDefect({part : "" , defect : ""})
+            eraseLine()
+            setCurrrentButtons([])
+        }
+    }
+    const handleBackClick = (fButtons , newImg)=>{
+        if(currentButtons !== fButtons){
+            setImgId(newImg)
+            setCurrrentButtons(fButtons)
+            eraseLine()
+            setDefect({part : null, defect : null})
+            setDefectCoords({x:0 , y:0})
+        }
+    }
+    const handleCoordClick = (event) => {
+        const { clientX, clientY } = event;
+        setDefectCoords({ x: clientX, y: clientY });
+    };
+    const toClear = ()=>{ //eksik
+        setDefectCoords({x:0 ,y:0})
+        setDefect({part : null , defect : null})
+        setUnnecessary(prev => !prev)
+    }
     const toCancel = ()=> {
         setPopperOpen(false)
         setDefectCoords({x:0 ,y:0})
         setDefect({part : null , defect : null})
     }
 
-    return ( 
-    <Container sx={{position:"relative"}}>
+    return (!(data) ? <h1>Loading..</h1>
+    : <Container sx={{position:"relative"}}>
 
 
     {isPopperOpen && 
@@ -200,7 +193,7 @@ const HataGiris = () => {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)"}}>
-            <PopperMenu toCancel={toCancel} defect={defect} defectCoords={defectCoords} toMainPage={handleBackClick} />
+            <PopperMenu toCancel={toCancel} defect={defect} defectCoords={defectCoords} toMainPage={() => handleBackClick(data.firstButtons , data.firstButtons[0].picId)} />
         </Box>}
 
 
@@ -213,20 +206,20 @@ const HataGiris = () => {
                     <Box sx={{ display: "flex"}}>
                         <HeaderBox>
                             <HeaderTypography variant='h6' marginX={1.5}>Montaj No</HeaderTypography>
-                            <HeaderTypography variant='h6' marginX={1}>{headerData.assyNo}</HeaderTypography>
+                            <HeaderTypography variant='h6' marginX={1}>{data.headerData.assyNo}</HeaderTypography>
                         </HeaderBox>
                         <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:`${bgColor}`}}>
                             <HeaderTypography variant='h6' marginX={1.5}>Body No</HeaderTypography>
-                            <HeaderTypography variant='h6' marginX={1}>{headerData.bodyNo}</HeaderTypography>
+                            <HeaderTypography variant='h6' marginX={1}>{data.headerData.bodyNo}</HeaderTypography>
                         </HeaderBox>
                         <HeaderBox>
                             <HeaderTypography variant='h5' marginX={1.5}>Hata Giriş Ekranı</HeaderTypography>
                         </HeaderBox>
                     </Box>
 
-                    <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:headerData.bgColor}}>
+                    <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:data.headerData.bgColor}}>
                         <HeaderTypography variant='h6' color="white" marginX={1}>Renk</HeaderTypography>
-                        <HeaderTypography variant='h6' color="white" marginX={1.5}>{headerData.extCode}</HeaderTypography>
+                        <HeaderTypography variant='h6' color="white" marginX={1.5}>{data.headerData.extCode}</HeaderTypography>
                     </HeaderBox>
                     
                 </Box>
@@ -244,7 +237,7 @@ const HataGiris = () => {
 
                         return (!(obj.List)) ? (
                         <Button style={kutucukProps(obj)}
-                            onClick={(  ) => handleFirstButtonClick(obj.childPicID , obj.boxColor)}
+                            onClick={(  ) => handleFirstButtonClick(obj.childPicID , obj.boxColor , data.secondButton )}
                         >
                             <Typography {...kutucukTextStyle}>{obj.labelText}</Typography>   
                         </Button>
@@ -279,7 +272,7 @@ const HataGiris = () => {
                             Model İlk Resmi
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox onClick={handleBackClick}>
+                    <OrdinaryBox onClick={() => handleBackClick(data.firstButtons , data.firstButtons[0].picId)}>
                         <OrdinaryTypography>
                             {"<"} Geri
                         </OrdinaryTypography>
@@ -312,7 +305,7 @@ const HataGiris = () => {
             <Box>
                     <HeaderBox >
                         <Typography sx={{display:"flex",justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600} >
-                            {headerData.firstname} {headerData.lastname}
+                            {data.headerData.firstname} {data.headerData.lastname}
                         </Typography>
                     </HeaderBox>
 
@@ -348,7 +341,7 @@ const HataGiris = () => {
 
                     <HeaderBox alignItems={"center"} sx={{width:{xs:"9em",lg:"11em"}}}>
                         <Typography variant='h6'>MONTAJ NO</Typography>
-                        <input defaultValue={headerData.seqNo} style={{fontSize:"2em",backgroundColor:"white",width:"4em"}}/>
+                        <input defaultValue={data.headerData.seqNo} style={{fontSize:"2em",backgroundColor:"white",width:"4em"}}/>
                     </HeaderBox>
 
                     <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
@@ -384,7 +377,7 @@ const HataGiris = () => {
                         TEKNİK DESTEK 
                     </Typography>
                     <Typography color={"black"} fontSize={"0.8rem"} sx={{marginInlineStart:"2px"}} >
-                        {headerData.companyName}
+                        {data.headerData.companyName}
                     </Typography>
             </Box> 
         </Box>
@@ -393,8 +386,7 @@ const HataGiris = () => {
 
 
                 
-    </Container>
-    )
+    </Container>)
 }
 
-export default HataGiris
+export default NewHataGiris
