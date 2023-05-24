@@ -1,3 +1,5 @@
+import ErrorsData from "./ErrorListData.json"
+
 const terminalsData = {
   type: "SUCCESS",
   data: [
@@ -3729,4 +3731,6 @@ const DefectPage = {
     },
   ],
 };
-export { terminalsData, LoginPage , DefectPage };
+
+
+export { terminalsData, LoginPage , DefectPage , ErrorsData};

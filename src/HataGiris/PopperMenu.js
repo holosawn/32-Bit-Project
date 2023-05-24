@@ -125,6 +125,7 @@ const advancedSchema = yup.object().shape({
     actions.resetForm({ values: initialValues });
     onCancel()
     toMainPage()
+    
   };
 
 	let terminalOptions

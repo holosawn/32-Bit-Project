@@ -1,6 +1,6 @@
 // src/mocks/handlers.js
 import { rest } from 'msw'
-import { terminalsData , LoginPage , DefectPage} from '../datas'
+import { terminalsData , LoginPage , DefectPage , ErrorsData} from '../datas'
 
 let shiftColor;
 
@@ -45,7 +45,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        terminalsData , LoginPage , DefectPage
+        terminalsData , LoginPage , DefectPage , ErrorsData
       }),
     )
   }),
