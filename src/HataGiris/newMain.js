@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import ButtonWithMenu from './CustomButton';
 import PopperMenu from './PopperMenu';
 import PrepareData from './PrepareData';
+import AudioPlayer from './sound';
 
 const HeaderBox =styled(Box)(() => ({
     display:"flex",
@@ -61,7 +62,6 @@ const NewHataGiris = () => {
     
     document.body.style.backgroundColor = "#c6ffc8" 
     const [data , setData] = useState()
-    const [bgColor, setBgColor] = useState()
     const [imgId , setImgId] = useState()
     const [currentButtons , setCurrrentButtons] = useState([])
     const [defect, setDefect] = useState({part : null , defect : null})
@@ -89,15 +89,9 @@ const NewHataGiris = () => {
                 setCurrrentButtons(res.firstButtons)
                 })
         }, []);
-      
-      console.log(bgColor)
-      
 
-
-      useEffect(() => {
-        axios.get("/getShift")
-        .then(res => setBgColor(res.data.shiftColor.color) )
-    },[])
+    const bgColor = sessionStorage.getItem('vardiyaBilgisi')
+    console.log(bgColor)
     
     let canvas;
     let ctx;
@@ -143,11 +137,12 @@ const NewHataGiris = () => {
     },[defect.part,currentButtons , unnecessary])
 
     const onGettingCoords = {
-        style:{ cursor: "pointer" },
+        style: { cursor: 'url(data:image/png;base64,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), auto' },
         onClick: (e) => {
-            e.preventDefault()
-            handleCoordClick(e)}
-     };
+          e.preventDefault();
+          handleCoordClick(e);
+        }
+      }
     const handleFirstButtonClick= (childPicID , color , newButtonsArr) => {
         if(images[childPicID]){
             setImgId(childPicID)
@@ -184,7 +179,7 @@ const NewHataGiris = () => {
         setDefect({part : null , defect : null})
     }
 
-    return (!(data) ? <h1>Loading..</h1>
+    return (!(data) ? <h1>Loading..</h1>    
     : <Container sx={{position:"relative"}}>
 
 
@@ -196,9 +191,8 @@ const NewHataGiris = () => {
             <PopperMenu toCancel={toCancel} defect={defect} defectCoords={defectCoords} toMainPage={() => handleBackClick(data.firstButtons , data.firstButtons[0].picId)} />
         </Box>}
 
-
-
         <Box sx={{display:"flex",flexDirection:"row",justifyContent:"center"}} >
+            
             <Box sx={{display:"flex",flexDirection:"column",flex:"1",justifyContent:{xs:"space-between",md:"none" , maxWidth:"800px"}}}>
 
                 <Box sx={{ display: "flex", justifyContent:"space-between",}}>
@@ -208,7 +202,7 @@ const NewHataGiris = () => {
                             <HeaderTypography variant='h6' marginX={1.5}>Montaj No</HeaderTypography>
                             <HeaderTypography variant='h6' marginX={1}>{data.headerData.assyNo}</HeaderTypography>
                         </HeaderBox>
-                        <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:`${bgColor}`}}>
+                        <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:bgColor}}>
                             <HeaderTypography variant='h6' marginX={1.5}>Body No</HeaderTypography>
                             <HeaderTypography variant='h6' marginX={1}>{data.headerData.bodyNo}</HeaderTypography>
                         </HeaderBox>

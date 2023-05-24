@@ -16,7 +16,6 @@ const AudioPlayer = () => {
 
     const resetTimer = () => {
       clearTimeout(timeoutId);
-      audioRef.current.pause()
       startTimer();
     };
 
@@ -35,7 +34,7 @@ const AudioPlayer = () => {
   return (
     <div>
       <audio controls ref={audioRef}>
-        <source  type="audio/ogg" />
+        <source src='https://www.myinstants.com/en/instant/mp3/?utm_source=copy&utm_medium=share' type="audio/ogg" />
       </audio>
     </div>
   );

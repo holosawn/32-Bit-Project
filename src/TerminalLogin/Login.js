@@ -145,6 +145,8 @@ const buttonStyle={
 			console.error(error)
 		}
 
+		sessionStorage.setItem('vardiyaBilgisi', bgColor);
+
 		navigate(`hata-giris`)
 	};
 
