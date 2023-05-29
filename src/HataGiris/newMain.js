@@ -91,7 +91,6 @@ const NewHataGiris = () => {
         }, []);
 
     const bgColor = sessionStorage.getItem('vardiyaBilgisi')
-    console.log(bgColor)
     
     let canvas;
     let ctx;
