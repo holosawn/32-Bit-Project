@@ -65,6 +65,7 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
       const menuList = document.querySelector(".MuiMenu-paper")
       if(menuList){
         const scrollStep = direction === "up" ? -16 : 16
+        console.log(menuList.scrollTop)
         let scrollInterval = setInterval(() => {
           const newScrollTop = menuList.scrollTop + scrollStep
           menuList.scrollTop = newScrollTop
