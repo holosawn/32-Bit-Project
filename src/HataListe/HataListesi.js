@@ -3,38 +3,53 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import {
   Box,
-  InputLabel,
-  TextField,
-  Input,
-  Select,
-  MenuItem,
+  OutlinedInput,
   Button,
   CssBaseline,
+  Typography,
 } from "@mui/material";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { TableVirtuoso } from "react-virtuoso";
-import axios from "axios";
-import { useState, useEffect, useRef } from "react";
-import prepareData from "./PrepareData";
-import { IconButton } from "@mui/material";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { UpdateTwoTone } from "@mui/icons-material";
+import Paper from "@mui/material/Paper"
+import axios from "axios"
+import { useState, useEffect, useRef } from "react"
+import prepareData from "./PrepareData"
+import { IconButton , styled} from "@mui/material"
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import VirtualTable from "./VirtualTable"
+
+const StyledButton = styled(Button)(({theme}) => ({
+    border:"1px solid black",
+    color:"black",
+    margin:"0.3em",
+    padding:0,
+    [theme.breakpoints.up("xs")]: {
+      height:"3rem",
+      width:"6vh"
+		},
+    [theme.breakpoints.up("md")]: {
+      height:"3rem",
+      width:"16vh"
+		},
+		[theme.breakpoints.up("lg")]: {
+      height:"6rem",
+      width:"8.5em"
+		},
+		[theme.breakpoints.up("xl")]: {
+      height:"6rem",
+      width:"10em"
+		},
+}))
 
 const HataListesi = () => {
-  document.body.style.backgroundColor = "#c6ffc8";
   const [data, setData] = useState("empty");
   const [temporaryData, setTemporaryData] = useState("empty");
   const [filterValues, setFilterValues] = useState({
-    filterProperty1: "",
-    filterProperty2: "",
+    formattedBodyNo: "",
+    formattedAssyNo: "",
   });
   const intervalRef = useRef(null);
   const tableRef = useRef();
+
 
   useEffect(() => {
     axios
@@ -45,31 +60,30 @@ const HataListesi = () => {
         setData(temp);
         setTemporaryData(temp.rows);
       });
-  }, []);
-
+  }, [])
   const columns = [
-    { field: "depCode", headerName: "Bildiren", width: 100 },
-    { field: "formattedBodyNo", headerName: "Body", width: 100 },
-    { field: "formattedAssyNo", headerName: "Assy", width: 100 },
-    { field: "vinNo", headerName: "Vin", width: 200 },
-    { field: "colorData", headerName: "Renk", width: 100 },
-    { field: "modelCode", headerName: "Mdl", width: 100 },
-    { field: "termId", headerName: "Sicil", width: 100 },
-    { field: "partName", headerName: "Parca", width: 100 },
-    { field: "spotCode", headerName: "Spot", width: 100 },
-    { field: "spotgunName", headerName: "Gun", width: 100 },
-    { field: "arcnutboltgunName", headerName: "Arc", width: 100 },
-    { field: "arcnutboltCode", headerName: "ArcGun", width: 100 },
-    { field: "defectName", headerName: "Hata", width: 100 },
-    { field: "defrankCode", headerName: "Rank", width: 100 },
-    { field: "formattedDefectHour", headerName: "Saat", width: 100 },
-    { field: "defectType", headerName: "Hata Türü", width: 100 },
-    { field: "defrespName", headerName: "Hata Sor", width: 100 },
-    { field: "altSorumlu", headerName: "Alt Sorumlu", width: 100 },
-    { field: "nrReasons", headerName: "NR REASONS", width: 100 },
-    { field: "kaydet", headerName: "Kaydet", width: 100 },
-    { field: "islem", headerName: "İşlem", width: 100 },
-  ];
+    { field: "depCode", headerName: "Bildiren", width: "56px" , align : "center"},
+    { field: "formattedBodyNo", headerName: "Body", width: "37px" , align:"center" },
+    { field: "formattedAssyNo", headerName: "Assy", width: "30px" , align:"center" },
+    { field: "vinNo", headerName: "Vin", width: 120 , align:"center" },
+    { field: "colorData", headerName: "Renk", width: 35 , align:"center"},
+    { field: "modelCode", headerName: "Mdl", width: 35 , align:"center"},
+    { field: "termId", headerName: "Sicil", width: 40 , align:"center" },
+    { field: "partName", headerName: "Parca", width: 160 , height:40 , color:"red" },
+    { field: "spotCode", headerName: "Spot", width: 35 , align:"center"},
+    { field: "spotgunName", headerName: "Gun", width: 50 , align:"center" },
+    { field: "arcnutboltgunName", headerName: "Arc", width: 50 },
+    { field: "arcnutboltCode", headerName: "ArcGun", width: 60 },
+    { field: "defectName", headerName: "Hata", width: 110 },
+    { field: "defrankCode", headerName: "Rank", width: 45 },
+    { field: "formattedDefectHour", headerName: "Saat", width: 60 , align:"center" },
+    { field: "defectType", headerName: "Hata Türü", width: 60 , align:"center"},
+    { field: "defrespName", headerName: "Hata Sor", width: 60 , align:"center" },
+    { field: "subResp", headerName: "Alt Sorumlu", width: 60 },
+    { field: "defectReason", headerName: "NR REASONS", width:115 , align:"center" },
+    { field: "kaydet", headerName: "Kaydet", width: 40 , align:"center"},
+    { field: "islem", headerName: "İşlem", width: 63 },
+  ]
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -78,69 +92,24 @@ const HataListesi = () => {
       ...prevValues,
       [name]: value,
     }));
-  };
-
-  useEffect(() => {
-    setTemporaryData(filterData(data.rows));
-  }, [filterValues]);
-
-  const filterData = (rows) => {
-    const { filterProperty1, filterProperty2 } = filterValues;
-
-    if (data === "empty") return [];
-
-    const filteredData = rows.filter(
-      (row) =>
-        (!filterProperty1 ||
-          row.formattedBodyNo
-            .toLowerCase()
-            .includes(filterProperty1.toLowerCase())) &&
-        (!filterProperty2 ||
-          row.formattedAssyNo
-            .toLowerCase()
-            .includes(filterProperty2.toLowerCase()))
-    );
-
-    return filteredData;
-  };
-
-  const VirtuosoTableComponents = {
-    Scroller: React.forwardRef((props, ref) => (
-      <TableContainer component={Paper} {...props} ref={ref} />
-    )),
-    Table: (props) => (
-      <Table
-        {...props}
-        sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
-      />
-    ),
-    TableHead,
-    TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-    TableBody: React.forwardRef((props, ref) => (
-      <TableBody {...props} ref={ref} />
-    )),
-  };
-
-  function fixedHeaderContent() {
-    return (
-      <TableRow>
-        {columns.map((column) => (
-          <TableCell
-            key={column.field}
-            variant="head"
-            align={column.numeric || false ? "right" : "left"}
-            style={{ width: column.width }}
-            sx={{
-              backgroundColor: "background.paper",
-            }}
-          >
-            {column.headerName}
-          </TableCell>
-        ))}
-      </TableRow>
-    );
   }
+  const filterData = (rows) => {
+    const filterProperties = Object.keys(filterValues);
+  
+    if (data === "empty") return [];
+  
+    const filteredData =rows.filter((row) =>
+      filterProperties.every((property) =>{
+      return property === "colorData" ?
 
+      !filterValues[property] ||
+      row[property].colorExtCode.toString().toLowerCase().includes(filterValues[property].colorExtCode.toLowerCase())
+
+      :!filterValues[property] ||
+      row[property].toString().toLowerCase().includes(filterValues[property].toLowerCase())
+    }))
+  return filteredData
+  }
   const removeRow = (rowId) => {
     setData((prevData) => {
       const updatedRows = [...prevData.rows];
@@ -154,63 +123,6 @@ const HataListesi = () => {
         rows: updatedRows,
       };
     });
-  };
-
-  function rowContent(index, row, nrReasonList) {
-    return (
-      <React.Fragment key={index}>
-        {columns.map((column) => (
-          <TableCell
-            key={column.field}
-            align="center"
-            style={{
-              minWidth: column.width,
-              border: "1px solid #ccc",
-              padding: "8px",
-            }}
-          >
-            {(() => {
-              if (column.field === "colorData") {
-                return (
-                  <Box
-                    sx={{
-                      backgroundColor: row.colorData.rgbCode,
-                      borderRadius: 1,
-                    }}
-                  >
-                    {row.colorData.colorExtCode}
-                  </Box>
-                );
-              } else if (column.field === "nrReasons") {
-                return (
-                  <Select
-                    defaultValue={row[column.field] || ""}
-                    onChange={(e) => (row.defectReason = e.target.value)}
-                  >
-                    {nrReasonList.map((obj) => (
-                      <MenuItem key={obj.nrId} value={obj.nrReasonAbb}>
-                        {obj.nrReasonAbb}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                );
-              } else if (column.field === "kaydet") {
-                return <Button onClick={() => console.log(row)}>Kaydet</Button>;
-              } else if (column.field === "islem") {
-                return (
-                  <Box sx={{ display: "flex" }}>
-                    <Button>İşle</Button>
-                    <Button onClick={() => removeRow(row.id)}>Sil</Button>
-                  </Box>
-                );
-              } else {
-                return row[column.field];
-              }
-            })()}
-          </TableCell>
-        ))}
-      </React.Fragment>
-    );
   }
 
   const handleMouseClick = (direction) => {
@@ -220,11 +132,7 @@ const HataListesi = () => {
         behavior: "smooth",
       });
     }
-  };
-  const scrollerRefCallback = (ref) => {
-    tableRef.current = ref;
-  };
-
+  }
   const handleMouseDown = (direction) => {
     if (tableRef.current) {
       const scrollStep = direction === "up" ? -16 : 16;
@@ -236,70 +144,125 @@ const HataListesi = () => {
 
       intervalRef.current = scrollInterval;
     }
-  };
-
+  }
   const handleMouseUp = () => {
     clearInterval(intervalRef.current);
-  };
+  }
+
 
   return data === "empty" ? (
     <h1>Loading...</h1>
   ) : (
-    <Paper style={{ height: "80vh", width: "100%", padding: 0, margin: 0 }}>
+    <Paper style={{ height: "80vh", width: "100%", padding: 0, margin: 0 ,}}>
       <CssBaseline />
 
-      <TableVirtuoso
-        width={"100%"}
-        scrollerRef={scrollerRefCallback}
-        data={temporaryData}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={(index, row) => rowContent(index, row, data.nrReasonList)}
-      />
-      <Box sx={{display:"flex"}}>
-        <Box sx={{display:"flex" , flexDirection:"column"}}>
-          <Box> 
-            <Box>
-              <InputLabel htmlFor="BODY NO">Özellik 1:</InputLabel>
-              <Input
+      <VirtualTable 
+      columns={columns}
+      data={temporaryData}
+      removeRow={removeRow} 
+      nrReasonList={data.nrReasonList}
+      /> 
+      
+
+      <Box sx={{backgroundColor:"#9cdb9e" , display:"flex" , justifyContent:"end" , borderBlock:"1px solid black"  }}>
+        <Typography sx={{marginInlineEnd:1 , fontSize:"0.7rem"}}> 
+           Total Rows:{temporaryData.length}   
+        </Typography>
+      </Box>
+
+      <Box sx={{display:"flex" , justifyContent:"center"}}>
+        <Box sx={{display:"flex" , flexDirection:"column-reverse" , justifyContent:"center" , mr:1 }}>
+
+          <Box sx={{display:"flex" , alignItems:"center" , margin:0 }}>
+            <Typography sx={{color:"black" , width:"7em" , fontWeight:700}}>
+              BODY NO
+            </Typography>
+              <OutlinedInput
+                sx={{width:{xs:"5em" , md:"8em"}}}
+                size="small"
                 type="text"
-                id="filterProperty1"
-                name="filterProperty1"
-                value={filterValues.filterProperty1}
+                id="formattedBodyNo"
+                name="formattedBodyNo"
+                value={filterValues.formattedBodyNo}
                 onChange={handleFilterChange}
               />
-            </Box>
-          <Box>       
-            
+            <Button sx={{border:"1px solid black" , color:"black" , width:"6em"}} onClick={() => setTemporaryData(filterData(data.rows))}>
+              ARA
+            </Button>
+          </Box>   
+
+          <Box sx={{display:"flex" , alignItems:"center" , margin:0}}> 
+            <Typography sx={{color:"black" , width:"7em" , fontWeight:700}}>
+              MONTAJ NO
+            </Typography>
+              <OutlinedInput
+                sx={{width:{xs:"5em" , md:"8em"}}}
+                size="small"
+                type="text"
+                id="formattedAssyNo"
+                name="formattedAssyNo"
+                value={filterValues.formattedAssyNo}
+                onChange={handleFilterChange}
+              />
+            <Button sx={{border:"1px solid black" , color:"black" , width:"6em"}} onClick={() => setTemporaryData(filterData(data.rows))}>
+              ARA
+            </Button>
           </Box>
-            <Box>
-              <InputLabel htmlFor="MONTAJ NO">Özellik 2:</InputLabel>
-              <Input
-                type="text"
-                id="filterProperty2"
-                name="filterProperty2"
-                value={filterValues.filterProperty2}
-                onChange={handleFilterChange}
-              />
-            </Box>
+
+        </Box>
+        
+        <Box sx={{display:"flex" , flexDirection:"column" , margin:1 , flexWrap:"wrap"}}>
+          <Box sx={{backgroundColor:"red" , borderRadius:"0.2em" , marginBlockStart:1}}>
+              <IconButton
+                sx={{width:"3.5em" , height:"1.6em"}}
+                color="secondary"
+                onMouseDown={() => handleMouseDown("up")}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onClick={() => handleMouseClick("up")}
+              >
+                <KeyboardArrowUpIcon />
+              </IconButton>
+              
+          </Box>
+          <Box sx={{backgroundColor:"red" , borderRadius:"0.2em" , marginBlockStart:0.2}}>
+            <IconButton
+              sx={{width:"3.5em" , height:"1.6em" }}
+              color="secondary"
+              onMouseDown={() => handleMouseDown("down")}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onClick={() => handleMouseClick("down")}
+            >
+              <KeyboardArrowDownIcon />
+            </IconButton>
           </Box>
         </Box>
-        <IconButton
-          onMouseDown={() => handleMouseDown("up")}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onClick={() => handleMouseClick("up")}
-        >
-          <KeyboardArrowUpIcon />
-        </IconButton>
-        <IconButton
-          onMouseDown={() => handleMouseDown("down")}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onClick={() => handleMouseClick("down")}
-        >
-          <KeyboardArrowDownIcon />
-        </IconButton>
+
+        <Box sx={{display:"flex" , flexDirection:{xs:"column" , lg:"row"} , justifyContent:"center" }}>
+          <Box sx={{flexDirection:"row"}}>
+            <StyledButton>
+              ARAÇ LİSTESİ
+            </StyledButton>   
+            <StyledButton>
+              MANUAL HATA
+            </StyledButton>         
+            <StyledButton>
+              ÇOKLU HATA
+            </StyledButton>   
+          </Box>
+          <Box sx={{flexDirection:"row"}}>
+            <StyledButton>
+              HATA LİSTESİ
+            </StyledButton>   
+            <StyledButton>
+              HATA KOPYA
+            </StyledButton>   
+            <StyledButton>
+              ÇIKIŞ
+            </StyledButton>   
+          </Box>
+        </Box>
       </Box>
     </Paper>
   );
