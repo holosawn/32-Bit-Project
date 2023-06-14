@@ -1,9 +1,8 @@
 import { Field, useField , useFormikContext } from "formik"
 import { TextField,Box, FormControl } from "@mui/material"
-import InputLabel from '@mui/material/InputLabel'
 import { useEffect } from "react"
 
-const OutlineColor =(color) => {
+const outlineColor =(color) => {
     return {"& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: color }}}       
 
 
@@ -24,14 +23,12 @@ const CustomInput = ({label,extraOnChange,style,...props}) => {
     return(
     <> 
             <TextField 
-            sx={{...style ,...(meta.touched && meta.error ? OutlineColor("#ff0000") : null)
+            sx={{...style ,...(meta.touched && meta.error ? outlineColor("#ff0000") : null)
             }}
-            autoComplete
             color="third"
             size="small" 
             {...field} {...props}
             onChange={newOnChange}
-            helperText={(meta.touched && meta.error) ? `${meta.error}` : " "} 
             />
     
             

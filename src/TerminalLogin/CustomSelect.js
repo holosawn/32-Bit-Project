@@ -20,9 +20,9 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
     
     useEffect(()=>{
       if(isDaySelect){
-        setOptionss(Array.from({length: new Date(values.tarih.year, values.tarih.month, 0).getDate()}, (_, i) => i + 1))
+        setOptionss(Array.from({length: new Date(values.date.year, values.date.month, 0).getDate()}, (_, i) => i + 1))
       }
-    },[values.tarih.year,values.tarih.month])
+    },[values.date.year,values.date.month])
    
 
     useEffect(()=>{
@@ -54,14 +54,14 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
       configSelect.error = true;
     }
     
-    const handleMouseClick= (direction) => {
+    const handleMenuMouseClick= (direction) => {
       const menuList = document.querySelector(".MuiMenu-paper")
       if(menuList){
         menuList.scrollBy({top:(direction == "up" ? -64 : 64 ),behavior:"smooth"})
       }
     }
  
-    const handleMouseDown= (direction) =>{
+    const handleMenuMouseDown= (direction) =>{
       const menuList = document.querySelector(".MuiMenu-paper")
       if(menuList){
         const scrollStep = direction === "up" ? -16 : 16
@@ -74,21 +74,18 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
         selectRef.current= scrollInterval}
       }
 
-    const handleMouseUp= () => {
+    const handleMenuMouseUp= () => {
       clearInterval(selectRef.current)
     }
 
-
     return (
       <>
-    
-
           <Select  sx={{...style}} {...configSelect}
               open={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} 
               ref={dropdownRef} onChange={modifiedOnChange}
               >
               {optionss.map(val => {
-              return <MenuItem value = {val} >{val}</MenuItem>
+              return <MenuItem value = {val} key={val}>{val}</MenuItem>
               })}
           
           </Select>
@@ -98,27 +95,27 @@ const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,def
             <Box sx={{display:"flex",flexDirection:"column",bgcolor:"#c6ffc8"}}>
 
               <IconButton sx={scrollButtonStyle}
-              onClick={() => handleMouseClick("up")}
+              onClick={() => handleMenuMouseClick("up")}
               onMouseDown={() => {
                 const IntervalId=setTimeout(()=> {
-                  handleMouseDown("up")},100)
+                  handleMenuMouseDown("up")},100)
                   selectRef.current=IntervalId
                     }}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
+              onMouseUp={handleMenuMouseUp}
+              onMouseLeave={handleMenuMouseUp}
               >
                 <KeyboardArrowUpIcon />
               </IconButton>
                     
               <IconButton sx={scrollButtonStyle}
-                onClick={()=> handleMouseClick("down")}
+                onClick={()=> handleMenuMouseClick("down")}
                 onMouseDown={() => {  
                   const IntervalId=setTimeout(()=> {
-                    handleMouseDown("down")},100)
+                    handleMenuMouseDown("down")},100)
                     selectRef.current=IntervalId
                       }}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}              
+                onMouseUp={handleMenuMouseUp}
+                onMouseLeave={handleMenuMouseUp}              
                 >
                 <KeyboardArrowDownIcon />
               </IconButton>

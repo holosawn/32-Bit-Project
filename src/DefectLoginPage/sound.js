@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import Audio from "./Ses.ogg"
 
 const AudioPlayer = () => {
   const audioRef = useRef(null);
@@ -11,10 +12,11 @@ const AudioPlayer = () => {
           audioRef.current.play();
           console.log("played")
         }
-      }, 3000); // 3 saniye sonra sesi çal
+      }, 300990); // 3 saniye sonra sesi çal
     };
 
     const resetTimer = () => {
+      audioRef.current.pause()
       clearTimeout(timeoutId);
       startTimer();
     };
@@ -33,8 +35,8 @@ const AudioPlayer = () => {
 
   return (
     <div>
-      <audio controls ref={audioRef}>
-        <source src='https://www.myinstants.com/en/instant/mp3/?utm_source=copy&utm_medium=share' type="audio/ogg" />
+      <audio ref={audioRef} >
+      <source src={Audio}/>
       </audio>
     </div>
   );

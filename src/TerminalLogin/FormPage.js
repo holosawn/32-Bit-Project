@@ -1,16 +1,13 @@
 import {InputLabel, Toolbar,Typography,styled } from '@mui/material'
-import Data from '../GetData';
-import {React , useState , useRef} from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
+import {React , useState , useRef , useEffect} from 'react'
+import { useNavigate } from 'react-router-dom'
 import {Button,Box,Container} from "@mui/material"
-import { Formik, Form} from "formik";
-import * as yup from "yup";
+import { Formik, Form} from "formik"
+import * as yup from "yup"
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
-import Keyboard from "react-simple-keyboard";
-import "react-simple-keyboard/build/css/index.css";
-import axios from "axios"
-
+import VirtualKeyboard from "./VirtualKeyboard"
 const labelStyle={
     fontWeight:700,
 	fontSize:"1rem",
@@ -56,32 +53,32 @@ const initialValues={
 	terminal:"",
 	sicil:"",
 	password:"",
-	montaj:"",
-	tarih: {
+	assy:"",
+	date: {
 		year:new Date().getFullYear(),
 		month:new Date().getMonth() +1,
 		day:new Date().getDate()
 	},
 	shift:"M"
 }
-const advancedSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
 	terminal: yup
 	  .string()
-	  .required("Required"),
+	  .required(),
 	sicil: yup
 	  .string()
 	  .min(3, "Username must be at least 3 characters long")
-	  .required("Required"),
+	  .required(),
 	password:yup
 	.string()
-	.required("required"),
+	.required(),
 	montaj:yup
 	.string()
-	.required("required"),
-	tarih: yup.object().shape({
-		year: yup.number().required("Yıl seçiniz"),
-		month: yup.number().required("Ay seçiniz"),
-		day: yup.number().required("Gün seçiniz")
+	.required(),
+	date: yup.object().shape({
+		year: yup.number().required(),
+		month: yup.number().required(),
+		day: yup.number().required()
 	  }),
 	shift:yup
 	.string()
@@ -115,52 +112,73 @@ const buttonStyle={
 	width: "%100",
 	flex:1
 }
-  const AdvancedForm = () => {
+  const FormPage = () => {
 
 	document.body.style.backgroundColor = "#c6ffc8"
-
+	const [data , setData] = useState("empty")
 	const navigate = useNavigate()
 	const [inputs, setInputs] = useState({ });
-	const [layoutName, setLayoutName] = useState("default");
 	const [inputName, setInputName] = useState("default");
 	const keyboard = useRef();
-	const [bgColor,setBgColor] = useState()
+	const [shiftColor,setShiftColor] = useState()
+
+	const user = {sicil : "123" , password :"123" }
 
 	const clearingInputsOnSubmit = () => {
 		setInputs({});
 		Object.keys(inputs).forEach(inputName =>
 		  keyboard.current.setInput("", inputName)
 		);
-	  };
+	  }
+	const onChangeAll = inputs => {
+		setInputs({ ...inputs });
+	}
+	const onChangeInput = event => {
+	  const inputVal = event.target.value;
+  
+	  setInputs(prev => ({
+		...prev,
+		[inputName]: inputVal
+	  }));
+  
+	  keyboard.current.setInput(inputVal);
+	}
+	const getInputValue = inputName => {
+	  return inputs[inputName] || "";
+	}
+
+
 	const onSubmit = async (values, actions) => {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
-		clearingInputsOnSubmit()
+		const {password , sicil } = values
 		console.log(values)
-		actions.resetForm({values : initialValues})
 
-		try{
-		axios.post("/postShift", {color : `${bgColor}`})
-		} 
-		catch(error){
-			console.error(error)
+		if(password === user.password , sicil === user.sicil){
+			clearingInputsOnSubmit()
+			actions.resetForm({values : initialValues})
+			sessionStorage.setItem('shiftInfo', shiftColor);
+			navigate(`hata-giris`)
+		}else{
+			alert("HATALI GİRİŞ")
 		}
-
-		sessionStorage.setItem('vardiyaBilgisi', bgColor);
-
-		navigate(`hata-giris`)
+	
 	};
+	useEffect(() => {
+		axios
+		  .post("/login")
+		  .then(() => axios.get("/user"))
+		  .then((res) => {
+			setData(res.data.LoginPage)
+		  });
+	  }, [])
 
 	let terminalOptions
 	let ShiftOptions
-	let data = Data()
-		if (data && data.LoginPage ) {
-		data = data.LoginPage
-
+	if (data !== "empty" ) {
 		terminalOptions=(data.LoginInfo.data).map(obj => {
 			const{  termName} = obj 
 			return termName
 		})
-
 		ShiftOptions= (data.ShiftInfo.data).map(obj => {
 			const {shiftCode , rgbColor} = obj 
 			return {shiftCode , rgbColor}
@@ -168,34 +186,7 @@ const buttonStyle={
 
 		initialValues.terminal=terminalOptions[0]
 		initialValues.shift=ShiftOptions[0].shiftCode
-		}
-		
-
-	  const onChangeAll = inputs => {
-			setInputs({ ...inputs });
-		}
-	  const handleShift = () => {
-		const newLayoutName = layoutName === "default" ? "shift" : "default";
-		setLayoutName(newLayoutName);
-	  };
-	  const onKeyPress = button => {
-		if (button === "{shift}" || button === "{lock}") handleShift();
-	  };
-
-	  const onChangeInput = event => {
-		const inputVal = event.target.value;
-	
-		setInputs(prev => ({
-		  ...prev,
-		  [inputName]: inputVal
-		}));
-	
-		keyboard.current.setInput(inputVal);
-	  };
-
-	  const getInputValue = inputName => {
-		return inputs[inputName] || "";
-	  };
+	}
 
 	return data== "empty" ? <h1>Loading...</h1> : (
 	
@@ -212,7 +203,7 @@ const buttonStyle={
 		<FormBox >
 		<Formik
 			initialValues={initialValues}
-			validationSchema={advancedSchema}	
+			validationSchema={validationSchema}	
 			onSubmit={onSubmit}
 		>
 			{({ isSubmitting}) => (
@@ -277,26 +268,26 @@ const buttonStyle={
 			</Box>
 
 
-			<Box sx={{...formBoxStyle,flexDirection:{xs:"column",md:"row"},backgroundColor: bgColor,borderRadius:1}} overflow={"auto"}>
+			<Box sx={{...formBoxStyle,flexDirection:{xs:"column",md:"row"},backgroundColor: shiftColor,borderRadius:1}} overflow={"auto"}>
 				<Box sx={{display:"flex",flexDirection:"row"}}>
 					<InputLabel sx={labelStyle}>
 						Tarih
 					</InputLabel>
 				
 						<CustomSelect
-						name="tarih.day"
+						name="date.day"
 						isDaySelect={true}
-						options={Array.from({length: new Date(initialValues.tarih.year, initialValues.tarih.month, 0).getDate()}, (_, i) => i + 1)}
+						options={Array.from({length: new Date(initialValues.date.year, initialValues.date.month, 0).getDate()}, (_, i) => i + 1)}
 						style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
 						
 						/>
 						<CustomSelect
-						name="tarih.month"
+						name="date.month"
 						options={Array.from({length: 12}, (_, i) => i + 1)}
 						style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
 						/>
 						<CustomSelect
-						name="tarih.year"
+						name="date.year"
 						options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
 						style={{...mainInputStyle,minWidth:"85px",margin:0.25}}
 						/>
@@ -311,7 +302,7 @@ const buttonStyle={
 						</InputLabel>
 						<CustomSelect
 						name="shift"
-						shiftChange={shift => {setBgColor(ShiftOptions.find(obj => obj.shiftCode == shift).rgbColor)
+						shiftChange={shift => {setShiftColor(ShiftOptions.find(obj => obj.shiftCode == shift).rgbColor)
 							}}
 						options={
 							ShiftOptions.map(obj => {
@@ -337,15 +328,13 @@ const buttonStyle={
 
 		</Formik>
 		</FormBox>
-		<Keyboard
-			keyboardRef={r => (keyboard.current = r)}
+		<VirtualKeyboard
+			keyboardRef={keyboard}
 			inputName={inputName}
-			layoutName={layoutName}
 			onChangeAll={onChangeAll}
-			onKeyPress={onKeyPress}
 		/>
 		</Box>
 		</Container>
 		);
   };
-  export default AdvancedForm;
+  export default FormPage;
