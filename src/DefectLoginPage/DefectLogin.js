@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import ButtonWithMenu from './CustomButton';
+import ButtonWithMenu from "./ButtonWithMenu"
 import PopperMenu from './PopperMenu';
 import PrepareData from './PrepareData';
 import AudioPlayer from './sound';
@@ -58,7 +58,7 @@ const kutucukTextStyle={
     fontSize:"0.6rem", fontWeight:"600", sx:({backgroundColor:"white",position:"absolute",width:"70px",
 })}
 
-const NewHataGiris = () => {
+const DefectLogin = () => {
     
     document.body.style.backgroundColor = "#c6ffc8" 
     const [data , setData] = useState()
@@ -90,7 +90,7 @@ const NewHataGiris = () => {
                 })
         }, []);
 
-    const bgColor = sessionStorage.getItem('vardiyaBilgisi')
+    const bgColor = sessionStorage.getItem('shiftInfo')
     
     let canvas;
     let ctx;
@@ -142,7 +142,10 @@ const NewHataGiris = () => {
           handleCoordClick(e);
         }
       }
-    const handleFirstButtonClick= (childPicID , color , newButtonsArr) => {
+    const handleFirstButtonClick= (childPicID , color , newButtonsArr , partName) => {
+        setDefect(prev => ({
+            ...prev , part:partName
+        }))
         if(images[childPicID]){
             setImgId(childPicID)
             eraseLine()
@@ -181,6 +184,7 @@ const NewHataGiris = () => {
     return (!(data) ? <h1>Loading..</h1>    
     : <Container sx={{position:"relative"}}>
 
+    <AudioPlayer/>
 
     {isPopperOpen && 
         <Box sx={{position:"absolute" , zIndex:200 ,minWidth:"600px", width:"90vw" ,
@@ -230,7 +234,9 @@ const NewHataGiris = () => {
 
                         return (!(obj.List)) ? (
                         <Button style={kutucukProps(obj)}
-                            onClick={(  ) => handleFirstButtonClick(obj.childPicID , obj.boxColor , data.secondButton )}
+                            onClick={(  ) =>{
+                                handleFirstButtonClick(obj.childPicID , obj.boxColor , data.secondButton , obj.labelText    )
+                            }}
                         >
                             <Typography {...kutucukTextStyle}>{obj.labelText}</Typography>   
                         </Button>
@@ -242,10 +248,6 @@ const NewHataGiris = () => {
                             ...prev , defect:defect
                         }))}}
 
-                        setPart={() =>{
-                            setDefect(prev => ({
-                            ...prev , part:obj.labelText
-                        }))}}
                         options={obj.List}
                         label={<Typography {...kutucukTextStyle}>{obj.labelText}</Typography>}
                         />)
@@ -382,4 +384,4 @@ const NewHataGiris = () => {
     </Container>)
 }
 
-export default NewHataGiris
+export default DefectLogin

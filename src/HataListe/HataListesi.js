@@ -159,6 +159,7 @@ const HataListesi = () => {
       <VirtualTable 
       columns={columns}
       data={temporaryData}
+      setData={setData}
       removeRow={removeRow} 
       nrReasonList={data.nrReasonList}
       /> 

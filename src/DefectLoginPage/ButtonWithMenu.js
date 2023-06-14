@@ -4,7 +4,7 @@ import {IconButton} from "@mui/material"
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const ButtonWithMenu = ({options,style,otherProps,setDefect,setPart,label}) => {
+const ButtonWithMenu = ({options,style,otherProps,setDefect,label}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const iconRef = useRef(null)
   const [optionss,setOptionss] = useState(options)
@@ -13,8 +13,7 @@ const ButtonWithMenu = ({options,style,otherProps,setDefect,setPart,label}) => {
   const scrollButtonStyle={minWidth:"110px",border:"1.5px solid #9cdb9e",borderRadius:1}
 
   const handleButtonClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    setPart()
+    setAnchorEl(event.currentTarget)
   };
 
   const handleMenuItemClick = (item) => {

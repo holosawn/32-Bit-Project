@@ -7,10 +7,20 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import {Box,Button,} from "@mui/material";
 import { TableVirtuoso } from "react-virtuoso";
+import TableSortLabel from '@mui/material/TableSortLabel';
+import TextField from '@mui/material/TextField';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import IconButton from '@mui/material/IconButton';  
 
-const VirtualTable= ({columns , data , removeRow , nrReasonList}) =>{
+const VirtualTable= ({columns , data , setData, removeRow , nrReasonList}) =>{
   const tableRef = useRef()
+  const [columnSorted , setColumnSorted] = useState(() =>
+  columns.reduce((obj, column) => {
+    obj[column.field] = false;
+    return obj;
+  }, {}))
   const [temporaryData, setTemporaryData] = useState("empty")
+
   const [filterValues, setFilterValues] = useState({
     depCode:"",
     formattedBodyNo: "",
@@ -35,6 +45,7 @@ const VirtualTable= ({columns , data , removeRow , nrReasonList}) =>{
 
   })
 
+  console.log(columnSorted)
   function fixedHeaderContent() {
     return (
       <TableRow >
@@ -53,10 +64,17 @@ const VirtualTable= ({columns , data , removeRow , nrReasonList}) =>{
               minHeight:"20px",
               height:column.height,
               borderInlineEnd:"1px #4f4f4f solid"
-            }}
+            }}>
 
-          >
-            {column.headerName}
+            <TableSortLabel
+              onClick={() => setData(prev => (
+                prev.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))
+              ))}
+              >
+              {column.headerName}
+            </TableSortLabel>
+
+            
           </TableCell>
         ))}
       </TableRow>

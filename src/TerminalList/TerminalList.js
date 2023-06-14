@@ -1,5 +1,6 @@
 import React from 'react';
-import Data from "../GetData"
+import { useState , useEffect} from 'react';
+import axios from "axios"
 import Box from '@mui/material/Box';
 import {AppBar,Toolbar,Typography,Button,Container } from '@mui/material';
 import Table from '@mui/material/Table';
@@ -11,24 +12,29 @@ import TableRow from '@mui/material/TableRow';
 import { useNavigate } from 'react-router-dom';
 
 
-const cellStyle ={border:"1px solid #9cdb9e",boxShadow:"0"}
+const cellStyle ={border:"1px solid #9cdb9e",boxShadow:"0" , padding:0}
 
 const TerminalList= () => {
 const navigate = useNavigate()
+const [data , setData] = useState("empty")
 
-  let data = Data()
-  if (data && data.terminalsData && data.terminalsData.data) {
-    data = data.terminalsData.data
-  } 
+   useEffect(() => {
+    axios
+      .post("/login")
+      .then(() => axios.get("/user"))
+      .then((res) => {
+        setData(res.data.terminalsData.data);;
+      });
+  }, [])
   document.body.style.backgroundColor = "#c6ffc8"
   
-    return data ==="empty" ? <h1>EMPTY</h1>:(
+    return data ==="empty" ? <h1>Loading...</h1>:(
      
       <Box sx={{bgColor:"primary" }}>
       <AppBar position='static' color='secondary'   sx={cellStyle}>
         <Toolbar >
 
-            <Typography variant='h5' component="div" sx={{flexGrow:1,fontWeight:600}}>
+            <Typography variant='h5' sx={{flexGrow:1,fontWeight:600}}>
               Complete Vehicle Quality
             </Typography>
 
@@ -58,7 +64,12 @@ const navigate = useNavigate()
                   Bölüm Bazında
                 </Typography>
               </TableCell>
-              <TableCell align='center' sx={{border:"1px solid #9cdb9e",width:"80%"}} colSpan={100} ><Typography variant='kazil'>Filtre Bazında</Typography></TableCell>
+              
+              <TableCell align='center' sx={{border:"1px solid #9cdb9e",width:"80%"}} colSpan={100} >
+                <Typography variant='kazil'>
+                  Filtre Bazında
+                </Typography>
+              </TableCell>
             </TableRow>
 
           </TableHead>

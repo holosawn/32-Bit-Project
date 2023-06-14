@@ -15,18 +15,6 @@ export const handlers = [
     )
   }),
   
-  rest.post('/postShift', (req, res, ctx) => {
-    
-    if(req){
-      const requ  = req.json();
-      requ.then(value => shiftColor=value)
-      return res(
-      // Respond with a 200 status code
-      ctx.status(200) 
-    )}
-  }),
-  
-  
   rest.get('/user', (req, res, ctx) => {
     // Check if the user is authenticated in this session
     const isAuthenticated = sessionStorage.getItem('is-authenticated')
@@ -50,15 +38,5 @@ export const handlers = [
     )
   }),
 
-  rest.get('/getShift', (req, res, ctx) => {
-    
-    if(shiftColor){
-      
-      return res(
-      ctx.status(200),
-      ctx.json({
-        shiftColor
-      }),
-    )}
-  }),
+
 ]
