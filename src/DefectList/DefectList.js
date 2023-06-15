@@ -1,6 +1,4 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
+import * as React from "react"
 import {
   Box,
   OutlinedInput,
@@ -40,7 +38,7 @@ const StyledButton = styled(Button)(({theme}) => ({
 		},
 }))
 
-const HataListesi = () => {
+const DefectPage = () => {
   const [data, setData] = useState("empty");
   const [temporaryData, setTemporaryData] = useState("empty");
   const [filterValues, setFilterValues] = useState({
@@ -162,6 +160,7 @@ const HataListesi = () => {
       setData={setData}
       removeRow={removeRow} 
       nrReasonList={data.nrReasonList}
+      ref={tableRef}
       /> 
       
 
@@ -269,4 +268,4 @@ const HataListesi = () => {
   );
 };
 
-export default HataListesi;
+export default DefectPage;

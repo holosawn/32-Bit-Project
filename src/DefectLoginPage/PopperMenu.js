@@ -1,13 +1,12 @@
 import {InputLabel,Typography,styled , Checkbox , Paper} from '@mui/material'
-import Data from '../GetData';
-import {React , useState , useRef} from 'react';
-import {Button,Box,Container} from "@mui/material"
+import {React , useState , useRef , useEffect} from 'react';
+import {Button,Box} from "@mui/material"
 import { Formik, Form, Field} from "formik";
 import * as yup from "yup";
+import axios from 'axios';
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
-import Keyboard from "react-simple-keyboard";
-import "react-simple-keyboard/build/css/index.css";
+import VirtualKeyboard from '../ReUsedComponents/VirtualKeyboard';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 const labelStyle={
@@ -68,35 +67,35 @@ flex:1
 }
 
 const initialValues={ 
-	HataSorumlusu:"",
+	defectResp:"",
   Harigami: false ,
-	HataSınıfı:"",
+	defectType:"",
 	ExitDepartment:"",
-	Açıklama:"",
-	Yapılanİşlem:"",
-  AltSorumlu:"",
-  SıkGelenHata : false ,
+	explanation:"",
+	actionTaken:"",
+  minorResp:"",
+  freqDefect : false ,
   RDD :""
 }
 const advancedSchema = yup.object().shape({
-  HataSorumlusu: yup
+  defectResp: yup
     .string()
     .required("required"),
   Harigami: yup
     .string()
     .required("required"),
-  HataSınıfı: yup
+  defectType: yup
     .string()
     .required("required"),
   ExitDepartment: yup
     .string()
     .required("required"),
-  Açıklama: yup
+  explanation: yup
     .string()
     .required("required"),
-  Yapılanİşlem: yup
+  actionTaken: yup
     .string(),
-  AltSorumlu: yup
+  minorResp: yup
     .string(),
   RDD: yup
     .string()
@@ -106,8 +105,8 @@ const advancedSchema = yup.object().shape({
 
 
   const isMediumScreen = useMediaQuery('(max-width:899px)');
+  const [data , setData] = useState("empty")
 	const [inputs, setInputs] = useState({ });
-	const [layoutName, setLayoutName] = useState("default");
 	const [inputName, setInputName] = useState("default");
 	const keyboard = useRef();
 
@@ -128,36 +127,21 @@ const advancedSchema = yup.object().shape({
     
   };
 
-	let terminalOptions
-	let ShiftOptions
-	let data = Data()
-		if (data && data.LoginPage ) {
-		data = data.LoginPage
 
-		terminalOptions=(data.LoginInfo.data).map(obj => {
-			const{  termName} = obj 
-			return termName
-		})
 
-		ShiftOptions= (data.ShiftInfo.data).map(obj => {
-			const {shiftCode , rgbColor} = obj 
-			return {shiftCode , rgbColor}
-		})
-
-		}
+  useEffect(() => {
+		axios
+		  .post("/login")
+		  .then(() => axios.get("/user"))
+		  .then((res) => {
+			setData(res.data.LoginPage)
+		  });
+	  }, [])
 		
 
 	  const onChangeAll = inputs => {
 			setInputs({ ...inputs });
 		}
-	  const handleShift = () => {
-		const newLayoutName = layoutName === "default" ? "shift" : "default";
-		setLayoutName(newLayoutName);
-	  };
-	  const onKeyPress = button => {
-		if (button === "{shift}" || button === "{lock}") handleShift();
-	  };
-
 	  const onChangeInput = event => {
 		const inputVal = event.target.value;
 	
@@ -177,13 +161,10 @@ const advancedSchema = yup.object().shape({
       toCancel();
     }
 
-    const optionss=["keke" ,"kkeke", "kekee"]
+    const optionss=["option" ,"option", "option"]
 	return data== "empty" ? <h1>Loading...</h1> : (
 	
     <Paper sx={{backgroundColor:"#c6ffc8" , minWidth:"600px" , width:"100%" , flexDirection:"column"}}>
-
-	
-
 
     <FormBox>
         <Formik
@@ -204,12 +185,12 @@ const advancedSchema = yup.object().shape({
                         Sık Gelen Hata
                     </InputLabel>
 
-                    <Field name="SıkGelenHata">
+                    <Field name="freqDefect">
                       {({ field }) => (
                         <Checkbox
                         size={isMediumScreen ? "small" : "large"}
                           checked={field.value}
-                          onChange={field.onChange("SıkGelenHata")}
+                          onChange={field.onChange("freqDefect")}
                           onBlur={field.onBlur}
                         />
                       )}
@@ -226,7 +207,7 @@ const advancedSchema = yup.object().shape({
                 Hata Sorumlusu
               </InputLabel>
               <CustomSelect
-              name="HataSorumlusu"
+              name="minorResp"
               options={optionss}
               style={mainInputStyle}
               />
@@ -237,8 +218,8 @@ const advancedSchema = yup.object().shape({
                 Hata Sınıfı
               </InputLabel>
               <CustomSelect
-              name="HataSınıfı"
-              options={["keke", "keke"]}
+              name="defectType"
+              options={optionss}
               style={mainInputStyle}		
                 
               />
@@ -250,7 +231,7 @@ const advancedSchema = yup.object().shape({
               </InputLabel>
               <CustomSelect
               name="ExitDepartment"
-              options={["keke", "keke"]}
+              options={optionss}
               style={mainInputStyle}		  
               />
             </Box>
@@ -284,7 +265,7 @@ const advancedSchema = yup.object().shape({
                       </InputLabel>
                       <CustomSelect
                       name="RDD"
-                      options={["keke", "keke"]}
+                      options={optionss}
                       style={mainInputStyle}
                       />
                   </Box>
@@ -307,10 +288,10 @@ const advancedSchema = yup.object().shape({
                 Açıklama
               </InputLabel>
               <CustomInput
-              name="Açıklama"
+              name="explanation"
               type="text"
-              value={getInputValue("Açıklama")}
-              onFocus={() => setInputName("Açıklama")}
+              value={getInputValue("explanation")}
+              onFocus={() => setInputName("explanation")}
               extraOnChange={onChangeInput}	
               style={mainInputStyle}
               placeholder="örnek açıklama"
@@ -322,10 +303,10 @@ const advancedSchema = yup.object().shape({
                 Yapılan İşlem*
               </InputLabel>
               <CustomInput
-              name="Yapılanİşlem"
+              name="actionTaken"
               type="text"
-              value={getInputValue("Yapılanİşlem")}
-              onFocus={() => setInputName("Yapılanİşlem")}
+              value={getInputValue("actionTaken")}
+              onFocus={() => setInputName("actionTaken")}
               extraOnChange={onChangeInput}	
               style={mainInputStyle}
               />
@@ -336,8 +317,8 @@ const advancedSchema = yup.object().shape({
                 Alt Sorumlu*
               </InputLabel>
               <CustomSelect
-              name="AltSorumlu"
-              options={["keke", "keke"]}
+              name="minorResp"
+              options={optionss}
               style={mainInputStyle}		  
               isOptional={true}
               />
@@ -350,12 +331,10 @@ const advancedSchema = yup.object().shape({
         </Formik>
       </FormBox>
       
-        <Keyboard
-        keyboardRef={(r) => (keyboard.current = r)}
+        <VirtualKeyboard
+        keyboardRef={keyboard}
         inputName={inputName}
-        layoutName={layoutName}
         onChangeAll={onChangeAll}
-        onKeyPress={onKeyPress}
         />
         <Box sx={{display:"flex" , justifyContent:"space-between"}}>
           <Typography color={"red"}>Teknik Destek</Typography>
