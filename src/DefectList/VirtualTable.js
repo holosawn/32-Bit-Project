@@ -1,4 +1,4 @@
-import { useRef ,useState} from "react";
+import { useState} from "react";
 import * as React from "react";
 import SaveIcon from '@mui/icons-material/Save';
 import CreateIcon from '@mui/icons-material/Create';
@@ -7,13 +7,10 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import {Box,Button,} from "@mui/material";
 import { TableVirtuoso } from "react-virtuoso";
-import TableSortLabel from '@mui/material/TableSortLabel';
-import TextField from '@mui/material/TextField';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import IconButton from '@mui/material/IconButton';  
+import TableSortLabel from '@mui/material/TableSortLabel'
+import { forwardRef } from "react";
 
-const VirtualTable= ({columns , data , setData, removeRow , nrReasonList}) =>{
-  const tableRef = useRef()
+const VirtualTable= forwardRef(({columns , data , setData, removeRow , nrReasonList } , tableRef) =>{
   const [columnSorted , setColumnSorted] = useState(() =>
   columns.reduce((obj, column) => {
     obj[column.field] = false;
@@ -229,6 +226,6 @@ const VirtualTable= ({columns , data , setData, removeRow , nrReasonList}) =>{
     itemContent={(index, row) => rowContent(index, row, nrReasonList)}
   />
   )
-}
+})
 
 export default VirtualTable

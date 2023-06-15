@@ -39,7 +39,7 @@ const OrdinaryTypography=styled(Typography)(() => ({
     marginBlock:"1em ",
     textAlign:"center",
 }))
-const kutucukProps=(obj)=>({
+const imgBoxProps=(obj)=>({
     position: 'absolute',
     color:obj.labelColor,
     top: obj.boxY,
@@ -54,7 +54,7 @@ const kutucukProps=(obj)=>({
     alignItems:"center",
     padding:0,
     })
-const kutucukTextStyle={
+const imgBoxTextStyle={
     fontSize:"0.6rem", fontWeight:"600", sx:({backgroundColor:"white",position:"absolute",width:"70px",
 })}
 
@@ -70,7 +70,6 @@ const DefectLogin = () => {
     const [defectCoords , setDefectCoords] = useState({x:0 ,y:0})
     const [isPopperOpen, setPopperOpen] = useState(false);
     const navigate = useNavigate()
-    const [unnecessary , setUnnecessary] = useState(true)
     const [images , setImages] = useState({})
     
       
@@ -121,10 +120,8 @@ const DefectLogin = () => {
         }}
     })
 
-    const DrawLines = () => {
+    const drawLines = () => {
         currentButtons.map(obj => {
-            console.log("drawed")
-            
             const {boxX ,boxY , lineX ,lineY} = obj
             if(!(lineX === -100 || lineY === -100)){
             drawLine(boxX ,boxY , lineX ,lineY)
@@ -132,8 +129,8 @@ const DefectLogin = () => {
         })
     }
     useEffect(()=>{
-        DrawLines()    
-    },[defect.part,currentButtons , unnecessary])
+        drawLines()    
+    },[defect.part,currentButtons ])
 
     const onGettingCoords = {
         style: { cursor: 'url(data:image/png;base64,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), auto' },
@@ -170,10 +167,11 @@ const DefectLogin = () => {
         const { clientX, clientY } = event;
         setDefectCoords({ x: clientX, y: clientY });
     };
-    const toClear = ()=>{ //eksik
+    const toClear = ()=>{
+        if(defect.part !== null){
         setDefectCoords({x:0 ,y:0})
         setDefect({part : null , defect : null})
-        setUnnecessary(prev => !prev)
+        }       
     }
     const toCancel = ()=> {
         setPopperOpen(false)
@@ -233,23 +231,23 @@ const DefectLogin = () => {
                     {(defect.defect == null) && currentButtons.map(obj => {
 
                         return (!(obj.List)) ? (
-                        <Button style={kutucukProps(obj)}
+                        <Button key={obj.labelText} style={imgBoxProps(obj)}
                             onClick={(  ) =>{
                                 handleFirstButtonClick(obj.childPicID , obj.boxColor , data.secondButton , obj.labelText    )
                             }}
                         >
-                            <Typography {...kutucukTextStyle}>{obj.labelText}</Typography>   
+                            <Typography {...imgBoxTextStyle}>{obj.labelText}</Typography>   
                         </Button>
                         )
 
-                        :(<ButtonWithMenu style={kutucukProps(obj)}
+                        :(<ButtonWithMenu key={obj.labelText} style={imgBoxProps(obj)}
                         setDefect={(defect) => {
                             setDefect(prev => ({
                             ...prev , defect:defect
                         }))}}
 
                         options={obj.List}
-                        label={<Typography {...kutucukTextStyle}>{obj.labelText}</Typography>}
+                        label={<Typography {...imgBoxTextStyle}>{obj.labelText}</Typography>}
                         />)
                         
                         })}
@@ -272,7 +270,7 @@ const DefectLogin = () => {
                             {"<"} Geri
                         </OrdinaryTypography>
                     </OrdinaryBox>
-                    <OrdinaryBox>
+                    <OrdinaryBox onClick={() => navigate("/defectList")}>
                         <OrdinaryTypography>
                             Hata Listesi
                         </OrdinaryTypography>

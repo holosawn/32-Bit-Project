@@ -7,7 +7,7 @@ import { Formik, Form} from "formik"
 import * as yup from "yup"
 import CustomInput from "./Custominput"
 import CustomSelect from "./CustomSelect"
-import VirtualKeyboard from "./VirtualKeyboard"
+import VirtualKeyboard from "../ReUsedComponents/VirtualKeyboard"
 const labelStyle={
     fontWeight:700,
 	fontSize:"1rem",
@@ -157,7 +157,7 @@ const buttonStyle={
 			clearingInputsOnSubmit()
 			actions.resetForm({values : initialValues})
 			sessionStorage.setItem('shiftInfo', shiftColor);
-			navigate(`hata-giris`)
+			navigate(`defectLogin`)
 		}else{
 			alert("HATALI GİRİŞ")
 		}
