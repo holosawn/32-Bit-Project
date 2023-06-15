@@ -7,14 +7,21 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const scrollButtonStyle={minWidth:"15vw",border:"1.5px solid #9cdb9e",borderRadius:1}
 
-const CustomSelect = ({name,options,style,otherProps}) => {
+const CustomSelect = ({name,options,style,isDaySelect,otherProps,defaultValue}) => {
     
-    const { setFieldValue } = useFormikContext();
+    const { values,setFieldValue } = useFormikContext();
     const [field, meta] = useField(name);
     const [isOpen,setIsOpen] = useState(false)
     const selectRef=useRef(null)
     const dropdownRef= useRef(null)
-    let IntervalId = 0
+    const [optionss,setOptionss] = useState([...options])
+    
+      useEffect(()=>{
+        if(isDaySelect){
+          setOptionss(Array.from({length: new Date(values.tarih.year, values.tarih.month, 0).getDate()}, (_, i) => i + 1))
+        }
+      },[values.tarih.year,values.tarih.month])
+   
 
     const handleChange = evt => {
       const { value } = evt.target;
@@ -22,8 +29,11 @@ const CustomSelect = ({name,options,style,otherProps}) => {
     };
 
     useEffect(()=>{
-        setFieldValue(name,options[0])
-    },[])
+      if(defaultValue){
+        setFieldValue(name,defaultValue)
+      }else{
+        setFieldValue(name,optionss[0])
+      }},[])
 
 
     const configSelect = {
@@ -32,7 +42,6 @@ const CustomSelect = ({name,options,style,otherProps}) => {
       size : "small",
       variant: 'outlined',
       color:(meta.touched && meta.error ? "primary" : "third"),
-      defaultValue: options[0],
       onChange: handleChange
     };
   
@@ -67,11 +76,11 @@ const CustomSelect = ({name,options,style,otherProps}) => {
       <>
         <Box>
 
-          <Select defaultValue={options[0]} sx={{...style}} {...configSelect}
+          <Select defaultValue={optionss[0]} sx={{...style}} {...configSelect}
               open={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} 
               ref={dropdownRef}
               >
-              {options.map(val => {
+              {optionss.map(val => {
               return <MenuItem value = {val} >{val}</MenuItem>
               })}
           

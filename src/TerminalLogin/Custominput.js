@@ -1,5 +1,4 @@
-import { Field, useField, useFormikContext } from "formik"
-import { useEffect,React } from "react"
+import { Field, useField } from "formik"
 import { TextField,Box, FormControl } from "@mui/material"
 import InputLabel from '@mui/material/InputLabel'
 
@@ -9,17 +8,11 @@ const OutlineColor =(color) => {
 
 const CustomInput = ({label,style,...props}) => {
 
-
+   
 
     const[field,meta]=useField(props)
-    const {setFieldValue} = useFormikContext()
-
-    useEffect(()=>{
-        setFieldValue(props.name,props.value)
-    },[props.value])
-
     console.log(field)
-
+    console.log(meta)
     return(
     <> 
             <TextField 

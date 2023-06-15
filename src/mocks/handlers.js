@@ -1,6 +1,6 @@
 // src/mocks/handlers.js
 import { rest } from 'msw'
-import { terminalsData } from '../datas'
+import { terminalsData , LoginPage} from '../datas'
 
 export const handlers = [
   rest.post('/login', (req, res, ctx) => {
@@ -31,7 +31,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        terminalsData
+        terminalsData,LoginPage
       }),
     )
   }),
