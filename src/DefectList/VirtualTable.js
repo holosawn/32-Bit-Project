@@ -50,23 +50,25 @@ const VirtualTable= forwardRef(({columns , data , setData, removeRow , nrReasonL
           <TableCell
             key={column.field}
             variant="head"
-            align={"center"}
+            align="center"
             sx={{
               backgroundColor:"#c6ffc8",
-              width: column.width,
+              minWidth: column.minWidth,
+              width:column.width ,
               margin:0,
               padding:0,
-              fontSize:"0.75rem",
+              fontSize:"0.9em",
               fontWeight:"700",
               minHeight:"20px",
               height:column.height,
-              borderInlineEnd:"1px #4f4f4f solid"
+              borderInlineEnd:"1px #4f4f4f solid",
             }}>
 
             <TableSortLabel
               onClick={() => setData(prev => (
                 prev.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))
               ))}
+              sx={{flexDirection:"column"}}
               >
               {column.headerName}
             </TableSortLabel>
@@ -86,14 +88,15 @@ const VirtualTable= forwardRef(({columns , data , setData, removeRow , nrReasonL
               align={column.align}
               overflow= {"hidden"}
               sx={{
-                minWidth: column.width,
+                minWidth: column.minWidth,
+                width:"10vw",
                 border: "1px solid #4f4f4f",
                 padding: 0,
                 backgroundColor: row.depId == 94 ? "#c6ffc8" : "#C07F00",
                 color: column.color === undefined ? "#302e2d" : column.color,
-                fontSize:"0.65rem",
+                fontSize:"0.8em",
                 fontWeight:"600",
-                height:column.height
+                height:column.height,
               }}
             >
             
@@ -130,7 +133,7 @@ const VirtualTable= forwardRef(({columns , data , setData, removeRow , nrReasonL
                   </select>
                 );
               } else if (column.field === "kaydet") {
-                return<div style={{ width: "35px" , marginInlineStart:"0.2em"}}>
+                return<div style={{ width: "35px" , margin:"auto"}}>
                 <Button
                   onClick={() => console.log(row)}
                   sx={{
@@ -153,7 +156,7 @@ const VirtualTable= forwardRef(({columns , data , setData, removeRow , nrReasonL
               
               } else if (column.field === "islem") {
                 return (
-                  <Box sx={{ display: "flex" , justifyContent:"space-between" }}>
+                  <Box sx={{ display: "flex" , justifyContent:"space-between" , display:"flex" , justifyContent:"space-around"}}>
 
                     <Button
                     sx={{color:"white" , backgroundColor:"red", height:"2em",minWidth:"10px",width:"30px",

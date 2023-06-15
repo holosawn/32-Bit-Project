@@ -22,11 +22,11 @@ const StyledButton = styled(Button)(({theme}) => ({
     padding:0,
     [theme.breakpoints.up("xs")]: {
       height:"3rem",
-      width:"6vh"
+      width:"6vw"
 		},
     [theme.breakpoints.up("md")]: {
       height:"3rem",
-      width:"16vh"
+      width:"16vw"
 		},
 		[theme.breakpoints.up("lg")]: {
       height:"6rem",
@@ -60,27 +60,27 @@ const DefectPage = () => {
       });
   }, [])
   const columns = [
-    { field: "depCode", headerName: "Bildiren", width: "56px" , align : "center"},
-    { field: "formattedBodyNo", headerName: "Body", width: "37px" , align:"center" },
-    { field: "formattedAssyNo", headerName: "Assy", width: "30px" , align:"center" },
-    { field: "vinNo", headerName: "Vin", width: 120 , align:"center" },
-    { field: "colorData", headerName: "Renk", width: 35 , align:"center"},
-    { field: "modelCode", headerName: "Mdl", width: 35 , align:"center"},
-    { field: "termId", headerName: "Sicil", width: 40 , align:"center" },
-    { field: "partName", headerName: "Parca", width: 160 , height:40 , color:"red" },
-    { field: "spotCode", headerName: "Spot", width: 35 , align:"center"},
-    { field: "spotgunName", headerName: "Gun", width: 50 , align:"center" },
-    { field: "arcnutboltgunName", headerName: "Arc", width: 50 },
-    { field: "arcnutboltCode", headerName: "ArcGun", width: 60 },
-    { field: "defectName", headerName: "Hata", width: 110 },
-    { field: "defrankCode", headerName: "Rank", width: 45 },
-    { field: "formattedDefectHour", headerName: "Saat", width: 60 , align:"center" },
-    { field: "defectType", headerName: "Hata Türü", width: 60 , align:"center"},
-    { field: "defrespName", headerName: "Hata Sor", width: 60 , align:"center" },
-    { field: "subResp", headerName: "Alt Sorumlu", width: 60 },
-    { field: "defectReason", headerName: "NR REASONS", width:115 , align:"center" },
-    { field: "kaydet", headerName: "Kaydet", width: 40 , align:"center"},
-    { field: "islem", headerName: "İşlem", width: 63 },
+    { field: "depCode", headerName: "Bildiren", minWidth:56 , align : "center"},
+    { field: "formattedBodyNo", headerName: "Body", minWidth: 37 , align:"center" },
+    { field: "formattedAssyNo", headerName: "Assy", minWidth: 30 , align:"center" },
+    { field: "vinNo", headerName: "Vin", minWidth: 120 , width:"18vw", align:"center" },
+    { field: "colorData", headerName: "Renk", minWidth: 35 , align:"center"},
+    { field: "modelCode", headerName: "Mdl",minWidth: 35 , align:"center"},
+    { field: "termId", headerName: "Sicil", minWidth: 40 , align:"center" },
+    { field: "partName", headerName: "Parca", minWidth: 160 , height:40 , color:"red" , width:"20vw" },
+    { field: "spotCode", headerName: "Spot", minWidth: 35 , align:"center"},
+    { field: "spotgunName", headerName: "Gun", minWidth: 50 , align:"center" },
+    { field: "arcnutboltgunName", headerName: "Arc", minWidth: 50 },
+    { field: "arcnutboltCode", headerName: "ArcGun", minWidth: 60 },
+    { field: "defectName", headerName: "Hata", minWidth: 160 , width:"23vw"},
+    { field: "defrankCode", headerName: "Rank", minWidth: 45 },
+    { field: "formattedDefectHour", headerName: "Saat", minWidth: 60 , align:"center" },
+    { field: "defectType", headerName: "Hata Türü", minWidth: 60 , align:"center"},
+    { field: "defrespName", headerName: "Hata Sor", minWidth: 60 , align:"center" },
+    { field: "subResp", headerName: "Alt Sorumlu", minWidth: 60 },
+    { field: "defectReason", headerName: "NR REASONS", minWidth:115 , align:"center" },
+    { field: "kaydet", headerName: "Kaydet", minWidth: 40 , align:"center"},
+    { field: "islem", headerName: "İşlem", minWidth: 63 },
   ]
 
   const handleFilterChange = (e) => {
