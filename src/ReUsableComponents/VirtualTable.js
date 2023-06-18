@@ -5,14 +5,36 @@ import CreateIcon from '@mui/icons-material/Create'
 import DeleteIcon from '@mui/icons-material/Delete'
 import TableCell from "@mui/material/TableCell"
 import TableRow from "@mui/material/TableRow"
-import {Box,Button, IconButton, Typography, OutlinedInput} from "@mui/material"
+import {Box,Button, IconButton, Typography, OutlinedInput, TableHead} from "@mui/material"
 import { TableVirtuoso } from "react-virtuoso"
 import TableSortLabel from '@mui/material/TableSortLabel'
 import { forwardRef } from "react"
 import SearchIcon from '@mui/icons-material/Search'
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+
+const RemoveConfirmationDialog = ({ open, onConfirm , onClose}) => {
+  return (
+    <Dialog open={open}>
+      <DialogTitle>Confirm Removal</DialogTitle>
+      <DialogContent>
+        Are you sure you want to remove this item?
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} variant="contained">
+          Cancel
+        </Button>
+        <Button onClick={onConfirm} variant="contained">
+          Remove
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const VirtualTable = forwardRef(({ columns, data, nrReasonList }, tableRef) => {
 
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false)
+  const [rowToRemove, setRowToRemove] = useState(null)
   const [filteredProperty, setFilteredProperty] = useState() // State for tracking the currently filtered property
   const [temporaryData, setTemporaryData] = useState([...data]) // State for storing the filtered data temporarily
   const [filterValues, setFilterValues] = useState({
@@ -50,107 +72,115 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList }, tableRef) => {
 
   function fixedHeaderContent() {
     return (
-      <TableRow>
-        {columns.map((column) => (
-          <TableCell
-            key={column.field}
-            variant="head"
-            align="center"
-            sx={{
-              backgroundColor: "#c6ffc8",
-              minWidth: column.minWidth,
-              width: column.width,
-              margin: 0,
-              padding: 0,
-              fontSize: "0.9em",
-              fontWeight: "700",
-              minHeight: "20px",
-              height: column.height,
-              borderInlineEnd: "1px #4f4f4f solid",
-            }}
-          >
-            {/* Check if the column is sortable */}
-            {!nonSortable.includes(column.field) ? (
-              <>
-                {/* Display the column name with sorting functionality */}
-                <TableSortLabel
-                  active={Boolean(columnSorted[column.field])}
-                  direction={columnSorted[column.field] === -1 ? 'asc' : 'desc'}
-                  onClick={() => handleSortClick(column.field)}
-                  sx={{ flexDirection: 'column' }}
-                >
-                  {column.headerName}
-                </TableSortLabel>
-  
-                {/* Display search icon for the column */}
-                <IconButton
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: (filterValues[column.field === "colorData" ? column.field.colorExtCode : column.field]) ? "red" : null
-                  }}
-                  onClick={() => {
-                    setFilteredProperty(column.field);
-                  }}
-                >
-                  <SearchIcon />
-                </IconButton>
-              </>
-            ) : (
-              // If the column is non-sortable, just display the column name
-              <div>{column.headerName}</div>
-            )}
-  
-            {/* Render search box for the filtered column */}
-            {filteredProperty === column.field && (
-              <Box sx={{
-                position: "absolute",
-                display: 'flex',
-                justifyContent: 'center',
-                marginBlockStart: 1.5,
-                padding: 1,
-                backgroundColor: "#99c99b",
-                width: "300px",
-                alignItems: "center"
-              }}>
-                <OutlinedInput
-                  sx={{
-                    width: { xs: "5em", md: "8em" },
-                    backgroundColor: "white",
-                    flex: 1,
-                    height: '100%',
-                    marginRight: 3,
-                  }}
-                  size="small"
-                  type="text"
-                  placeholder="Search..."
-                  autoFocus
-                  name={column.field}
-                  value={column.field === "colorData" ? filterValues[column.field.colorExtCode] : filterValues[column.field]}
-                  onChange={handleFilterChange}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
+        <TableRow >
+          {columns.map((column) => (
+            <TableCell
+              key={column.field}
+              variant="head"
+              align="center"
+              sx={{
+                backgroundColor: "#c6ffc8",
+                borderInlineEnd: "1px #4f4f4f solid",
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              <Box 
+                sx={{
+                  minWidth: column.minWidth,
+                  width: column.width,
+                  minHeight: "90px",
+                  height: "100%",
+                  fontSize: "0.9em",
+                  fontWeight: "700",
+                  display:"flex",
+                  flexDirection:"column",
+                  justifyContent:"end"
+                }}>
+                {/* Check if the column is sortable */}
+                {!nonSortable.includes(column.field) ? (
+                  
+                <>
+                  {/* Display the column name with sorting functionality */}
+                  <TableSortLabel
+                    active={Boolean(columnSorted[column.field])}
+                    direction={columnSorted[column.field] === -1 ? 'asc' : 'desc'}
+                    onClick={() => handleSortClick(column.field)}
+                    sx={{ flexDirection: 'column' }}
+                  >
+                    {column.headerName}
+                  </TableSortLabel>
+    
+                  {/* Display search icon for the column */}
+                  <IconButton
+                    sx={{
+                      alignItems: 'center',
+                      margin: 0,
+                      padding: 0,
+                      color: (filterValues[column.field === "colorData" ? column.field.colorExtCode : column.field]) ? "red" : null
+                    }}
+                    onClick={() => {
+                      setFilteredProperty(column.field);
+                    }}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </>
+                
+                ) : (
+                  // If the column is non-sortable, just display the column name
+                  <div style={{marginBlockEnd:30}}>{column.headerName}</div>
+                )}
+              </Box>
+              {/* Render search box for the filtered column */}
+              {filteredProperty === column.field && (
+                <Box sx={{
+                  position: "absolute",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: 1,
+                  backgroundColor: "#99c99b",
+                  width: "300px",
+                  alignItems: "center"
+                }}>
+                  <OutlinedInput
+                    sx={{
+                      width: { xs: "5em", md: "8em" },
+                      backgroundColor: "white",
+                      flex: 1,
+                      height: '100%',
+                      marginRight: 3,
+                    }}
+                    size="small"
+                    type="text"
+                    placeholder="Search..."
+                    autoFocus
+                    name={column.field}
+                    value={column.field === "colorData" ? filterValues[column.field.colorExtCode] : filterValues[column.field]}
+                    onChange={handleFilterChange}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        setTemporaryData([...filterData(data)]);
+                        setFilteredProperty(null);
+                      }
+                    }}
+                  />
+                  {/* Render search button */}
+                  <Button
+                    sx={{ border: "1px solid black", color: "black", backgroundColor: "red", ":hover": { backgroundColor: "red" } }}
+                    onClick={() => {
                       setTemporaryData([...filterData(data)]);
                       setFilteredProperty(null);
-                    }
-                  }}
-                />
-                {/* Render search button */}
-                <Button
-                  sx={{ border: "1px solid black", color: "black", backgroundColor: "red", ":hover": { backgroundColor: "red" } }}
-                  onClick={() => {
-                    setTemporaryData([...filterData(data)]);
-                    setFilteredProperty(null);
-                  }}
-                >
-                  SEARCH
-                </Button>
-              </Box>
-            )}
-          </TableCell>
-        ))}
-      </TableRow>
-    );
+                    }}
+                  >
+                    SEARCH
+                  </Button>
+                </Box>
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+    )
   }
   function rowContent(index, row, nrReasonList) {
     return (
@@ -258,7 +288,10 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList }, tableRef) => {
                     </Button>
   
                     <Button
-                      onClick={() => removeRow(row.id)}
+                      onClick={() =>{
+                        setConfirmationDialogOpen(true)
+                        setRowToRemove(row.id)
+                      } }
                       sx={{
                         color: "white",
                         backgroundColor: "red",
@@ -416,6 +449,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList }, tableRef) => {
   
 
   return  (<>
+  
     <TableVirtuoso
     width={"100%"}
     scrollerRef={scrollerRefCallback}
@@ -423,6 +457,16 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList }, tableRef) => {
     fixedHeaderContent={fixedHeaderContent}
     itemContent={(index, row) => rowContent(index, row, nrReasonList)}
   />
+  
+  <RemoveConfirmationDialog
+    open={confirmationDialogOpen}
+    onClose={() => setConfirmationDialogOpen(false)}
+    onConfirm={() => {
+      removeRow(rowToRemove)
+      setConfirmationDialogOpen(false)
+    }}
+  />
+
   <Box sx={{backgroundColor:"#9cdb9e" , display:"flex" , justifyContent:"end" , borderBlock:"1px solid black"  }}>
         <Typography sx={{marginInlineEnd:1 , fontSize:"0.7rem"}}> 
            Total Rows:{temporaryData.length}   

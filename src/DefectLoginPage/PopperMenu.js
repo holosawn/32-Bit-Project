@@ -7,7 +7,8 @@ import axios from 'axios';
 import CustomInput from '../ReUsableComponents/Custominput';
 import CustomSelect from '../ReUsableComponents/CustomSelect';
 import VirtualKeyboard from '../ReUsableComponents/VirtualKeyboard';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from '@mui/material/useMediaQuery'
+import Backdrop from '@mui/material/Backdrop'
 
 const labelStyle={
   fontWeight:700,
@@ -21,6 +22,7 @@ padding:0,
 margin:0,
 width: "100%",
 minWidth:350,
+maxWidth:1000,
 display:"flex",
 justifyContent:"space-between",
 alignItems:"center"
@@ -44,7 +46,7 @@ const formBoxStyle={
   maxWidth:"1000px",
   display:"flex",
   justifyContent:"space-between",
-overflow:"hidden"
+  overflow:"hidden"
 }
 const mainInputStyle={
 width:{xs:"100%",sm:"100%",md:"70%"},
@@ -64,6 +66,10 @@ alignItems:"center",
 const buttonStyle={
 width: "100%",
 flex:1
+}
+const SizeProperties={
+  width:"100%",
+  maxWidth:"1000px"
 }
 
 const initialValues={ 
@@ -161,8 +167,19 @@ const advancedSchema = yup.object().shape({
 
     const optionss=["option1" ,"option2", "option3"]
 	return data== "empty" ? <h1></h1> : (
-	
-    <Paper sx={{backgroundColor:"#c6ffc8" , minWidth:"600px" , width:"100%" , flexDirection:"column"}}>
+    <>
+    <Paper sx={{
+      backgroundColor:"#c6ffc8" ,
+      minWidth:"600px" ,
+      width:"90vw" ,
+      height:"60vh",
+      minHeight:"700px",
+      maxHeight:"700px",
+      flexDirection:"column",
+      marginBlockStart:"3rem",
+      display:"flex",
+      justifyContent:"center"
+    }}>
 
     <FormBox>
         <Formik
@@ -173,7 +190,7 @@ const advancedSchema = yup.object().shape({
           {({ isSubmitting }) => (
             <Form>
 
-      <Box sx={{display:"flex" , flexDirection:"column" , minWidth:"600px" , width:"90vw "}}>
+      <Box sx={{display:"flex" , flexDirection:"column",justifyContent:"center", minWidth:"600px" ,width:"90vw" ,maxWidth:"1000px",height:"60vh",maxHeight:"440px"}}>
 
         <HeaderBox color='secondary' >
               <Typography sx={{marginInlineStart:1}} fontWeight={"600"} fontSize={"1.2em"}>CVGS(TMMT)</Typography>
@@ -197,10 +214,10 @@ const advancedSchema = yup.object().shape({
 
         </HeaderBox>
 
-        <Box sx={{display:"flex" , width:"100%" , margin:1}}>
+        <Box sx={{display:"flex" , ...SizeProperties , margin:1}}>
 
-          <Box sx={{display:"flex" , flexDirection:"column" , width:"100%"}}>
-            <Box sx={formBoxStyle} overflow={"auto"}>  
+          <Box sx={{display:"flex" , flexDirection:"column" , ...SizeProperties}}>
+            <Box sx={formBoxStyle} x>  
               <InputLabel  sx={{...labelStyle}}>
                 Hata Sorumlusu
               </InputLabel>
@@ -211,7 +228,7 @@ const advancedSchema = yup.object().shape({
               />
             </Box>
 
-            <Box sx={formBoxStyle} overflow={"auto"}>
+            <Box sx={formBoxStyle} >
               <InputLabel sx={labelStyle}>
                 Hata Sınıfı
               </InputLabel>
@@ -237,7 +254,7 @@ const advancedSchema = yup.object().shape({
           </Box>
 
 
-          <Box sx={{display:"flex" , flexDirection:"column", justifyContent:"center" , width:"100%" , margin:2}}>
+          <Box sx={{display:"flex" , flexDirection:"column", justifyContent:"center" , ...SizeProperties , margin:2}}>
               <Box sx={{display:"flex"}}>
 
                 <Box sx={{display:"flex", alignItems:"center"}}> 
@@ -271,15 +288,15 @@ const advancedSchema = yup.object().shape({
               </Box>
               
               <Box sx={{width:"%100" , display:"flex" , justifyContent:"space-between"}}>
-                <Button variant='contained' disabled={isSubmitting} sx={{width:"100%"}} type="submit" >Kaydet</Button>
-                <Button variant='contained' sx={{width:"100%"}} onClick={onCancel} >iptal</Button>
+                <Button variant='contained' disabled={isSubmitting} sx={{...SizeProperties}} type="submit" >Kaydet</Button>
+                <Button variant='contained' sx={{...SizeProperties}} onClick={onCancel} >iptal</Button>
 
               </Box>
           </Box>
 
         </Box>
 
-        <Box sx={{display:"flex" , flexDirection:"column" , width:"100%" , marginInlineEnd:1}}>
+        <Box sx={{display:"flex" , flexDirection:"column" , ...SizeProperties , marginInlineEnd:1}}>
 
             <Box sx={formBoxStyle} >  
               <InputLabel  sx={{...labelStyle}}>
@@ -328,17 +345,19 @@ const advancedSchema = yup.object().shape({
           )}
         </Formik>
       </FormBox>
-      
+                     
         <VirtualKeyboard
         keyboardRef={keyboard}
         inputName={inputName}
         onChangeAll={onChangeAll}
         />
+        
         <Box sx={{display:"flex" , justifyContent:"space-between"}}>
           <Typography color={"red"}>Teknik Destek</Typography>
           <Typography fontWeight={"600"}>6.2.192-CVQSTerminal</Typography>
         </Box>
     </Paper>
+    </>
   );
 };
   export default PopperMenu;

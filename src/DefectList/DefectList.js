@@ -14,6 +14,7 @@ import { IconButton , styled} from "@mui/material"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import VirtualTable from "../ReUsableComponents/VirtualTable"
+import { useNavigate } from 'react-router-dom'
 
 const StyledButton = styled(Button)(({theme}) => ({
     border:"1px solid black",
@@ -39,6 +40,7 @@ const StyledButton = styled(Button)(({theme}) => ({
 }))
 
 const DefectPage = () => {
+  const navigate = useNavigate()
   const [data, setData] = useState("empty");
   const [temporaryData, setTemporaryData] = useState("empty");
   const [filterValues, setFilterValues] = useState({
@@ -63,16 +65,16 @@ const DefectPage = () => {
     { field: "depCode", headerName: "Bildiren", minWidth:56 , align : "center"},
     { field: "formattedBodyNo", headerName: "Body", minWidth: 37 , align:"center" },
     { field: "formattedAssyNo", headerName: "Assy", minWidth: 30 , align:"center" },
-    { field: "vinNo", headerName: "Vin", minWidth: 120 , width:"18vw", align:"center" },
+    { field: "vinNo", headerName: "Vin", minWidth: 120 , width:"12vw", align:"center" },
     { field: "colorData", headerName: "Renk", minWidth: 35 , align:"center"},
     { field: "modelCode", headerName: "Mdl",minWidth: 35 , align:"center"},
     { field: "termId", headerName: "Sicil", minWidth: 45 , align:"center" },
-    { field: "partName", headerName: "Parca", minWidth: 160 , height:40 , color:"red" , width:"20vw" },
+    { field: "partName", headerName: "Parca", minWidth: 160 , height:45 , color:"red" , width:"15vw" },
     { field: "spotCode", headerName: "Spot", minWidth: 35 , align:"center"},
     { field: "spotgunName", headerName: "Gun", minWidth: 50 , align:"center" },
     { field: "arcnutboltgunName", headerName: "Arc", minWidth: 50 },
     { field: "arcnutboltCode", headerName: "ArcGun", minWidth: 60 },
-    { field: "defectName", headerName: "Hata", minWidth: 160 , width:"23vw"},
+    { field: "defectName", headerName: "Hata", minWidth: 160 , width:"12vw"},
     { field: "defrankCode", headerName: "Rank", minWidth: 45 },
     { field: "formattedDefectHour", headerName: "Saat", minWidth: 60 , align:"center" },
     { field: "defectType", headerName: "Hata Türü", minWidth: 60 , align:"center"},
@@ -151,7 +153,7 @@ const DefectPage = () => {
   return data === "empty" ? (
     <h1>Loading...</h1>
   ) : (
-    <Paper style={{ height: "80vh", width: "100%", padding: 0, margin: 0 ,}}>
+    <Paper style={{ height: "80vh", width: "100%", padding: 0, margin: 0 , backgroundColor:"#c6ffc8"}}>
       <CssBaseline />
 
       <VirtualTable 
@@ -251,7 +253,7 @@ const DefectPage = () => {
             <StyledButton>
               HATA KOPYA
             </StyledButton>   
-            <StyledButton>
+            <StyledButton onClick={() => navigate("/")}>
               ÇIKIŞ
             </StyledButton>   
           </Box>

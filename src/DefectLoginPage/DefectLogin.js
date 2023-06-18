@@ -8,36 +8,65 @@ import ButtonWithMenu from "./ButtonWithMenu"
 import PopperMenu from './PopperMenu';
 import PrepareData from './PrepareData';
 import AudioPlayer from './sound';
+import Backdrop from '@mui/material/Backdrop'
 
 const HeaderBox =styled(Box)(() => ({
     display:"flex",
     flexDirection:"column",
-    justifyContent:"space-around",
+    justifyContent:"center",
+    height:"3.3em"
 }))
 const HeaderTypography =styled(Typography)(() => ({
     display:"flex",
     flexDirection:"column",
     justifyContent:"space-around",
-    alignItems:"center"
+    alignItems:"center",
+    height:"3.5em",
+    fontSize:"1.1em",
+    fontWeight:"500"
 }))
-const OrdinaryBox=styled(Button)(() => ({
+const OrdinaryBox=styled(Button)(({theme}) => ({
     color:"black",
-    fontSize:"inherit",
     border:"1px black solid",
     borderRadius:"0.3rem",
-    margin:"0.1em", 
+    marginInline:"0.1em", 
+    padding:"0px",
     flexGrow:1,
     display:"flex",
     justifyContent:"center",
     alignItems:"center",
-    height:"3em"
+    height:"3.5em",
 }))
-const OrdinaryTypography=styled(Typography)(() => ({
-    fontSize:"1rem",
+const SideBox=styled(Button)(({theme}) => ({
+    color:"black",
+    border:"1px black solid",
+    borderRadius:"0.3rem",
+    marginInline:"0.1em", 
+    padding:"0px",
+    flexGrow:1,
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center",
+    height:"3.5em",
+    [theme.breakpoints.down("xs")]: {
+        width: "6em"
+      },
+    [theme.breakpoints.up("lg")]: {
+        width: "8em",
+      },
+}))
+const OrdinaryTypography=styled(Typography)(({theme}) => ({
     fontWeight:"500",
-    margin:"0.4em",
     marginBlock:"1em ",
     textAlign:"center",
+    margin:"0px",
+    [theme.breakpoints.up("xs")]: {
+        width: "6em",
+        fontSize:"1em",
+      },
+    [theme.breakpoints.up("lg")]: {
+        width: "9em",
+      },
 }))
 const imgBoxProps=(obj)=>({
     position: 'absolute',
@@ -166,7 +195,11 @@ const DefectLogin = () => {
     const handleCoordClick = (event) => {
         const { clientX, clientY } = event;
         setDefectCoords({ x: clientX, y: clientY });
-    };
+    }
+    const backFromMenuClick = ()=>{
+        setDefect({part : null, defect : null})
+        setDefectCoords({x:0 , y:0})
+    }
     const toClear = ()=>{
         if(defect.part !== null){
         setDefectCoords({x:0 ,y:0})
@@ -176,23 +209,33 @@ const DefectLogin = () => {
     const toCancel = ()=> {
         setPopperOpen(false)
         setDefectCoords({x:0 ,y:0})
-        setDefect({part : null , defect : null})
+        setDefect({part : undefined , defect : undefined})
     }
 
     return (!(data) ? <h1>Loading..</h1>    
-    : <Container sx={{position:"relative"}}>
+    : <Box sx={{position:"relative",display:"flex" , justifyContent:"center", alignItems:"center" , padding:0, margin:0}}>
 
     <AudioPlayer/>
+    
+    {isPopperOpen && (
+        <>
+        <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)' }} />
+          <Box
+            sx={{
+              position: 'absolute',
+              zIndex: 200,
+              minWidth: '600px',
+              width: '90vw',
+              maxWidth:"100%",
+              left:"%10",
+            }}
+          >
+            <PopperMenu toCancel={toCancel} defect={defect} defectCoords={defectCoords} toMainPage={backFromMenuClick} />
+          </Box>
+        </>
+      )}
 
-    {isPopperOpen && 
-        <Box sx={{position:"absolute" , zIndex:200 ,minWidth:"600px", width:"90vw" ,
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)"}}>
-            <PopperMenu toCancel={toCancel} defect={defect} defectCoords={defectCoords} toMainPage={() => handleBackClick(data.firstButtons , data.firstButtons[0].picId)} />
-        </Box>}
-
-        <Box sx={{display:"flex",flexDirection:"row",justifyContent:"center"}} >
+    <Box sx={{display:"flex",flexDirection:"row",justifyContent:"center", minWidth:"970px"}} >
             
             <Box sx={{display:"flex",flexDirection:"column",flex:"1",justifyContent:{xs:"space-between",md:"none" , maxWidth:"800px"}}}>
 
@@ -200,27 +243,27 @@ const DefectLogin = () => {
 
                     <Box sx={{ display: "flex"}}>
                         <HeaderBox>
-                            <HeaderTypography variant='h6' marginX={1.5}>Montaj No</HeaderTypography>
-                            <HeaderTypography variant='h6' marginX={1}>{data.headerData.assyNo}</HeaderTypography>
+                            <HeaderTypography  marginX={1}>Montaj No</HeaderTypography>
+                            <HeaderTypography  marginX={1}>{data.headerData.assyNo}</HeaderTypography>
                         </HeaderBox>
                         <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:bgColor}}>
-                            <HeaderTypography variant='h6' marginX={1.5}>Body No</HeaderTypography>
-                            <HeaderTypography variant='h6' marginX={1}>{data.headerData.bodyNo}</HeaderTypography>
+                            <HeaderTypography  marginX={1.5}>Body No</HeaderTypography>
+                            <HeaderTypography  marginX={1}>{data.headerData.bodyNo}</HeaderTypography>
                         </HeaderBox>
                         <HeaderBox>
-                            <HeaderTypography variant='h5' marginX={1.5}>Hata Giriş Ekranı</HeaderTypography>
+                            <HeaderTypography  marginX={1.5}>Hata Giriş Ekranı</HeaderTypography>
                         </HeaderBox>
                     </Box>
 
                     <HeaderBox sx={{border:"1px black solid",borderRadius:"0.5rem", backgroundColor:data.headerData.bgColor}}>
-                        <HeaderTypography variant='h6' color="white" marginX={1}>Renk</HeaderTypography>
-                        <HeaderTypography variant='h6' color="white" marginX={1.5}>{data.headerData.extCode}</HeaderTypography>
+                        <HeaderTypography  color="white" marginX={1}>Renk</HeaderTypography>
+                        <HeaderTypography  color="white" marginX={1.5}>{data.headerData.extCode}</HeaderTypography>
                     </HeaderBox>
                     
                 </Box>
 
                 
-                <Card sx={{position:"relative",width:"800px",height:"600px"}} {...((!(defect.defect == null) && (defectCoords.x == 0)) ? onGettingCoords : {})} >
+                <Card sx={{position:"relative",width:"800px",height:"600px"}} {...((!(defect.defect === null) && (defectCoords.x === 0)) ? onGettingCoords : {})} >
                     <CardMedia 
                     sx={{objectFit: "fill" , height:"600px" }}
                     component={"img"}
@@ -294,78 +337,78 @@ const DefectLogin = () => {
                 </Box>
             </Box>
 
-        <Box fontSize={{xs:"1.1em"}} sx={{flex:"none",display:"flex",flexDirection:"column",flexWrap:{xs:"wrap",lg:"nowrap",},justifyContent:"space-between"}}>
+        <Box fontSize={{xs:"1.1em"}} sx={{flex:"none",display:"flex",flexDirection:"column",flexWrap:{xs:"wrap"}, maxWidth:"7em"}}>
             <Box>
                     <HeaderBox >
-                        <Typography sx={{display:"flex",justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600} >
+                        <Typography sx={{display:"flex",justifyContent:"center",width:"80px", margin:2,marginInlineEnd:"0.5em"}} color={"red"} fontWeight={600} >
                             {data.headerData.firstname} {data.headerData.lastname}
                         </Typography>
                     </HeaderBox>
 
-                    <Box   sx={{display:"flex",flexDirection:{xs:"column",lg:"row"}, justifyContent:"space-around"}}>
+                    <Box sx={{display:"flex",flexDirection:"column", justifyContent:"center"}}>
                         <Box sx={{display:"flex", alignItems:"center"}}>
-                            <Checkbox size={"large"}/> 
-                            <Typography fontSize={"1.1em"}>Harigami</Typography>
+                            <Checkbox size={"medium"}/> 
+                            <Typography fontSize={"0.9em"}>Harigami</Typography>
                         </Box>
                         
                         <Box sx={{display:"flex" , alignItems:"center"}}>
-                            <Checkbox size={"large"}/> 
-                            <Typography  fontSize={"1.1em"}>RDD</Typography>
+                            <Checkbox size={"medium"}/> 
+                            <Typography  fontSize={"0.9em"}>RDD</Typography>
                         </Box>
                     </Box>
 
-                    <OrdinaryBox disabled sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
+                    <SideBox disabled sx={{marginBlock:"0.2em"}}>
                         <OrdinaryTypography>
                             Hızlı Kaydet
                         </OrdinaryTypography>
-                    </OrdinaryBox>
-                    <OrdinaryBox disabled sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
+                    </SideBox>
+                    <SideBox disabled sx={{marginBlock:"0.2em"}}>
                         <OrdinaryTypography>
                             Kaydet Ve Geç
                         </OrdinaryTypography>
-                    </OrdinaryBox>
-                    <OrdinaryBox disabled={defectCoords.x == 0} sx={{height:{xs:"3em"},width:{xs:"9em",lg:"11em"}}}
+                    </SideBox>
+                    <SideBox disabled={defectCoords.x == 0} sx={{marginBlock:"0.2em"}}
                                  onClick={() => setPopperOpen(true)}   
                     >
                         <OrdinaryTypography>
                             Hata Kayıt
                         </OrdinaryTypography>
-                    </OrdinaryBox>
+                    </SideBox>
 
-                    <HeaderBox alignItems={"center"} sx={{width:{xs:"9em",lg:"11em"}}}>
-                        <Typography variant='h6'>MONTAJ NO</Typography>
-                        <input defaultValue={data.headerData.seqNo} style={{fontSize:"2em",backgroundColor:"white",width:"4em"}}/>
+                    <HeaderBox sx={{width:"7em", marginBlock:1.5}}>
+                        <Typography  sx={{width:{xs:"6em", lg:"8em"}}}>MONTAJ NO</Typography>
+                        <input defaultValue={data.headerData.seqNo} style={{fontSize:"2em",backgroundColor:"white",width:"2.5em"}}/>
                     </HeaderBox>
 
-                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
+                    <SideBox sx={{marginBlock:"0.2em", height:"5em"}}>
                         <OrdinaryTypography>
                             Ara
                         </OrdinaryTypography>
-                    </OrdinaryBox>
-                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em" ,lg:"11em"}}}>
+                    </SideBox>
+                    <SideBox sx={{marginBlock:"0.2em", height:"5em"}}>
                         <OrdinaryTypography>
                             Terminal İlk Resmi
                         </OrdinaryTypography>
-                    </OrdinaryBox>
-                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
+                    </SideBox>
+                    <SideBox sx={{marginBlock:"0.2em", height:"5em"}}>
                         <OrdinaryTypography>
                             Sık Gelen Hata
                         </OrdinaryTypography>
-                    </OrdinaryBox>
-                    <OrdinaryBox sx={{height:"3em",width:{xs:"9em",lg:"11em"}}}>
+                    </SideBox>
+                    <SideBox sx={{marginBlock:"0.2em", height:"5em"}}>
                         <OrdinaryTypography>
                             Manifest
                         </OrdinaryTypography>
-                    </OrdinaryBox>
+                    </SideBox>
             </Box>
 
             <Box sx={{display:"flex" , justifyContent:"start", paddingInlineStart:2}}>
-                    <Typography sx={{fontWeight:"700" , fontSize:"1.5em"}}>
+                    <Typography sx={{fontWeight:"700" , fontSize:{xs:"1em" , lg:"1.2em"}}}>
                         {defect.defect}
                     </Typography>
             </Box>
 
-            <Box sx={{display:"flex",flexDirection:{xs:"column",lg:"row"},justifyContent:"center",width:{xs:"100px",md:"180px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600}>
+            <Box sx={{display:"flex",flexDirection:"column",justifyContent:"center",width:{xs:"80px",lg:"240px"},margin:{xs:"0.5em",md:"1em"}}} color={"red"} fontWeight={600}>
                     <Typography fontSize={"0.8rem"} sx={{marginInlineEnd:"2px"}}  >
                         TEKNİK DESTEK 
                     </Typography>
@@ -375,11 +418,11 @@ const DefectLogin = () => {
             </Box> 
         </Box>
         
-        </Box>
+    </Box>
 
 
                 
-    </Container>)
+    </Box>)
 }
 
 export default DefectLogin

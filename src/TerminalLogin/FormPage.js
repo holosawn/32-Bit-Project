@@ -8,6 +8,8 @@ import * as yup from "yup"
 import CustomInput from '../ReUsableComponents/Custominput'
 import CustomSelect from '../ReUsableComponents/CustomSelect'
 import VirtualKeyboard from '../ReUsableComponents/VirtualKeyboard'
+import {Alert, AlertTitle } from '@mui/material' 
+
 const labelStyle={
     fontWeight:700,
 	fontSize:"1rem",
@@ -115,6 +117,7 @@ const buttonStyle={
   const FormPage = () => {
 
 	document.body.style.backgroundColor = "#c6ffc8"
+	const [loginError , setLoginError] = useState()
 	const [data , setData] = useState("empty")
 	const navigate = useNavigate()
 	const [inputs, setInputs] = useState({ });
@@ -156,10 +159,10 @@ const buttonStyle={
 		if(password === user.password , sicil === user.sicil){
 			clearingInputsOnSubmit()
 			actions.resetForm({values : initialValues})
-			sessionStorage.setItem('shiftInfo', shiftColor);
+			sessionStorage.setItem('shiftInfo', shiftColor)
 			navigate(`defectLogin`)
 		}else{
-			alert("HATALI GİRİŞ")
+			setLoginError(true)
 		}
 	
 	};
@@ -190,15 +193,23 @@ const buttonStyle={
 
 	return data== "empty" ? <h1>Loading...</h1> : (
 	
-	<Container sx={{display:"flex",justifyContent:"center"}}>
-		<Box sx={{display:"flex", flexDirection:"column" ,alignItems:"center" ,justifyContent:"center",width:{xs:"100vw",sm:"100vw",md:"70vw"},
+	<Container sx={{display:"flex",justifyContent:"center",}}>
+		<Box sx={{display:"flex", flexDirection:"column" ,alignItems:"center" ,justifyContent:"center",width:{xs:"100vw",sm:"100vw",md:"70vw"}
 		}}>
 		<HeaderBox color='secondary' >
 			<Toolbar sx={{display:"flex",justifyContent:"center"}}>
 			<Typography variant='kazil' >CVGS(TMMT)</Typography>
 			</Toolbar>
+
+			{loginError && (
+			<Alert severity="error" sx={{position:"absolute" , top:0 }}>
+				<AlertTitle>Hata</AlertTitle>
+				<strong>KULLANICI BULUNAMADI</strong>
+			</Alert>)}
 		</HeaderBox>
 
+		
+		
 
 		<FormBox >
 		<Formik

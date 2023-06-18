@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Keyboard from 'react-simple-keyboard';
 import "react-simple-keyboard/build/css/index.css"
-import { Box } from '@mui/material';
 
 const VirtualKeyboard = ({keyboardRef , inputName , onChangeAll}) => {
   const [layoutName, setLayoutName] = useState('default')
@@ -18,15 +17,17 @@ const VirtualKeyboard = ({keyboardRef , inputName , onChangeAll}) => {
   };
 
   return (
-    <Box sx={{width:"100%"}}>
-      <Keyboard
-        keyboardRef={r => (keyboardRef.current = r)}
-        inputName={inputName}
-        layoutName={layoutName}
-        onKeyPress={onKeyPress}
-        onChangeAll={onChangeAll}
-      />
-    </Box>
+    <div style={{display:"flex",justifyContent:"center"}}>
+      <div style={{maxWidth:"1000px", width:"100%"}}>
+        <Keyboard
+          keyboardRef={r => (keyboardRef.current = r)}
+          inputName={inputName}
+          layoutName={layoutName}
+          onKeyPress={onKeyPress}
+          onChangeAll={onChangeAll}
+        />
+      </div>
+    </div>
   );
 };
 
