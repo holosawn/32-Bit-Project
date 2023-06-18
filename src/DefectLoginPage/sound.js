@@ -9,8 +9,7 @@ const AudioPlayer = () => {
     const startTimer = () => {
       timeoutId = setTimeout(() => {
         if (audioRef.current) {
-          audioRef.current.play();
-          console.log("played")
+          audioRef.current.play()
         }
       }, 300990); // 3 saniye sonra sesi çal
     };

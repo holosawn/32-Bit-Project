@@ -7,13 +7,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const scrollButtonStyle={minWidth:"15vw",border:"1.5px solid #9cdb9e",borderRadius:1}
 
-const CustomSelect = ({name,options,style,isOptional,otherProps,defaultValue}) => {
+const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,defaultValue,isOptional}) => {
     
     const { values,setFieldValue } = useFormikContext();
     const [field, meta] = useField(name);
     const [isOpen,setIsOpen] = useState(false)
     const selectRef=useRef(null)
     const dropdownRef= useRef(null)
+    const [optionss,setOptionss] = useState([...options])
 
     useEffect(()=>{
       if(!isOptional){
@@ -24,9 +25,29 @@ const CustomSelect = ({name,options,style,isOptional,otherProps,defaultValue}) =
       
       }},[])
 
-      const modifiedOnChange =(event) =>{
-        setFieldValue(name,event.target.value)
+    
+    useEffect(()=>{
+      if(isDaySelect){
+        setOptionss(Array.from({length: new Date(values.date.year, values.date.month, 0).getDate()}, (_, i) => i + 1))
       }
+    },[(values.date &&(values.date.year || values.date.month))])
+   
+
+    useEffect(()=>{
+      if(defaultValue){
+        setFieldValue(name,defaultValue)
+      }
+      if(shiftChange){shiftChange(values.shift)}
+    
+      },[])
+
+    const modifiedOnChange =shiftChange ? 
+    (event) =>{
+      setFieldValue(name,event.target.value)
+      shiftChange(event.target.value)}
+    :(event) =>{
+      setFieldValue(name,event.target.value)
+    }
 
     const configSelect = {
       ...field,
@@ -34,20 +55,21 @@ const CustomSelect = ({name,options,style,isOptional,otherProps,defaultValue}) =
       size : "small",
       variant: 'outlined',
       color:(meta.touched && meta.error ? "primary" : "third"),
+ 
     };
   
     if (meta && meta.touched && meta.error) {
       configSelect.error = true;
     }
     
-    const handleMouseClick= (direction) => {
+    const handleMenuMouseClick= (direction) => {
       const menuList = document.querySelector(".MuiMenu-paper")
       if(menuList){
         menuList.scrollBy({top:(direction == "up" ? -64 : 64 ),behavior:"smooth"})
       }
     }
  
-    const handleMouseDown= (direction) =>{
+    const handleMenuMouseDown= (direction) =>{
       const menuList = document.querySelector(".MuiMenu-paper")
       if(menuList){
         const scrollStep = direction === "up" ? -16 : 16
@@ -59,20 +81,18 @@ const CustomSelect = ({name,options,style,isOptional,otherProps,defaultValue}) =
         selectRef.current= scrollInterval}
       }
 
-    const handleMouseUp= () => {
+    const handleMenuMouseUp= () => {
       clearInterval(selectRef.current)
     }
 
     return (
       <>
-    
-
-          <Select  sx={{...style , backgroundColor:"white"}} {...configSelect}
+          <Select  sx={{...style, backgroundColor:"white"}} {...configSelect}
               open={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} 
               ref={dropdownRef} onChange={modifiedOnChange}
               >
-              {options.map(val => {
-              return <MenuItem value = {val} >{val}</MenuItem>
+              {optionss.map(val => {
+              return <MenuItem value = {val} key={val}>{val}</MenuItem>
               })}
           
           </Select>
@@ -82,27 +102,27 @@ const CustomSelect = ({name,options,style,isOptional,otherProps,defaultValue}) =
             <Box sx={{display:"flex",flexDirection:"column",bgcolor:"#c6ffc8"}}>
 
               <IconButton sx={scrollButtonStyle}
-              onClick={() => handleMouseClick("up")}
+              onClick={() => handleMenuMouseClick("up")}
               onMouseDown={() => {
                 const IntervalId=setTimeout(()=> {
-                  handleMouseDown("up")},100)
+                  handleMenuMouseDown("up")},100)
                   selectRef.current=IntervalId
                     }}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
+              onMouseUp={handleMenuMouseUp}
+              onMouseLeave={handleMenuMouseUp}
               >
                 <KeyboardArrowUpIcon />
               </IconButton>
                     
               <IconButton sx={scrollButtonStyle}
-                onClick={()=> handleMouseClick("down")}
+                onClick={()=> handleMenuMouseClick("down")}
                 onMouseDown={() => {  
                   const IntervalId=setTimeout(()=> {
-                    handleMouseDown("down")},100)
+                    handleMenuMouseDown("down")},100)
                     selectRef.current=IntervalId
                       }}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}              
+                onMouseUp={handleMenuMouseUp}
+                onMouseLeave={handleMenuMouseUp}              
                 >
                 <KeyboardArrowDownIcon />
               </IconButton>

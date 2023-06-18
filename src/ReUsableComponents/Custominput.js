@@ -1,4 +1,4 @@
-import { Field, useField , useFormikContext } from "formik"
+import { useField , useFormikContext } from "formik"
 import { TextField,Box, FormControl } from "@mui/material"
 import { useEffect } from "react"
 
@@ -23,7 +23,7 @@ const CustomInput = ({label,extraOnChange,style,...props}) => {
     return(
     <> 
             <TextField 
-            sx={{...style ,...(meta.touched && meta.error ? outlineColor("#ff0000") : null)
+            sx={{...style ,...(meta.touched && meta.error ? outlineColor("#ff0000") : null), backgroundColor:"white"
             }}
             color="third"
             size="small" 

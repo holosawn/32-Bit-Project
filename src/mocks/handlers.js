@@ -1,8 +1,6 @@
-// src/mocks/handlers.js
 import { rest } from 'msw'
 import { terminalsData , LoginPage , DefectPage , ErrorsData} from '../datas'
 
-let shiftColor;
 
 export const handlers = [
   rest.post('/login', (req, res, ctx) => {
@@ -14,6 +12,8 @@ export const handlers = [
       ctx.status(200)
     )
   }),
+
+ 
   
   rest.get('/user', (req, res, ctx) => {
     // Check if the user is authenticated in this session
@@ -38,5 +38,6 @@ export const handlers = [
     )
   }),
 
+  
 
 ]

@@ -4,9 +4,9 @@ import {Button,Box} from "@mui/material"
 import { Formik, Form, Field} from "formik";
 import * as yup from "yup";
 import axios from 'axios';
-import CustomInput from "./Custominput"
-import CustomSelect from "./CustomSelect"
-import VirtualKeyboard from '../ReUsedComponents/VirtualKeyboard';
+import CustomInput from '../ReUsableComponents/Custominput';
+import CustomSelect from '../ReUsableComponents/CustomSelect';
+import VirtualKeyboard from '../ReUsableComponents/VirtualKeyboard';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 const labelStyle={
@@ -128,7 +128,6 @@ const advancedSchema = yup.object().shape({
   };
 
 
-
   useEffect(() => {
 		axios
 		  .post("/login")
@@ -138,7 +137,6 @@ const advancedSchema = yup.object().shape({
 		  });
 	  }, [])
 		
-
 	  const onChangeAll = inputs => {
 			setInputs({ ...inputs });
 		}
@@ -161,8 +159,8 @@ const advancedSchema = yup.object().shape({
       toCancel();
     }
 
-    const optionss=["option" ,"option", "option"]
-	return data== "empty" ? <h1>Loading...</h1> : (
+    const optionss=["option1" ,"option2", "option3"]
+	return data== "empty" ? <h1></h1> : (
 	
     <Paper sx={{backgroundColor:"#c6ffc8" , minWidth:"600px" , width:"100%" , flexDirection:"column"}}>
 
@@ -207,7 +205,7 @@ const advancedSchema = yup.object().shape({
                 Hata Sorumlusu
               </InputLabel>
               <CustomSelect
-              name="minorResp"
+              name="defectResp"
               options={optionss}
               style={mainInputStyle}
               />

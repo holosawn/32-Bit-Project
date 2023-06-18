@@ -13,7 +13,7 @@ import prepareData from "./PrepareData"
 import { IconButton , styled} from "@mui/material"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-import VirtualTable from "./VirtualTable"
+import VirtualTable from "../ReUsableComponents/VirtualTable"
 
 const StyledButton = styled(Button)(({theme}) => ({
     border:"1px solid black",
@@ -66,7 +66,7 @@ const DefectPage = () => {
     { field: "vinNo", headerName: "Vin", minWidth: 120 , width:"18vw", align:"center" },
     { field: "colorData", headerName: "Renk", minWidth: 35 , align:"center"},
     { field: "modelCode", headerName: "Mdl",minWidth: 35 , align:"center"},
-    { field: "termId", headerName: "Sicil", minWidth: 40 , align:"center" },
+    { field: "termId", headerName: "Sicil", minWidth: 45 , align:"center" },
     { field: "partName", headerName: "Parca", minWidth: 160 , height:40 , color:"red" , width:"20vw" },
     { field: "spotCode", headerName: "Spot", minWidth: 35 , align:"center"},
     { field: "spotgunName", headerName: "Gun", minWidth: 50 , align:"center" },
@@ -78,9 +78,9 @@ const DefectPage = () => {
     { field: "defectType", headerName: "Hata Türü", minWidth: 60 , align:"center"},
     { field: "defrespName", headerName: "Hata Sor", minWidth: 60 , align:"center" },
     { field: "subResp", headerName: "Alt Sorumlu", minWidth: 60 },
-    { field: "defectReason", headerName: "NR REASONS", minWidth:115 , align:"center" },
-    { field: "kaydet", headerName: "Kaydet", minWidth: 40 , align:"center"},
-    { field: "islem", headerName: "İşlem", minWidth: 63 },
+    { field: "nrReasons", headerName: "NR REASONS", minWidth:115 , align:"center" },
+    { field: "save", headerName: "Kaydet", minWidth: 40 , align:"center"},
+    { field: "action", headerName: "İşlem", minWidth: 63 },
   ]
 
   const handleFilterChange = (e) => {
@@ -92,9 +92,9 @@ const DefectPage = () => {
     }));
   }
   const filterData = (rows) => {
-    const filterProperties = Object.keys(filterValues);
+    const filterProperties = Object.keys(filterValues)
   
-    if (data === "empty") return [];
+    if (data === "empty") return []
   
     const filteredData =rows.filter((row) =>
       filterProperties.every((property) =>{
@@ -157,20 +157,13 @@ const DefectPage = () => {
       <VirtualTable 
       columns={columns}
       data={temporaryData}
-      setData={setData}
-      removeRow={removeRow} 
       nrReasonList={data.nrReasonList}
       ref={tableRef}
+      setData={setData}
       /> 
       
 
-      <Box sx={{backgroundColor:"#9cdb9e" , display:"flex" , justifyContent:"end" , borderBlock:"1px solid black"  }}>
-        <Typography sx={{marginInlineEnd:1 , fontSize:"0.7rem"}}> 
-           Total Rows:{temporaryData.length}   
-        </Typography>
-      </Box>
-
-      <Box sx={{display:"flex" , justifyContent:"center"}}>
+      <Box sx={{display:"flex" , justifyContent:"center" , backgroundColor:"white"}}>
         <Box sx={{display:"flex" , flexDirection:"column-reverse" , justifyContent:"center" , mr:1 }}>
 
           <Box sx={{display:"flex" , alignItems:"center" , margin:0 }}>

@@ -85,7 +85,7 @@ const [data , setData] = useState("empty")
               <TableCell sx={cellStyle} >
                 {row.filterBaseds.map(arr => (
                 
-                    <Button onClick={() => navigate(`${row.depCode}/${arr.filterCode}`)} variant='outlined' align="center"  sx={{m:1, ml:0,color:"black",fontWeight:600,position:"relative",width:100}}>
+                    <Button onClick={() => navigate(`${row.depCode}/${arr.filterCode}`)} variant='outlined' key={arr.filterCode} align="center"  sx={{m:1, ml:0,color:"black",fontWeight:600,position:"relative",width:100}}>
                     <Typography>{arr.filterCode}</Typography>
 
                     {arr.linkCount > 1 ?

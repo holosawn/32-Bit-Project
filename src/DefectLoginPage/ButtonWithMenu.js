@@ -61,9 +61,9 @@ const ButtonWithMenu = ({options,style,otherProps,setDefect,label}) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-       {optionss.map(val => {
+       {optionss.map((val, index) => {
              
-              return <MenuItem value = {val} onClick={()=> handleMenuItemClick(val)}>{val}</MenuItem>
+              return <MenuItem value = {val} key={index} onClick={()=> handleMenuItemClick(val)}>{val}</MenuItem>
               })}
       </Menu>
 

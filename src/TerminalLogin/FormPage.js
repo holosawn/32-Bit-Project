@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import {Button,Box,Container} from "@mui/material"
 import { Formik, Form} from "formik"
 import * as yup from "yup"
-import CustomInput from "./Custominput"
-import CustomSelect from "./CustomSelect"
-import VirtualKeyboard from "../ReUsedComponents/VirtualKeyboard"
+import CustomInput from '../ReUsableComponents/Custominput'
+import CustomSelect from '../ReUsableComponents/CustomSelect'
+import VirtualKeyboard from '../ReUsableComponents/VirtualKeyboard'
 const labelStyle={
     fontWeight:700,
 	fontSize:"1rem",
