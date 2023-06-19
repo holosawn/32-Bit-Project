@@ -1,89 +1,120 @@
-import { useFormikContext, useField } from "formik"
-import { MenuItem,Box,Select,Popper,Button} from '@mui/material'
-import { useEffect, useState , useRef } from "react"
-import {IconButton} from "@mui/material"
+import { useFormikContext, useField } from "formik";
+import { MenuItem, Box, Select, Popper, IconButton } from '@mui/material';
+import { useEffect, useState, useRef } from "react";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const scrollButtonStyle={minWidth:"15vw",border:"1.5px solid #9cdb9e",borderRadius:1}
+// Style for scroll buttons
+const scrollButtonStyle = {
+  minWidth: "15vw",
+  border: "1.5px solid #9cdb9e",
+  borderRadius: 1,
+};
 
-const CustomSelect = ({name,options,style,isDaySelect,shiftChange,otherProps,defaultValue,isOptional}) => {
-    
-    const { values,setFieldValue } = useFormikContext();
-    const [field, meta] = useField(name);
-    const [isOpen,setIsOpen] = useState(false)
-    const selectRef=useRef(null)
-    const dropdownRef= useRef(null)
-    const [optionss,setOptionss] = useState([...options])
-
-    useEffect(()=>{
-      if(!isOptional){
-        if(defaultValue){
-          setFieldValue(name,defaultValue)
-        }else{
-          setFieldValue(name,options[0])}
-      
-      }},[])
-
-    
-    useEffect(()=>{
-      if(isDaySelect){
-        setOptionss(Array.from({length: new Date(values.date.year, values.date.month, 0).getDate()}, (_, i) => i + 1))
-      }
-    },[(values.date &&(values.date.year || values.date.month))])
-   
-
-    useEffect(()=>{
-      if(defaultValue){
-        setFieldValue(name,defaultValue)
-      }
-      if(shiftChange){shiftChange(values.shift)}
-    
-      },[])
-
-    const modifiedOnChange =shiftChange ? 
-    (event) =>{
-      setFieldValue(name,event.target.value)
-      shiftChange(event.target.value)}
-    :(event) =>{
-      setFieldValue(name,event.target.value)
-    }
-
-    const configSelect = {
-      ...field,
-      ...otherProps,
-      size : "small",
-      variant: 'outlined',
-      color:(meta.touched && meta.error ? "primary" : "third"),
- 
-    };
+const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultValue, isOptional, ...otherProps }) => {
   
-    if (meta && meta.touched && meta.error) {
-      configSelect.error = true;
-    }
-    
-    const handleMenuMouseClick= (direction) => {
-      const menuList = document.querySelector(".MuiMenu-paper")
-      if(menuList){
-        menuList.scrollBy({top:(direction == "up" ? -64 : 64 ),behavior:"smooth"})
-      }
-    }
- 
-    const handleMenuMouseDown= (direction) =>{
-      const menuList = document.querySelector(".MuiMenu-paper")
-      if(menuList){
-        const scrollStep = direction === "up" ? -16 : 16
-        let scrollInterval = setInterval(() => {
-          const newScrollTop = menuList.scrollTop + scrollStep
-          menuList.scrollTop = newScrollTop
-        },16)
-      
-        selectRef.current= scrollInterval}
-      }
+  const { values, setFieldValue } = useFormikContext();
+  const [field, meta] = useField(name);
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const [optionss, setOptionss] = useState([...options]);
 
-    const handleMenuMouseUp= () => {
-      clearInterval(selectRef.current)
+    // Set initial field value if not optional
+  useEffect(() => {
+    if (!isOptional) {
+      if (defaultValue) {
+        setFieldValue(name, defaultValue);
+      } else {
+        setFieldValue(name, options[0]);
+      }
     }
+  }, []);
+
+    // Update options when year or month changes
+  useEffect(() => {
+    if (isDaySelect) {
+      setOptionss(Array.from({ length: new Date(values.date.year, values.date.month, 0).getDate() }, (_, i) => i + 1));
+    }
+  }, [(values.date && (values.date.year || values.date.month))]);
+
+    // Set field value and call shiftChange function if available
+  useEffect(() => {
+    if (defaultValue) {
+      setFieldValue(name, defaultValue);
+    }
+    if (shiftChange) {
+      shiftChange(values.shift);
+    }
+  }, []);
+    
+    // Update options when isDaySelect is true and either year or month changes
+  useEffect(() => {
+    if (isDaySelect) {
+      setOptionss(Array.from({ length: new Date(values.date.year, values.date.month, 0).getDate() }, (_, i) => i + 1));
+    }
+  }, [(values.date && (values.date.year || values.date.month))]);
+  
+    // Set field value to defaultValue and call shiftChange function if available
+  useEffect(() => {
+    if (defaultValue) {
+      setFieldValue(name, defaultValue);
+    }
+    if (shiftChange) {
+      shiftChange(values.shift);
+    }
+  }, []);
+  
+      // Update field value and call shiftChange function
+  const modifiedOnChange = shiftChange ?
+    (event) => {
+      setFieldValue(name, event.target.value);
+      shiftChange(event.target.value);
+    } :
+    (event) => {
+      // Update field value
+      setFieldValue(name, event.target.value);
+    };
+      //props to pass into select component
+  const configSelect = {
+    ...field,
+    ...otherProps,
+    size: "small",
+    variant: 'outlined',
+    color: (meta.touched && meta.error ? "primary" : "third"),
+  };
+  
+    // Set error flag for configSelect
+  if (meta && meta.touched && meta.error) {
+    configSelect.error = true;
+  }
+  
+      // Scroll the menu list by a fixed amount in the specified direction
+  const handleMenuMouseClick = (direction) => {
+    const menuList = document.querySelector(".MuiMenu-paper");
+    if (menuList) {
+      menuList.scrollBy({ top: (direction == "up" ? -64 : 64), behavior: "smooth" });
+    }
+  };
+  
+      // Start scrolling continuously in the specified direction
+  const handleMenuMouseDown = (direction) => {
+    const menuList = document.querySelector(".MuiMenu-paper");
+    if (menuList) {
+      const scrollStep = direction === "up" ? -16 : 16;
+      let scrollInterval = setInterval(() => {
+        const newScrollTop = menuList.scrollTop + scrollStep;
+        menuList.scrollTop = newScrollTop;
+      }, 16);
+      selectRef.current = scrollInterval;
+    }
+  };
+  
+    // Stop scrolling when the mouse button is released
+  const handleMenuMouseUp = () => {
+    clearInterval(selectRef.current);
+  };
+  
 
     return (
       <>

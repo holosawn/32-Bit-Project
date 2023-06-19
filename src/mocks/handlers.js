@@ -1,6 +1,8 @@
 import { rest } from 'msw'
-import { terminalsData , LoginPage , DefectPage , ErrorsData} from '../datas'
-
+import DefectList from "../Datas/DefectListData.json"
+import LoginPage from  "../Datas/LoginPageData.json"
+import terminalsData from "../Datas/TerminalsData.json"
+import DefectPage from "../Datas/DefectPageData.json"
 
 export const handlers = [
   rest.post('/login', (req, res, ctx) => {
@@ -33,7 +35,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        terminalsData , LoginPage , DefectPage , ErrorsData
+        terminalsData , LoginPage , DefectPage , DefectList
       }),
     )
   }),
