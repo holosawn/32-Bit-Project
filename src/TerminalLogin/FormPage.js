@@ -61,11 +61,11 @@ const initialValues = {
 	password: "",
 	assy: "",
 	date: {
-	  year: new Date().getFullYear(),
-	  month: new Date().getMonth() + 1,
-	  day: new Date().getDate(),
+	  year: "",
+	  month: "",
+	  day: "",
 	},
-	shift: "M",
+	shift: "",
   };
   // ValidationSchema for the form fields
 const validationSchema = yup.object().shape({
@@ -215,11 +215,7 @@ const FormPage = () => {
 		ShiftOptions = data.ShiftInfo.data.map((obj) => {
 		  const { shiftCode, rgbColor } = obj;
 		  return { shiftCode, rgbColor };
-		});
-	  
-		// Set initial values for terminal and shift
-		initialValues.terminal = terminalOptions[0];
-		initialValues.shift = ShiftOptions[0].shiftCode;
+		})
 	  }
 	  
 
@@ -228,7 +224,7 @@ const FormPage = () => {
 	<Container sx={{display:"flex",justifyContent:"center",}}>
 		<Box sx={{display:"flex", flexDirection:"column" ,alignItems:"center" ,justifyContent:"center",width:{xs:"100vw",sm:"100vw",md:"70vw"}
 		}}>
-			{/*Renderin Header*/}
+			{/*Rendering Header*/}
 		<HeaderBox color='secondary' >
 			<Toolbar sx={{display:"flex",justifyContent:"center"}}>
 			<Typography variant='kazil' >CVGS(TMMT)</Typography>
@@ -324,17 +320,20 @@ const FormPage = () => {
 						name="date.day"
 						isDaySelect={true}
 						options={Array.from({length: new Date(initialValues.date.year, initialValues.date.month, 0).getDate()}, (_, i) => i + 1)}
+						defaultValue={new Date().getDate()}
 						style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
 						
 						/>
 						<CustomSelect
 						name="date.month"
 						options={Array.from({length: 12}, (_, i) => i + 1)}
+						defaultValue={new Date().getMonth() + 1}
 						style={{...mainInputStyle,minWidth:"66px",margin:0.25}}
 						/>
 						<CustomSelect
 						name="date.year"
-						options={[2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
+						options={[2022,2023,2021,2020,2019,2018,2017,2016,2015,2014,2013]}
+						defaultValue={new Date().getFullYear()}
 						style={{...mainInputStyle,minWidth:"85px",margin:0.25}}
 						/>
 				</Box>
@@ -349,14 +348,14 @@ const FormPage = () => {
 						</InputLabel>
 						<CustomSelect
 						name="shift"
-						shiftChange={shift => {setShiftColor(ShiftOptions.find(obj => obj.shiftCode == shift).rgbColor)
+						shiftChange={shift => {
+							setShiftColor(ShiftOptions.find(obj => obj.shiftCode === shift).rgbColor)
 							}}
 						options={
 							ShiftOptions.map(obj => {
 								const {shiftCode } = obj 
 								return shiftCode 
 							})}
-						
 						style={{...mainInputStyle,minWidth:"20px",margin:0.25}}
 						/>
 				</Box>

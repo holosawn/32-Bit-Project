@@ -18,63 +18,44 @@ const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultV
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef(null);
   const dropdownRef = useRef(null);
-  const [optionss, setOptionss] = useState([...options]);
+  const [dayOptions, setDayOptions] = useState([...options]);
 
-    // Set initial field value if not optional
+    // Set default field value if not optional
   useEffect(() => {
     if (!isOptional) {
+
       if (defaultValue) {
-        setFieldValue(name, defaultValue);
-      } else {
-        setFieldValue(name, options[0]);
+        //If there is a default value activate onChange function with defaultValue
+        modifiedOnChange(defaultValue)
+      } 
+      else{
+        //If there is not a default value activate onChange function with first value of options array
+        modifiedOnChange(options[0]);
       }
     }
-  }, []);
-
-    // Update options when year or month changes
-  useEffect(() => {
-    if (isDaySelect) {
-      setOptionss(Array.from({ length: new Date(values.date.year, values.date.month, 0).getDate() }, (_, i) => i + 1));
-    }
-  }, [(values.date && (values.date.year || values.date.month))]);
-
-    // Set field value and call shiftChange function if available
-  useEffect(() => {
-    if (defaultValue) {
-      setFieldValue(name, defaultValue);
-    }
-    if (shiftChange) {
-      shiftChange(values.shift);
-    }
-  }, []);
+  }, [])
     
     // Update options when isDaySelect is true and either year or month changes
   useEffect(() => {
     if (isDaySelect) {
-      setOptionss(Array.from({ length: new Date(values.date.year, values.date.month, 0).getDate() }, (_, i) => i + 1));
+      setDayOptions(Array.from({ length: new Date(values.date.year, values.date.month, 0).getDate() }, (_, i) => i + 1));
+      console.log(dayOptions.length)
     }
-  }, [(values.date && (values.date.year || values.date.month))]);
+  }, [values.date.month, values.date.year])
+
   
-    // Set field value to defaultValue and call shiftChange function if available
-  useEffect(() => {
-    if (defaultValue) {
-      setFieldValue(name, defaultValue);
-    }
-    if (shiftChange) {
-      shiftChange(values.shift);
-    }
-  }, []);
-  
-      // Update field value and call shiftChange function
+      // Create new onChange function
   const modifiedOnChange = shiftChange ?
-    (event) => {
-      setFieldValue(name, event.target.value);
-      shiftChange(event.target.value);
+    (value) => {
+      //uptade field value and activate shiftChange function if threre is a shiftChange function
+      setFieldValue(name, value);
+      shiftChange(value);
     } :
-    (event) => {
+    (value) => {
       // Update field value
-      setFieldValue(name, event.target.value);
+      setFieldValue(name, value);
     };
+
       //props to pass into select component
   const configSelect = {
     ...field,
@@ -90,7 +71,7 @@ const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultV
   }
   
       // Scroll the menu list by a fixed amount in the specified direction
-  const handleMenuMouseClick = (direction) => {
+  const handleScrollMouseClick = (direction) => {
     const menuList = document.querySelector(".MuiMenu-paper");
     if (menuList) {
       menuList.scrollBy({ top: (direction == "up" ? -64 : 64), behavior: "smooth" });
@@ -98,7 +79,7 @@ const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultV
   };
   
       // Start scrolling continuously in the specified direction
-  const handleMenuMouseDown = (direction) => {
+  const handleScrollMouseDown = (direction) => {
     const menuList = document.querySelector(".MuiMenu-paper");
     if (menuList) {
       const scrollStep = direction === "up" ? -16 : 16;
@@ -111,18 +92,21 @@ const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultV
   };
   
     // Stop scrolling when the mouse button is released
-  const handleMenuMouseUp = () => {
+  const handleScrollMouseUp = () => {
     clearInterval(selectRef.current);
   };
   
 
     return (
       <>
-          <Select  sx={{...style, backgroundColor:"white"}} {...configSelect}
+          <Select  
+              sx={{...style, backgroundColor:"white"}} 
+              {...configSelect}
               open={isOpen} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} 
-              ref={dropdownRef} onChange={modifiedOnChange}
+              ref={dropdownRef} 
+              onChange={(event) => modifiedOnChange(event.target.value)}
               >
-              {optionss.map(val => {
+              {dayOptions.map(val => {
               return <MenuItem value = {val} key={val}>{val}</MenuItem>
               })}
           
@@ -133,27 +117,27 @@ const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultV
             <Box sx={{display:"flex",flexDirection:"column",bgcolor:"#c6ffc8"}}>
 
               <IconButton sx={scrollButtonStyle}
-              onClick={() => handleMenuMouseClick("up")}
+              onClick={() => handleScrollMouseClick("up")}
               onMouseDown={() => {
                 const IntervalId=setTimeout(()=> {
-                  handleMenuMouseDown("up")},100)
+                  handleScrollMouseDown("up")},100)
                   selectRef.current=IntervalId
                     }}
-              onMouseUp={handleMenuMouseUp}
-              onMouseLeave={handleMenuMouseUp}
+              onMouseUp={handleScrollMouseUp}
+              onMouseLeave={handleScrollMouseUp}
               >
                 <KeyboardArrowUpIcon />
               </IconButton>
                     
               <IconButton sx={scrollButtonStyle}
-                onClick={()=> handleMenuMouseClick("down")}
+                onClick={()=> handleScrollMouseClick("down")}
                 onMouseDown={() => {  
                   const IntervalId=setTimeout(()=> {
-                    handleMenuMouseDown("down")},100)
+                    handleScrollMouseDown("down")},100)
                     selectRef.current=IntervalId
                       }}
-                onMouseUp={handleMenuMouseUp}
-                onMouseLeave={handleMenuMouseUp}              
+                onMouseUp={handleScrollMouseUp}
+                onMouseLeave={handleScrollMouseUp}              
                 >
                 <KeyboardArrowDownIcon />
               </IconButton>
