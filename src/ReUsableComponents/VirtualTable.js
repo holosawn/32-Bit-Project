@@ -10,7 +10,7 @@ import { TableVirtuoso } from "react-virtuoso";
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { forwardRef } from "react";
 import SearchIcon from '@mui/icons-material/Search';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Alert, AlertTitle } from '@mui/material';
 
 /**
  * RemoveConfirmationDialog component renders a confirmation dialog for removing an item.
@@ -37,7 +37,7 @@ const RemoveConfirmationDialog = ({ open, onConfirm, onClose }) => {
       </DialogActions>
     </Dialog>
   );
-};
+}
 
 /**
  * VirtualTable component is a virtualized table with sorting and filtering capabilities.
@@ -51,6 +51,7 @@ const RemoveConfirmationDialog = ({ open, onConfirm, onClose }) => {
 const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tableRef) => {
   // State for managing the confirmation dialog
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [processFinish,  setProcessFinish] = useState()
   const [rowToRemove, setRowToRemove] = useState(null);
   const [filteredProperty, setFilteredProperty] = useState(); // State for tracking the currently filtered property
   const [temporaryData, setTemporaryData] = useState([...data]); // State for storing the filtered, sorted data 
@@ -264,7 +265,10 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
                 return (
                   <div style={{ width: "35px", margin: "auto" }}>
                     <Button
-                      onClick={() => console.log(row)}
+                      onClick={() => {
+                        console.log(row)
+                        handleProcessButtonClick()
+                      }}
                       sx={{
                         color: "white",
                         backgroundColor: "black",
@@ -382,6 +386,13 @@ const removeRow = (rowId) => {
     }));
   }
 };
+
+const handleProcessButtonClick = () => {
+  setProcessFinish(true)
+  setTimeout(() => {
+    setProcessFinish(false)
+  }, 5000)
+}
 
 // Function to filter rows based on the filterValues
 const filterData = (rows) => {
@@ -501,6 +512,14 @@ return (
       itemContent={(index, row) => rowContent(index, row, nrReasonList)}
       {...props}
     />
+
+    {/*Alert component to show up when there is an error in user login*/}
+    {processFinish && (
+				<Alert severity="success" sx={{position:"fixed", left:"44%", bottom:"23%"}}>
+				  <AlertTitle>SUCCES</AlertTitle>
+				  <strong>CHANGES HAS SAVED</strong>
+				</Alert>
+			  )}
 
     {/* Render the RemoveConfirmationDialog component */}
     <RemoveConfirmationDialog

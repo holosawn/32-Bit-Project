@@ -10,15 +10,17 @@ const AudioPlayer = () => {
     const startTimer = () => {
       timeoutId = setTimeout(() => {
         if (audioRef.current) {
-          audioRef.current.play();
+          audioRef.current.play()
+          document.body.style.backgroundColor = "red"
         }
-      }, 300990); // Play the audio after 3 seconds
+      }, 30000000); // Play the audio after 30 seconds
     };
     //Function to reset timer if any action is taken
     const resetTimer = () => {
       audioRef.current.pause();
       clearTimeout(timeoutId);
       startTimer();
+      document.body.style.backgroundColor = "#c6ffc8"
     };
 
     startTimer();
