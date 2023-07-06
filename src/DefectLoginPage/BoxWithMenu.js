@@ -4,7 +4,7 @@ import {IconButton} from "@mui/material"
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const BoxWithMenu = ({options,style,otherProps,setDefect,label}) => {
+const BoxWithMenu = ({options, style, otherProps, setDefect, extraSelectEventHandler, label}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const iconRef = useRef(null)
   const [optionss,setOptionss] = useState(options)
@@ -26,6 +26,7 @@ const handleButtonClick = (event) => {
 const handleMenuItemClick = (item) => {
   setDefect(item);
   setAnchorEl(null);
+  extraSelectEventHandler()
 };
 
   // Function to close the menu by setting the anchor element to null

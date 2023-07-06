@@ -98,12 +98,12 @@ const DefectLogin = () => {
     // State variables
     const [data, setData] = useState();
     const [imgId, setImgId] = useState();
-    const [currentButtons, setCurrrentButtons] = useState([]);//Current boxes drawed
+    const [currentButtons, setCurrentButtons] = useState([]);//Current boxes drawed
     const [defect, setDefect] = useState({ part: null, defect: null });//info about defect
     const canvasRef = useRef(null);//ref hook for canvas
     const ctxRef = useRef(null);//ref hook for canvas
     const [defectCoords, setDefectCoords] = useState({ x: 0, y: 0 });//coordinates of defect
-    const [pageStage, setPageStage] = useState("first")
+    const [isCoordSelect, setIsCoordSelect] = useState(false)
     const [isPopperOpen, setPopperOpen] = useState(false);// bool value to show popper Menu
     const navigate = useNavigate();
     const [images, setImages] = useState({});//state to store images and their urls 
@@ -126,62 +126,61 @@ const DefectLogin = () => {
               "https://splashandgocarwash.com/wp-content/uploads/cars-undercarriage-1024x683.jpg",
           }));
           setImgId([res.firstButtons[0].picId]);
-          setCurrrentButtons(res.firstButtons);
+          setCurrentButtons(res.firstButtons);
         });
     }, []);
   
     // Get background color from session storage
     const bgColor = sessionStorage.getItem("shiftInfo");
   
-    // Initialize canvas and drawing functions
-    let canvas;
-    let ctx;
-    let drawLine;
-    let eraseLine;
+    // Function to draw a line on the canvas
+    const drawLine = (sx, sy, ex, ey) => {
+      if (ctxRef.current !== null) {
+        const ctx = ctxRef.current
+        ctx.beginPath();
+        ctx.moveTo(sx + 40, sy + 40);
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+      }
+    };
+
+    // Function to erase the canvas
+    const eraseLine = () => {
+      if (ctxRef.current !== null) {
+        ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
+    };
+
     useEffect(() => {
-      if (data && data.firstButtons) {
-        canvas = canvasRef.current;
-        ctx = canvas.getContext("2d");
+      if ((data) && ctxRef.current === null) {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
         ctxRef.current = ctx;
         canvas.style.width = "100%";
         canvas.style.height = "100%";
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
-  
-        // Function to draw a line on the canvas
-        drawLine = (sx, sy, ex, ey) => {
-          ctx.beginPath();
-          ctx.moveTo(sx + 40, sy + 40);
-          ctx.strokeStyle = "red";
-          ctx.lineWidth = 2;
-          ctx.lineTo(ex, ey);
-          ctx.stroke();
-        };
-  
-        // Function to erase the canvas
-        eraseLine = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        };
       }
-    });
-
-// Function to draw lines on the canvas based on currentButtons data
-const drawLines = () => {
-    currentButtons.map((obj) => {
-      const { boxX, boxY, lineX, lineY } = obj;
-      if (!(lineX === -100 || lineY === -100)) {
-        drawLine(boxX, boxY, lineX, lineY);
-      }
-    });
-  };
-  
-  // Redraw lines on the canvas when defect.part or currentButtons change
-  useEffect(() => {
-    drawLines();
-  }, [defect.part, currentButtons]);
+    },[images]);
+    
+    // Function to draw lines on the canvas based on currentButtons data
+    const drawLines = () => {
+      currentButtons.map((obj) => {
+        const { boxX, boxY, lineX, lineY } = obj;
+        if (!(lineX === -100 || lineY === -100)) {
+          drawLine(boxX, boxY, lineX, lineY);
+        }
+      });
+    };
+    
+    useEffect(() => {
+      drawLines();
+    }, [currentButtons]);
   
   // Object with properties for getting coordinates
-// This object defines the properties for the `onGettingCoords` event handler. It sets the cursor style to a custom image and specifies the `onClick` function to handle the click event.
+  // This object defines the properties for the `onGettingCoords` event handler. It sets the cursor style to a custom image and specifies the `onClick` function to handle the click event.
   // The `handleCoordClick` function is called when a click event occurs on the specified element.
   const onGettingCoords = {
     style: { cursor: `url(${CustomCursor}), auto` },
@@ -204,7 +203,7 @@ const drawLines = () => {
           if(images[childPicID]){
               setImgId(childPicID)
               eraseLine()
-              setCurrrentButtons(newButtonsArr)
+              setCurrentButtons(newButtonsArr)
           }
           // If the `childPicID` corresponds to a valid image, update the `imgId` state with the clicked `childPicID`.
           // Erase any existing lines drawn on the canvas.
@@ -212,8 +211,9 @@ const drawLines = () => {
   
           if(!(color == "blue")){
               setDefect({part : "" , defect : ""})
+              setIsCoordSelect(true)
               eraseLine()
-              setCurrrentButtons([])
+              setCurrentButtons([])
           }
           // If the button color is not blue, reset the `defect` state and clear the canvas by erasing any lines.
           // Set the `currentButtons` state to an empty array.
@@ -226,7 +226,8 @@ const drawLines = () => {
           
           if(currentButtons !== fButtons){
               setImgId(newImg)
-              setCurrrentButtons(fButtons)
+              setCurrentButtons(fButtons)
+              setIsCoordSelect(false)
               eraseLine()
               setDefect({part : null, defect : null})
               setDefectCoords({x:0 , y:0})
@@ -257,12 +258,20 @@ const drawLines = () => {
         setDefect({ part: null, defect: null });
         setDefectCoords({ x: 0, y: 0 });
       }
-      
+
         // This function handles the click event on the clear button.
       const toClear = () => {
         // It clears the defectCoords and defect states if the part is not null.
-      
-        if (defect.part !== null) {
+        drawLines()
+        setIsCoordSelect(false)
+        if (defect.part) {
+          setDefectCoords({ x: 0, y: 0 });
+          setDefect(prev => ({ 
+            ...prev, defect: null 
+          }))
+        }
+        else{
+          setCurrentButtons(data.firstButtons)
           setDefectCoords({ x: 0, y: 0 });
           setDefect({ part: null, defect: null });
         }
@@ -271,15 +280,7 @@ const drawLines = () => {
      // This function handles the cancel action.
 const toCancel = () => {
     // It closes the popper and resets the defectCoords and defect states.
-    setPopperOpen(false);
-    setDefectCoords({ x: 0, y: 0 });
-  
-    // The setDefect function is used to reset the defect state variable.
-    // It maintains the "part" value from the previous state and sets the "defect" value to null or undefined.
-    setDefect(prev => ({ 
-      part: prev.part,
-      defect: (prev.defect) ? null : undefined,
-    }));
+    setPopperOpen(false)
   };
   
       
@@ -350,7 +351,7 @@ const toCancel = () => {
               </Box>
       
               {/* Card Section */}
-              <Card sx={{ position: "relative", width: "800px", height: "600px" }} {...((!(defect.defect === null) && (defectCoords.x === 0)) ? onGettingCoords : {})}>
+              <Card sx={{ position: "relative", width: "800px", height: "600px" }} {...(isCoordSelect ? onGettingCoords : {})}>
                 <CardMedia
                   sx={{ objectFit: "fill", height: "600px" }}
                   component={"img"}
@@ -378,6 +379,10 @@ const toCancel = () => {
                           ...prev, defect: defect
                         }))
                       }}
+                      extraSelectEventHandler={() => {
+                        setIsCoordSelect(true)
+                        eraseLine()
+                        }}
                       options={obj.List}
                       label={<Typography {...imgBoxTextStyle}>{obj.labelText}</Typography>}
                     />
