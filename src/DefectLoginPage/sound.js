@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import Audio from "./Ses.ogg"
+import Audio from "../assets/Ses.ogg"
 //component to play sound if no action is taken for a while
 const AudioPlayer = () => {
   const audioRef = useRef(null);
@@ -13,7 +13,7 @@ const AudioPlayer = () => {
           audioRef.current.play()
           document.body.style.backgroundColor = "red"
         }
-      }, 3000000); // Play the audio after 30 seconds
+      }, 3000); // Play the audio after 30 seconds
     };
     //Function to reset timer if any action is taken
     const resetTimer = () => {

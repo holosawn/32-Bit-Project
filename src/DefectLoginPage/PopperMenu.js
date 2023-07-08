@@ -1,12 +1,5 @@
-import {
-  InputLabel,
-  Typography,
-  styled,
-  Checkbox,
-  Paper
-} from '@mui/material';
+import {InputLabel, Typography, styled, Checkbox, Paper, Button, Box  } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Box } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
 import axios from 'axios';
@@ -14,14 +7,14 @@ import CustomInput from '../ReUsableComponents/Custominput';
 import CustomSelect from '../ReUsableComponents/CustomSelect';
 import VirtualKeyboard from '../ReUsableComponents/VirtualKeyboard';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Backdrop from '@mui/material/Backdrop';
 
 // Styling and styled components
 const labelStyle = {
   fontWeight: 700,
   fontSize: "1rem",
   whiteSpace: "normal",
-  marginBlockStart: 2
+  marginBlockStart: 2,
+  minWidth:"8em"
 };
 
 const HeaderBox = styled(Box)(({ theme }) => ({
@@ -176,12 +169,11 @@ const onCancel = () => {
 return data === "empty" ? (
   <h1></h1>
 ) : (
-  <>
-    {/* Main form section */}
+    //{/* Main form section */}
     <Paper
       sx={{
         backgroundColor: "#c6ffc8",
-        minWidth: "600px",
+        minWidth: "920px",
         width: "90vw",
         height: "60vh",
         minHeight: "700px",
@@ -190,6 +182,9 @@ return data === "empty" ? (
         marginBlockStart: "3rem",
         display: "flex",
         justifyContent: "center",
+        position: 'absolute',
+        zIndex: 200,
+        maxWidth: "100%",
       }}
     >
       <FormBox>
@@ -219,7 +214,7 @@ return data === "empty" ? (
                     fontWeight="600"
                     fontSize="1.2em"
                   >
-                    CVGS(TMMT)
+                    CVQS(TMMT)
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <InputLabel sx={{ ...labelStyle, marginBlock: 0 }}>
@@ -397,7 +392,7 @@ return data === "empty" ? (
         <Typography fontWeight="600">6.2.192-CVQSTerminal</Typography>
       </Box>
     </Paper>
-  </>
+
 );
 
 };

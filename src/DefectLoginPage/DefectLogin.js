@@ -1,5 +1,5 @@
 import {React , useState , useEffect , useRef} from 'react';
-import {Box, Card, CardMedia, Checkbox, Button} from "@mui/material"
+import {Box, Card, CardMedia, Checkbox, Button, Container} from "@mui/material"
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -52,12 +52,7 @@ const SideBox=styled(Button)(({theme}) => ({
     justifyContent:"center",
     alignItems:"center",
     height:"3.5em",
-    [theme.breakpoints.down("xs")]: {
-        width: "6em"
-      },
-    [theme.breakpoints.up("lg")]: {
-        width: "8em",
-      },
+    width: "8em",
 }))
 const OrdinaryTypography=styled(Typography)(({theme}) => ({
     fontWeight:"500",
@@ -244,9 +239,12 @@ const DefectLogin = () => {
         // This function handles the click event on the canvas to capture the coordinates.
       const handleCoordClick = (event) => {
         // It takes the event as a parameter and extracts the clientX and clientY properties from it.
-      
-        const { clientX, clientY } = event;
-      
+        
+        const canvas = canvasRef.current
+        const canvasRect = canvas.getBoundingClientRect();
+        const { pageX, pageY } = event;
+        const clientX = pageX - canvasRect.left
+        const clientY = pageY - canvasRect.top
         setDefectCoords({ x: clientX, y: clientY });
         // Update the defectCoords state with the captured clientX and clientY coordinates.
       }
@@ -278,19 +276,15 @@ const DefectLogin = () => {
       }
       
      // This function handles the cancel action.
-const toCancel = () => {
-    // It closes the popper and resets the defectCoords and defect states.
-    setPopperOpen(false)
-  };
+      const toCancel = () => {
+          // It closes the popper and resets the defectCoords and defect states.
+          setPopperOpen(false)
+        };
   
       
       return (!(data) ? <h1>Loading..</h1> : (
         <Box
           sx={{
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             padding: 0,
             margin: 0
           }}
@@ -299,18 +293,8 @@ const toCancel = () => {
       
           {/* Popper Menu */}
           {isPopperOpen && (
-            <>
-              <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)' }} />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  zIndex: 200,
-                  minWidth: '600px',
-                  width: '90vw',
-                  maxWidth: "100%",
-                  left: "%10",
-                }}
-              >
+            <Container sx={{display:"flex", justifyContent:"center", minWidth: "920px",}}>
+              <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)', zIndex:200}} />
                 {/* Render PopperMenu component */}
                 <PopperMenu
                   toCancel={toCancel}
@@ -318,14 +302,13 @@ const toCancel = () => {
                   defectCoords={defectCoords}
                   toMainPage={backFromMenuClick}
                 />
-              </Box>
-            </>
+            </Container >
           )}
       
-          <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", minWidth: "970px" }}>
+          <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", minWidth: "920px" }}>
       
             {/* Left Section of the Page*/}
-            <Box sx={{ display: "flex", flexDirection: "column", flex: "1", justifyContent: { xs: "space-between", md: "none", maxWidth: "800px" } }}>
+            <Box sx={{ display: "flex", flexDirection: "column", flex: "1", justifyContent:"none", maxWidth: "800px"  }}>
       
               {/* Header Section */}
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -388,6 +371,7 @@ const toCancel = () => {
                     />
                   )
                 })}
+                { defectCoords.x && <img src={CustomCursor} style={{position:"absolute", top:defectCoords.y, left:defectCoords.x}}></img>}
               </Card>
       
               {/* Footer Section */}
@@ -433,25 +417,24 @@ const toCancel = () => {
             </Box>
       
             {/* Right Section */}
-            <Box fontSize={{ xs: "1.1em" }} sx={{ flex: "none", display: "flex", flexDirection: "column", flexWrap: { xs: "wrap" }, maxWidth: "7em" }}>
+            <Box fontSize={{ xs: "1.1em" }} sx={{ flex: "none", display: "flex", flexDirection: "column", maxWidth: "7em" }}>
               <Box>
                 {/* Technician Info */}
-                <HeaderBox>
-                  <Typography sx={{ display: "flex", justifyContent: "center", width: "80px", margin: 2, marginInlineEnd: "0.5em" }} color={"red"} fontWeight={600}>
+                  <Typography sx={{ display: "flex", justifyContent: "center", width:{xs:"80px", md:"100px"}, marginInlineStart: "0.5em" }} color={"red"} fontWeight={600}>
                     {data.headerData.firstname} {data.headerData.lastname}
                   </Typography>
-                </HeaderBox>
+           
       
                 {/* Checkbox Options */}
                 <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", flexShrink:0 }}>
                     <Checkbox size={"medium"} />
-                    <Typography fontSize={"0.9em"}>Harigami</Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography fontSize="0.9em">Harigami</Typography>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", flexShrink:0 }}>
                     <Checkbox size={"medium"} />
                     <Typography fontSize={"0.9em"}>RDD</Typography>
-                  </Box>
+                  </div>
                 </Box>
       
                 {/* Side Boxes */}
