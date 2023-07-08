@@ -13,7 +13,7 @@ const AudioPlayer = () => {
           audioRef.current.play()
           document.body.style.backgroundColor = "red"
         }
-      }, 3000); // Play the audio after 30 seconds
+      }, 30999999); // Play the audio after 30 seconds
     };
     //Function to reset timer if any action is taken
     const resetTimer = () => {

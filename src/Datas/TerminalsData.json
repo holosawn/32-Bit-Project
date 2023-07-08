@@ -55,7 +55,10 @@
           "userDesc": "Hata giriş",
           "termName": "PARÇA PROB."
         },
-        { "filterCode": "AQS0", "linkCount": 9 }
+        {
+          "filterCode": "AQS0",
+          "linkCount": 9
+        }
       ]
     },
     {
@@ -63,7 +66,10 @@
       "depCode": "AR",
       "shopCode": "A",
       "filterBaseds": [
-        { "filterCode": "ANALİ", "linkCount": 3 },
+        {
+          "filterCode": "ANALİ",
+          "linkCount": 3
+        },
         {
           "filterCode": "I/L",
           "linkCount": 1,
@@ -94,7 +100,12 @@
       "depName": "Assembly Repair Kritik",
       "depCode": "ARS",
       "shopCode": "A",
-      "filterBaseds": [{ "filterCode": "AR", "linkCount": 2 }]
+      "filterBaseds": [
+        {
+          "filterCode": "AR",
+          "linkCount": 2
+        }
+      ]
     },
     {
       "depName": "PRESS PROCESS",
@@ -138,15 +149,24 @@
       "depCode": "AI",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "EQ SP", "linkCount": 4 },
-        { "filterCode": "HAT", "linkCount": 27 },
+        {
+          "filterCode": "EQ SP",
+          "linkCount": 4
+        },
+        {
+          "filterCode": "HAT",
+          "linkCount": 27
+        },
         {
           "filterCode": "I/L",
           "linkCount": 1,
           "userDesc": "Hata düzeltme",
           "termName": "HATA DÜZELTME"
         },
-        { "filterCode": "KONF.", "linkCount": 2 },
+        {
+          "filterCode": "KONF.",
+          "linkCount": 2
+        },
         {
           "filterCode": "KONFI",
           "linkCount": 1,
@@ -159,21 +179,32 @@
           "userDesc": "Offline Takip",
           "termName": "OFF LINE  TAKİP"
         },
-        { "filterCode": "OTH", "linkCount": 4 }
+        {
+          "filterCode": "OTH",
+          "linkCount": 4
+        }
       ]
     },
     {
       "depName": "Audit Yard Port Follow",
       "depCode": "TLST",
       "shopCode": "QA",
-      "filterBaseds": [{ "filterCode": "TLST", "linkCount": 4 }]
+      "filterBaseds": [
+        {
+          "filterCode": "TLST",
+          "linkCount": 4
+        }
+      ]
     },
     {
       "depName": "COP Audit",
       "depCode": "COP",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "COP", "linkCount": 5 },
+        {
+          "filterCode": "COP",
+          "linkCount": 5
+        },
         {
           "filterCode": "COPAN",
           "linkCount": 1,
@@ -193,7 +224,10 @@
       "depCode": "DYN",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "DYN", "linkCount": 4 },
+        {
+          "filterCode": "DYN",
+          "linkCount": 4
+        },
         {
           "filterCode": "OTH",
           "linkCount": 1,
@@ -207,7 +241,10 @@
       "depCode": "ECL",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "ECL", "linkCount": 2 },
+        {
+          "filterCode": "ECL",
+          "linkCount": 2
+        },
         {
           "filterCode": "SEÇ",
           "linkCount": 1,
@@ -220,7 +257,12 @@
       "depName": "Field Quality Engineering",
       "depCode": "FQE",
       "shopCode": "QA",
-      "filterBaseds": [{ "filterCode": "FACTI", "linkCount": 2 }]
+      "filterBaseds": [
+        {
+          "filterCode": "FACTI",
+          "linkCount": 2
+        }
+      ]
     },
     {
       "depName": "Henkaten Management",
@@ -240,21 +282,32 @@
       "depCode": "MQEA",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "ANL", "linkCount": 8 },
+        {
+          "filterCode": "ANL",
+          "linkCount": 8
+        },
         {
           "filterCode": "CMM",
           "linkCount": 1,
           "userDesc": "Offline Takip",
           "termName": "CCM OFF LINE TAKİP"
         },
-        { "filterCode": "SORGU", "linkCount": 2 }
+        {
+          "filterCode": "SORGU",
+          "linkCount": 2
+        }
       ]
     },
     {
       "depName": "MQE Electric Analysis",
       "depCode": "MQEE",
       "shopCode": "QA",
-      "filterBaseds": [{ "filterCode": "ELEKT", "linkCount": 2 }]
+      "filterBaseds": [
+        {
+          "filterCode": "ELEKT",
+          "linkCount": 2
+        }
+      ]
     },
     {
       "depName": "Project AI",
@@ -305,7 +358,12 @@
       "depName": "QA Paint Audit",
       "depCode": "QAPA",
       "shopCode": "QA",
-      "filterBaseds": [{ "filterCode": "QAPA", "linkCount": 4 }]
+      "filterBaseds": [
+        {
+          "filterCode": "QAPA",
+          "linkCount": 4
+        }
+      ]
     },
     {
       "depName": "Receiving Inspection",
@@ -337,9 +395,18 @@
       "depCode": "SI",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "SI", "linkCount": 4 },
-        { "filterCode": "SI0", "linkCount": 2 },
-        { "filterCode": "SI1", "linkCount": 1 },
+        {
+          "filterCode": "SI",
+          "linkCount": 4
+        },
+        {
+          "filterCode": "SI0",
+          "linkCount": 2
+        },
+        {
+          "filterCode": "SI1",
+          "linkCount": 1
+        },
         {
           "filterCode": "SI2",
           "linkCount": 1,
@@ -359,7 +426,10 @@
           "userDesc": "Araç Analizi",
           "termName": "ARAÇ KAYIT  & HOLD & REPAIR "
         },
-        { "filterCode": "SIO1", "linkCount": 3 }
+        {
+          "filterCode": "SIO1",
+          "linkCount": 3
+        }
       ]
     },
     {
@@ -367,7 +437,10 @@
       "depCode": "SHP",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "SHP", "linkCount": 5 },
+        {
+          "filterCode": "SHP",
+          "linkCount": 5
+        },
         {
           "filterCode": "SHP1",
           "linkCount": 1,
@@ -381,7 +454,10 @@
       "depCode": "SHW",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "SHW", "linkCount": 3 },
+        {
+          "filterCode": "SHW",
+          "linkCount": 3
+        },
         {
           "filterCode": "SHW1",
           "linkCount": 1,
@@ -395,15 +471,24 @@
       "depCode": "VPI",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "HOLDI", "linkCount": 2 },
+        {
+          "filterCode": "HOLDI",
+          "linkCount": 2
+        },
         {
           "filterCode": "KONFI",
           "linkCount": 1,
           "userDesc": "Son Onay",
           "termName": "VPI KONFİRMASYON"
         },
-        { "filterCode": "OFFLN", "linkCount": 4 },
-        { "filterCode": "VPI", "linkCount": 3 }
+        {
+          "filterCode": "OFFLN",
+          "linkCount": 4
+        },
+        {
+          "filterCode": "VPI",
+          "linkCount": 3
+        }
       ]
     },
     {
@@ -411,7 +496,10 @@
       "depCode": "WAU",
       "shopCode": "QA",
       "filterBaseds": [
-        { "filterCode": "PWT", "linkCount": 7 },
+        {
+          "filterCode": "PWT",
+          "linkCount": 7
+        },
         {
           "filterCode": "SOR",
           "linkCount": 1,
@@ -444,8 +532,14 @@
       "depCode": "ED",
       "shopCode": "T",
       "filterBaseds": [
-        { "filterCode": "ED0", "linkCount": 2 },
-        { "filterCode": "ED1", "linkCount": 2 },
+        {
+          "filterCode": "ED0",
+          "linkCount": 2
+        },
+        {
+          "filterCode": "ED1",
+          "linkCount": 2
+        },
         {
           "filterCode": "ED2",
           "linkCount": 1,
@@ -459,8 +553,14 @@
       "depCode": "PRM",
       "shopCode": "T",
       "filterBaseds": [
-        { "filterCode": "PR0", "linkCount": 2 },
-        { "filterCode": "PR1", "linkCount": 2 },
+        {
+          "filterCode": "PR0",
+          "linkCount": 2
+        },
+        {
+          "filterCode": "PR1",
+          "linkCount": 2
+        },
         {
           "filterCode": "PR2",
           "linkCount": 1,
@@ -473,7 +573,12 @@
       "depName": "Paint Repair",
       "depCode": "PR",
       "shopCode": "T",
-      "filterBaseds": [{ "filterCode": "REP", "linkCount": 3 }]
+      "filterBaseds": [
+        {
+          "filterCode": "REP",
+          "linkCount": 3
+        }
+      ]
     },
     {
       "depName": "TOSO PROCESS",
@@ -568,8 +673,14 @@
           "userDesc": "Hata giriş",
           "termName": "RH Inspection 2"
         },
-        { "filterCode": "TC0", "linkCount": 2 },
-        { "filterCode": "TC1", "linkCount": 2 },
+        {
+          "filterCode": "TC0",
+          "linkCount": 2
+        },
+        {
+          "filterCode": "TC1",
+          "linkCount": 2
+        },
         {
           "filterCode": "TC2",
           "linkCount": 1,
@@ -607,8 +718,14 @@
           "userDesc": "Transfer",
           "termName": "TRANSFER WELDING"
         },
-        { "filterCode": "HDW", "linkCount": 2 },
-        { "filterCode": "MB", "linkCount": 4 },
+        {
+          "filterCode": "HDW",
+          "linkCount": 2
+        },
+        {
+          "filterCode": "MB",
+          "linkCount": 4
+        },
         {
           "filterCode": "MB1",
           "linkCount": 1,
@@ -639,7 +756,10 @@
           "userDesc": "Hızlı Sorgu Sayfası",
           "termName": "MB HIZLI SORGULAMA"
         },
-        { "filterCode": "MBO", "linkCount": 4 },
+        {
+          "filterCode": "MBO",
+          "linkCount": 4
+        },
         {
           "filterCode": "MBT",
           "linkCount": 1,
@@ -720,7 +840,10 @@
           "userDesc": "Offline Takip",
           "termName": "OFFLINE TAKİP"
         },
-        { "filterCode": "SB", "linkCount": 2 },
+        {
+          "filterCode": "SB",
+          "linkCount": 2
+        },
         {
           "filterCode": "SBCL",
           "linkCount": 1,
@@ -878,7 +1001,10 @@
           "userDesc": "Hata giriş",
           "termName": "UNDER BODY OFFLINE INSP."
         },
-        { "filterCode": "USK", "linkCount": 2 }
+        {
+          "filterCode": "USK",
+          "linkCount": 2
+        }
       ]
     },
     {
@@ -1064,8 +1190,14 @@
     {
       "depName": "General",
       "filterBaseds": [
-        { "filterCode": "000", "linkCount": 2 },
-        { "filterCode": "RO", "linkCount": 2 },
+        {
+          "filterCode": "000",
+          "linkCount": 2
+        },
+        {
+          "filterCode": "RO",
+          "linkCount": 2
+        },
         {
           "filterCode": "V",
           "linkCount": 1,

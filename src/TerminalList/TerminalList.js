@@ -34,7 +34,50 @@ const TerminalList = () => {
   // Change the background color of the page
   document.body.style.backgroundColor = "#c6ffc8";
 
-  const rowContent = (rowData) => (
+  const rowContent = (rowData) => {
+    
+    const cellContent = (cellData) => (
+    <Button
+      onClick={() =>
+        navigate(`${rowData.depCode}/${cellData.filterCode}`)
+      }
+      variant="outlined"
+      key={cellData.filterCode}
+      align="center"
+      sx={{
+        m: 1,
+        ml: 0,
+        color: "black",
+        fontWeight: 600,
+        position: "relative",
+        width: 100,
+      }}
+    >
+      <Typography>{cellData.filterCode}</Typography>
+
+      {/*Rendering number of linkCounts on buttons*/}
+      {cellData.linkCount > 1 ? (
+        <Typography
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            pl: 0.5,
+            pr: 0.5,
+            color: "white",
+            bgcolor: "red",
+            borderTopRightRadius: "0.2em",
+            borderBottomLeftRadius: "0.2em",
+            fontSize: "0.8em",
+            fontWeight: "700",
+          }}
+        >
+          {cellData.linkCount}
+        </Typography>
+      ) : null}
+    </Button>)
+
+    return (
 
     <TableRow key={rowData.depName}>
 
@@ -55,49 +98,11 @@ const TerminalList = () => {
       <TableCell sx={cellStyle}>
         {rowData.filterBaseds.map((arr) => (
           /*Rendering cells which contains buttons with functionality to navigate Login page with url parameters */
-          <Button
-            onClick={() =>
-              navigate(`${rowData.depCode}/${arr.filterCode}`)
-            }
-            variant="outlined"
-            key={arr.filterCode}
-            align="center"
-            sx={{
-              m: 1,
-              ml: 0,
-              color: "black",
-              fontWeight: 600,
-              position: "relative",
-              width: 100,
-            }}
-          >
-            <Typography>{arr.filterCode}</Typography>
-
-            {/*Rendering number of linkCounts on buttons*/}
-            {arr.linkCount > 1 ? (
-              <Typography
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  pl: 0.5,
-                  pr: 0.5,
-                  color: "white",
-                  bgcolor: "red",
-                  borderTopRightRadius: "0.2em",
-                  borderBottomLeftRadius: "0.2em",
-                  fontSize: "0.8em",
-                  fontWeight: "700",
-                }}
-              >
-                {arr.linkCount}
-              </Typography>
-            ) : null}
-          </Button>
+          cellContent(arr)
         ))}
       </TableCell>
     </TableRow>
-  )
+  )}
 
   const appBar = () => (
     <AppBar position="static" color="secondary" sx={cellStyle}>

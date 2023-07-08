@@ -142,7 +142,7 @@ const DefectLogin = () => {
     };
 
     // Function to erase the canvas
-    const eraseLine = () => {
+      const eraseLine = () => {
       if (ctxRef.current !== null) {
         ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       }
@@ -215,13 +215,13 @@ const DefectLogin = () => {
       }
       
           // This function handles the click event of the back button.
-      const handleBackClick = (fButtons , newImg)=>{
+      const handleBackClick = ()=>{
           // It takes the `fButtons` and `newImg` as parameters.
           // It updates the state variables and performs certain actions based on the button click.
           
-          if(currentButtons !== fButtons){
-              setImgId(newImg)
-              setCurrentButtons(fButtons)
+          if(currentButtons !== data.firstButtons){
+              setImgId(data.firstButtons[0].picId)
+              setCurrentButtons(data.firstButtons)
               setIsCoordSelect(false)
               eraseLine()
               setDefect({part : null, defect : null})
@@ -248,14 +248,6 @@ const DefectLogin = () => {
         setDefectCoords({ x: clientX, y: clientY });
         // Update the defectCoords state with the captured clientX and clientY coordinates.
       }
-      
-        // This function handles the click event on the back button in the menu.
-      const backFromMenuClick = () => {
-        // It resets the defect and defectCoords states to their initial values.
-      
-        setDefect({ part: null, defect: null });
-        setDefectCoords({ x: 0, y: 0 });
-      }
 
         // This function handles the click event on the clear button.
       const toClear = () => {
@@ -281,7 +273,6 @@ const DefectLogin = () => {
           setPopperOpen(false)
         };
   
-      
       return (!(data) ? <h1>Loading..</h1> : (
         <Box
           sx={{
@@ -300,7 +291,10 @@ const DefectLogin = () => {
                   toCancel={toCancel}
                   defect={defect}
                   defectCoords={defectCoords}
-                  toMainPage={backFromMenuClick}
+                  toMainPage={() => {
+                    toCancel()
+                    handleBackClick()
+                  }}
                 />
             </Container >
           )}
