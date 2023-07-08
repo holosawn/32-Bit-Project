@@ -39,7 +39,6 @@ const CustomSelect = ({ name, options, style, isDaySelect, shiftChange, defaultV
   useEffect(() => {
     if (isDaySelect) {
       setDayOptions(Array.from({ length: new Date(values.date.year, values.date.month, 0).getDate() }, (_, i) => i + 1));
-      console.log(dayOptions.length)
     }
   }, [values])
 
