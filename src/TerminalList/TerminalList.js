@@ -10,6 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const cellStyle = {
   border: "1px solid #9cdb9e",
@@ -18,18 +19,33 @@ const cellStyle = {
 };
 
 const TerminalList = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate();
   const [data, setData] = useState("empty");
 
-  // Getting data from server
   useEffect(() => {
-    axios
-      .post("/login")
-      .then(() => axios.get("/user"))
-      .then((res) => {
-        setData(res.data.terminalsData.data);
-      });
+    // Function to fetch data from the server
+    const fetchData = () => {
+      axios.post("/login")
+        .then(() => axios.get("/user"))
+        .then((res) => {
+          setData(res.data.terminalsData.data);
+        });
+    };
+  
+    // Initial data fetch
+    fetchData();
+  
+    // Interval to periodically check for updated data
+    const interval = setInterval(() => {
+      fetchData();
+      console.log("req")
+    }, 2000); // Set the interval duration in milliseconds (2 seconds in this case)
+  
+    // Clean up the interval when the component is unmounted
+    return () => clearInterval(interval);
   }, []);
+  
 
   // Change the background color of the page
   document.body.style.backgroundColor = "#c6ffc8";
@@ -108,16 +124,16 @@ const TerminalList = () => {
     <AppBar position="static" color="secondary" sx={cellStyle}>
         <Toolbar>
           <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 600 }}>
-            Complete Vehicle Quality
+            {t("Cvq")} 
           </Typography>
           <Button href="#" sx={{ ml: 2 }} variant="contained" color="primary">
-            Yardım
+            {t("help")}
           </Button>
           <Button href="#" sx={{ ml: 2 }} variant="contained" color="primary">
-            Anasayfa
+            {t("mainPage")}
           </Button>
           <Button href="#" sx={{ ml: 2 }} variant="contained" color="primary">
-            Destek
+            {t("assist")}
           </Button>
         </Toolbar>
       </AppBar>
@@ -138,7 +154,7 @@ const TerminalList = () => {
           variant="kazil"
           sx={{ textDecoration: "underline" }}
         >
-          Tüm Terminaller
+          {t("allTerminals")}
         </Typography>
       </TableCell>
     </TableRow>
@@ -149,7 +165,7 @@ const TerminalList = () => {
         sx={{ border: "1px solid #9cdb9e", Width: "20%" }}
         colSpan={1}
       >
-        <Typography variant="kazil">Bölüm Bazında</Typography>
+        <Typography variant="kazil">{t("deptBasis")}</Typography>
       </TableCell>
 
       <TableCell
@@ -157,14 +173,14 @@ const TerminalList = () => {
         sx={{ border: "1px solid #9cdb9e", width: "80%" }}
         colSpan={100}
       >
-        <Typography variant="kazil">Filtre Bazında</Typography>
+        <Typography variant="kazil">{t("filterBasis")}</Typography>
       </TableCell>
     </TableRow>
   </TableHead>
   )
   
   return data === "empty" ? (
-    <h1>Yükleniyor...</h1>
+   null
   ) : (
     <Box sx={{ bgColor: "primary" }}>
 

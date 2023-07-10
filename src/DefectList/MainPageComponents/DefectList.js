@@ -7,6 +7,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useNavigate } from "react-router-dom";
 import { DefectDataContext } from "../DefectDataProvider";
 import { StyledButton } from "../Constants";
+import { useTranslation } from "react-i18next";
 
 
 const DefectPage = () => {
@@ -20,6 +21,7 @@ const DefectPage = () => {
     formattedAssyNo: "",
   });
   const intervalRef = useRef(null); // state to store interval for scroll buttons
+  const { t } = useTranslation()
 
   // Handle the change event for filter inputs
   const handleFilterChange = (e) => {
@@ -115,7 +117,7 @@ const DefectPage = () => {
         {/* Filter by Body No */}
         <Box sx={{ display: "flex", alignItems: "center", margin: 0 }}>
           <Typography sx={{ color: "black", width: "7em", fontWeight: 700 }}>
-            BODY NO
+          {t("BODYNO")}
           </Typography>
           <OutlinedInput
             sx={{ width: { xs: "5em", md: "8em" } }}
@@ -130,7 +132,7 @@ const DefectPage = () => {
           sx={{ border: "1px solid black", color: "black", width: "6em" }}
           onClick={() => setInitialData(filterData(data.rows))}
         >
-          ARA
+          {t("SEARCH")}
         </Button>
       </Box>
 
@@ -152,13 +154,14 @@ const DefectPage = () => {
           sx={{ border: "1px solid black", color: "black", width: "6em" }}
           onClick={() => setInitialData(filterData(data.rows))}
         >
-          ARA
+          {t("search")}
         </Button>
       </Box>
     </Box>
   )
 
   const ScrollButtons = () => (
+
     <Box
     sx={{
       display: "flex",
@@ -210,6 +213,7 @@ const DefectPage = () => {
   )
 
   const NavigationButtons = () => (
+    
     <Box
     sx={{
       display: "flex",
@@ -219,16 +223,16 @@ const DefectPage = () => {
   >
     {/* First Row of Buttons */}
     <Box sx={{ flexDirection: "row" }}>
-      <StyledButton>ARAÇ LİSTESİ</StyledButton>
-      <StyledButton>MANUAL HATA</StyledButton>
-      <StyledButton>ÇOKLU HATA</StyledButton>
+      <StyledButton>{t("CARLİST")}</StyledButton>
+      <StyledButton>{t("MANUALDEF")}</StyledButton>
+      <StyledButton>{t("MULTİPLEDEF")}</StyledButton>
     </Box>
 
     {/* Second Row of Buttons */}
     <Box sx={{ flexDirection: "row" }}>
-      <StyledButton>HATA LİSTESİ</StyledButton>
-      <StyledButton>HATA KOPYA</StyledButton>
-      <StyledButton onClick={() => navigate("/")}>ÇIKIŞ</StyledButton>
+      <StyledButton>{t("DEFLİST")}</StyledButton>
+      <StyledButton>{t("DEFCOPY")}</StyledButton>
+      <StyledButton onClick={() => navigate("/")}>{t("EXİT")}</StyledButton>
     </Box>
   </Box>
   )

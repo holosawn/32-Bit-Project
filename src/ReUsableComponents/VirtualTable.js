@@ -11,6 +11,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import { forwardRef } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Alert, AlertTitle } from '@mui/material';
+import { useTranslation } from "react-i18next";
 
 /**
  * RemoveConfirmationDialog component renders a confirmation dialog for removing an item.
@@ -21,18 +22,19 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Alert, AlertTitle } 
  * @param {function} props.onClose - Callback function triggered when the cancel button is clicked.
  */
 const RemoveConfirmationDialog = ({ open, onConfirm, onClose }) => {
+  const { t } = useTranslation()
   return (
     <Dialog open={open}>
-      <DialogTitle>Confirm Removal</DialogTitle>
+      <DialogTitle>{t("confirm")}</DialogTitle>
       <DialogContent>
-        Are you sure you want to remove this item?
+        {t("question")}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="contained">
-          Cancel
+        {t("cancel")}
         </Button>
         <Button onClick={onConfirm} variant="contained">
-          Remove
+        {t("remove")}
         </Button>
       </DialogActions>
     </Dialog>
@@ -76,6 +78,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
     }, {})
   );
   const [removedRows, setRemovedRows] = useState([]);
+  const { t } = useTranslation()
 
   const nonSortable = ['save', 'action', 'nrReasons']; // Array of non-sortable columns
 
@@ -183,7 +186,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
                     setFilteredProperty(null);
                   }}
                 >
-                  SEARCH
+                  {t("SEARCH")}
                 </Button>
               </Box>
             )}
@@ -505,8 +508,8 @@ return (
     {/*Alert component to show up when there is an error in user login*/}
     {processFinish && (
 				<Alert severity="success" sx={{position:"fixed", left:"44%", bottom:"23%"}}>
-				  <AlertTitle>SUCCES</AlertTitle>
-				  <strong>CHANGES HAS SAVED</strong>
+				  <AlertTitle>{t("SUCCESS")}</AlertTitle>
+				  <strong>{t("CHANGESAVED")}</strong>
 				</Alert>
 			  )}
 
@@ -530,7 +533,7 @@ return (
       }}
     >
       <Typography sx={{ marginInlineEnd: 1, fontSize: "0.7rem" }}>
-        Total Rows: {initialData.length}
+        {t("totalRows")}: {initialData.length}
       </Typography>
     </Box>
   </>

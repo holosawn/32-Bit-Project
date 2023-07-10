@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { DefectLoginContext } from '../DefectLoginProvider';
 import { DataContext } from '../DataProvider';
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 
   // Footer component
   export const Footer = ({}) => {
+    const { t } = useTranslation()
 
     const {data, setData} = useContext(DataContext);
     const {imgId, setImgId} = useContext(DefectLoginContext)
@@ -62,32 +64,32 @@ import { useContext } from "react";
         <Box sx={{ display: "flex", fontSize: "1.2rem" }}>
           <OrdinaryBox onClick={() => navigate(-1)}>
             <OrdinaryTypography>
-              Çıkış
+            {t("exit")}
             </OrdinaryTypography>
           </OrdinaryBox>
           <OrdinaryBox>
             <OrdinaryTypography>
-              Model İlk Resmi
+            {t("mdlFirstPic")}
             </OrdinaryTypography>
           </OrdinaryBox>
           <OrdinaryBox onClick={handleBackClick}>
             <OrdinaryTypography>
-              {"<"} Geri
+              {"<"} {t("back")}
             </OrdinaryTypography>
           </OrdinaryBox>
           <OrdinaryBox onClick={() => navigate("/defectList")}>
             <OrdinaryTypography>
-              Hata Listesi
+            {t("defectList")}
             </OrdinaryTypography>
           </OrdinaryBox>
           <OrdinaryBox onClick={handleClearButton}>
             <OrdinaryTypography>
-              Temizle
+            {t("clear")}
             </OrdinaryTypography>
           </OrdinaryBox>
           <OrdinaryBox>
             <OrdinaryTypography>
-              Büyük Font
+            {t("bigFont")}
             </OrdinaryTypography>
           </OrdinaryBox>
         </Box>

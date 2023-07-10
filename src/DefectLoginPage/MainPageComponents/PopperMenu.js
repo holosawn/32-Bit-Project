@@ -10,6 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { HeaderBoxPopperMenu, labelStyle, SizeProperties, mainInputStyle, formBoxStyle, FormBox } from '../constants';
 import { DataContext } from '../DataProvider';
 import { DefectLoginContext } from '../DefectLoginProvider';
+import { useTranslation } from 'react-i18next';
 
 
 //Initial values for the form
@@ -40,6 +41,7 @@ const optionss = ["option1", "option2", "option3"];
 
 // PopperMenu component
 const PopperMenu = () => {
+  const { t } = useTranslation()
   
   const isMediumScreen = useMediaQuery('(max-width:899px)'); // hook to see if the screen is medium size
   const {defect, defectCoords,isPopperOpen , setPopperOpen, setImgId,
@@ -159,7 +161,7 @@ const PopperMenu = () => {
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <InputLabel sx={{ ...labelStyle, marginBlock: 0 }}>
-                      Sık Gelen Hata
+                    {t("frequentDefect")}
                     </InputLabel>
                     <Field name="freqDefect">
                       {({ field }) => (
@@ -181,7 +183,7 @@ const PopperMenu = () => {
                   {/*Defect responsible select*/}
                     <Box sx={formBoxStyle}>
                       <InputLabel sx={{ ...labelStyle }}>
-                        Hata Sorumlusu
+                      {t("defResp")}
                       </InputLabel>
                       <CustomSelect
                         name="defectResp"
@@ -192,7 +194,7 @@ const PopperMenu = () => {
                   {/*Defet Type selec*/}
                     <Box sx={formBoxStyle}>
                       <InputLabel sx={labelStyle}>
-                        Hata Sınıfı
+                      {t("defType")}
                       </InputLabel>
                       <CustomSelect
                         name="defectType"
@@ -203,7 +205,7 @@ const PopperMenu = () => {
                   {/*Exit Department select*/}
                     <Box sx={formBoxStyle} overflow="auto">
                       <InputLabel sx={labelStyle}>
-                        Exit Department
+                      {t("exitDept")}
                       </InputLabel>
                       <CustomSelect
                         name="ExitDepartment"
@@ -252,12 +254,12 @@ const PopperMenu = () => {
                       sx={{width: "100%", display: "flex", justifyContent: "space-between",}}>
                         {/*Submit Button*/}
                       <Button
-                        variant="contained"
+                        variant="contained" 
                         disabled={isSubmitting}
                         sx={{ ...SizeProperties }}
                         type="submit"
                       >
-                        Kaydet
+                        {t("save")}
                       </Button>
                       {/*Button to close PopperMenu*/}
                       <Button
@@ -265,7 +267,7 @@ const PopperMenu = () => {
                         sx={{ ...SizeProperties }}
                         onClick={toCancel}
                       >
-                        iptal
+                        {t("cancel")}
                       </Button>
                     </Box>
                   </Box>
@@ -276,7 +278,7 @@ const PopperMenu = () => {
                     {/*Description text input*/}
                   <Box sx={formBoxStyle}>
                     <InputLabel sx={{ ...labelStyle }}>
-                      Açıklama
+                    {t("exp")}
                     </InputLabel>
                     <CustomInput
                       name="explanation"
@@ -291,7 +293,7 @@ const PopperMenu = () => {
                     {/*ActionTaken text input*/}
                   <Box sx={formBoxStyle}>
                     <InputLabel sx={{ ...labelStyle, color: "red" }}>
-                      Yapılan İşlem*
+                    {t("actTaken")}*
                     </InputLabel>
                     <CustomInput
                       name="actionTaken"
@@ -305,7 +307,7 @@ const PopperMenu = () => {
                     {/*minorResp select*/}
                   <Box sx={formBoxStyle} overflow="auto">
                     <InputLabel sx={{ ...labelStyle, color: "red" }}>
-                      Alt Sorumlu*
+                    {t("minorResp")}*
                     </InputLabel>
                     <CustomSelect
                       name="minorResp"
@@ -329,7 +331,7 @@ const PopperMenu = () => {
       />
       
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography color="red">Teknik Destek</Typography>
+        <Typography color="red">{t("techSupport")}</Typography>
         <Typography fontWeight="600">6.2.192-CVQSTerminal</Typography>
       </Box>
     </Paper>

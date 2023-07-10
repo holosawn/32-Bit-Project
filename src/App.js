@@ -6,6 +6,7 @@ import DefectListPage from './DefectList/DefectListPage';
 import { DefectLoginPage } from './DefectLoginPage/DefectLoginPage';
 
 const App=() => {
+
    return<>
    <Routes>
     <Route path="/" element={<TerminalList />} />

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { ThemeProvider,createTheme } from '@mui/material';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+import "./i18n"
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./mocks/browser')

@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { Box, Container } from "@mui/material";
 import VirtualKeyboard from "../ReUsableComponents/VirtualKeyboard";
 import { Alert, AlertTitle } from "@mui/material";
-import {
-  HeaderBox,
-} from "./constants";
+import { HeaderBox } from "./constants";
 import LoginForm from "./LoginForm";
+import { useTranslation } from "react-i18next";
 
 const FormPage = () => {
   // Set the background color of the body
   document.body.style.backgroundColor = "#c6ffc8";
+  const { t } = useTranslation()
 
   // State variables
   const [loginError, setLoginError] = useState(); // Error state for login
@@ -115,7 +115,7 @@ const FormPage = () => {
   }
 
   return data === "empty" ? (
-    <h1>Loading...</h1>
+    <h1>...</h1>
   ) : (
     <Container sx={{ display: "flex", justifyContent: "center" }}>
       <Box
@@ -134,8 +134,8 @@ const FormPage = () => {
 
           {loginError && (
             <Alert severity="error" sx={{ position: "absolute", top: 0 }}>
-              <AlertTitle>Error</AlertTitle>
-              <strong>USER NOT FOUND</strong>
+              <AlertTitle>{t("error")}</AlertTitle>
+              <strong>{t("userNotFound")}</strong>
             </Alert>
           )}
         </HeaderBox>

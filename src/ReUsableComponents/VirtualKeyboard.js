@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Keyboard from 'react-simple-keyboard';
 import "react-simple-keyboard/build/css/index.css"
-
+import Tur from "simple-keyboard-layouts/build/layouts/turkish";
+import en from  "simple-keyboard-layouts/build/layouts/english"
+import { useTranslation } from 'react-i18next';
 /**
  * VirtualKeyboard component renders a virtual keyboard using react-simple-keyboard library.
  *
@@ -13,7 +15,7 @@ import "react-simple-keyboard/build/css/index.css"
 const VirtualKeyboard = ({ keyboardRef, inputName, onChangeAll }) => {
   // State to track the current layout of the keyboard
   const [layoutName, setLayoutName] = useState('default');
-
+  const { t } = useTranslation()
   /**
    * Event handler for the Shift key on the virtual keyboard.
    * Toggles between the 'default' and 'shift' layouts.
@@ -37,11 +39,14 @@ const VirtualKeyboard = ({ keyboardRef, inputName, onChangeAll }) => {
     }
   };
 
+    const layout= t("keyboardLayout") === "en" ? {...en} : {...Tur}
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <div style={{ maxWidth: "1000px", width: "100%" }}>
         {/* Render the virtual keyboard component */}
         <Keyboard
+          {...layout}
           keyboardRef={(r) => (keyboardRef.current = r)}
           inputName={inputName}
           layoutName={layoutName}

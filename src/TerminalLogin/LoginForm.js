@@ -2,11 +2,12 @@
     import {React } from 'react'
     import {Button, Box} from "@mui/material"
     import { Formik, Form} from "formik"
+    import { useNavigate } from "react-router-dom";
     import * as yup from "yup"
     import CustomInput from '../ReUsableComponents/Custominput'
     import CustomSelect from '../ReUsableComponents/CustomSelect'
     import { labelStyle, buttonBoxStyle, buttonStyle,FormBox, formBoxStyle, mainInputStyle } from './constants'
-
+    import { useTranslation } from 'react-i18next';
 
     // Initial values for the form fields
 	const initialValues = {
@@ -46,8 +47,10 @@
         .required()
     })
 
-    const LoginForm = ({ onSubmit, navigate, setShiftColor, getInputValue, setInputName, onChangeInput, terminalOptions, shiftColor, ShiftOptions }) => {
+    const LoginForm = ({ onSubmit, setShiftColor, getInputValue, setInputName, onChangeInput, terminalOptions, shiftColor, ShiftOptions }) => {
     
+    const navigate = useNavigate(); // Navigation function
+    const { t } = useTranslation()
     return (
         <FormBox >
         <Formik
@@ -61,7 +64,7 @@
             {/*Rendering Terminal select */}
             <Box sx={formBoxStyle} overflow={"auto"}>  
                 <InputLabel  sx={{...labelStyle}}>
-                    Terminal Listesi
+                    {t("terminalList")}
                 </InputLabel>
                 <CustomSelect
                 name="terminal"
@@ -74,7 +77,7 @@
             {/*rendering Sicil input*/}
             <Box sx={formBoxStyle} overflow={"auto"}>
                 <InputLabel sx={labelStyle}>
-                    Sicil No
+                    {t("sicil")}
                 </InputLabel>
                 <CustomInput
                 name="sicil"
@@ -82,7 +85,7 @@
                 value={getInputValue("sicil")}
                 onFocus={() => setInputName("sicil")}
                 extraOnChange={onChangeInput}	
-                placeholder="Sicil No"
+                placeholder={t("sicil")}
                 style={mainInputStyle}		
                     
                 />
@@ -90,21 +93,21 @@
                 {/*Rendering password input*/}
             <Box sx={formBoxStyle} overflow={"auto"}>
                 <InputLabel sx={labelStyle}>
-                    Şifre
+                    {t("password")}
                 </InputLabel>
                 <CustomInput
                 name="password"
                 type="password"value={getInputValue("password")}
                 onFocus={() => setInputName("password")}
                 extraOnChange={onChangeInput}	
-                placeholder="Şifre"	
+                placeholder={t("password")}	
                 style={mainInputStyle}		  
                 />
             </Box>
                 {/*Rendering Assy No input*/}
             <Box sx={formBoxStyle} overflow={"auto"}>
                 <InputLabel sx={labelStyle}>
-                    Montaj No
+                    {t("assy")}
                 </InputLabel>
                 <CustomInput
                 name="montaj"
@@ -112,7 +115,7 @@
                 value={getInputValue("montaj")}
                 onFocus={() => setInputName("montaj")}
                 extraOnChange={onChangeInput}	
-                placeholder="Montaj No"	
+                placeholder={t("assy")}
                 style={mainInputStyle}		  
                 
                 />
@@ -123,7 +126,7 @@
 
                 <Box sx={{display:"flex",flexDirection:"row"}}>
                     <InputLabel sx={labelStyle}>
-                        Tarih
+                        {t("date")}
                     </InputLabel>
                 
                         <CustomSelect
@@ -154,7 +157,7 @@
                             marginInlineStart:{xs:0,md:1.35},
                             marginInlineEnd:{xs:11,md:1.5},
                         }}>
-                            Shift
+                            {t("shift")}
                         </InputLabel>
                         <CustomSelect
                         name="shift"
@@ -174,10 +177,10 @@
             {/*Rendering Login and Back buttons*/}
             <Box sx={buttonBoxStyle}>
                 <Button sx={{...buttonStyle,backgroundColor:"#0f0f0f"}} disabled={isSubmitting} variant='contained' type="submit">
-                Giriş yap
+                {t("login")}
                 </Button>
                 <Button sx={buttonStyle} variant='contained' onClick={() => navigate(-1)}>
-                Geri
+                {t("back")}
                 </Button>
             </Box>
             </Form>
