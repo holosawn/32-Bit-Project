@@ -1,12 +1,20 @@
 import {InputLabel, Typography, Container, Backdrop, Checkbox, Paper, Button, Box  } from '@mui/material';
 import React, { useState, useRef, useEffect, useContext } from 'react';
+import {InputLabel, Typography, Container, Backdrop, Checkbox, Paper, Button, Box  } from '@mui/material';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
 import axios from 'axios';
 import CustomInput from '../../ReUsableComponents/Custominput';
 import CustomSelect from '../../ReUsableComponents/CustomSelect';
 import VirtualKeyboard from '../../ReUsableComponents/VirtualKeyboard';
+import CustomInput from '../../ReUsableComponents/Custominput';
+import CustomSelect from '../../ReUsableComponents/CustomSelect';
+import VirtualKeyboard from '../../ReUsableComponents/VirtualKeyboard';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { HeaderBoxPopperMenu, labelStyle, SizeProperties, mainInputStyle, formBoxStyle, FormBox } from '../constants';
+import { DataContext } from '../DataProvider';
+import { DefectLoginContext } from '../DefectLoginProvider';
 import { HeaderBoxPopperMenu, labelStyle, SizeProperties, mainInputStyle, formBoxStyle, FormBox } from '../constants';
 import { DataContext } from '../DataProvider';
 import { DefectLoginContext } from '../DefectLoginProvider';
@@ -45,9 +53,18 @@ const PopperMenu = () => {
   const {defect, defectCoords,isPopperOpen , setPopperOpen, setImgId,
      setCurrentButtons, setIsCoordSelect, setDefect, setDefectCoords, } = useContext(DefectLoginContext)
   const {data, setData} = useContext(DataContext)
+  const {defect, defectCoords,isPopperOpen , setPopperOpen, setImgId,
+     setCurrentButtons, setIsCoordSelect, setDefect, setDefectCoords, } = useContext(DefectLoginContext)
+  const {data, setData} = useContext(DataContext)
   const [inputs, setInputs] = useState({});  //State to store inputs for Virtual keyboard
   const [inputName, setInputName] = useState("default");  // State to store name of the fields for Virtual keyboard
   const keyboard = useRef(); // Hook for Virtual Keyboard
+
+  // This function handles the cancel action.
+  const toCancel = () => {
+    // It closes the popper and resets the defectCoords and defect states.
+    setPopperOpen(false)
+  };
 
   // This function handles the cancel action.
   const toCancel = () => {
@@ -71,8 +88,14 @@ const PopperMenu = () => {
     actions.resetForm({ values: initialValues });
     toCancel()
     handleSaveClick()
+    toCancel()
+    handleSaveClick()
   };
 
+  // onChangeAll function to update all inputs at once
+  const onChangeAll = (inputs) => {
+    setInputs({ ...inputs });
+  };
   // onChangeAll function to update all inputs at once
   const onChangeAll = (inputs) => {
     setInputs({ ...inputs });
@@ -81,7 +104,14 @@ const PopperMenu = () => {
   // onChangeInput function to handle input change for a specific input field
   const onChangeInput = (event) => {
     const inputVal = event.target.value;
+  // onChangeInput function to handle input change for a specific input field
+  const onChangeInput = (event) => {
+    const inputVal = event.target.value;
 
+    setInputs((prev) => ({
+      ...prev,
+      [inputName]: inputVal,
+    }));
     setInputs((prev) => ({
       ...prev,
       [inputName]: inputVal,
@@ -89,12 +119,34 @@ const PopperMenu = () => {
 
     keyboard.current.setInput(inputVal);
   };
+    keyboard.current.setInput(inputVal);
+  };
 
   // getInputValue function to get the value of a specific input field from the state
   const getInputValue = (inputName) => {
     return inputs[inputName] || "";
   };
+  // getInputValue function to get the value of a specific input field from the state
+  const getInputValue = (inputName) => {
+    return inputs[inputName] || "";
+  };
 
+  const handleSaveClick = ()=>{
+          setImgId(data.firstButtons[0].picId)
+          setCurrentButtons(data.firstButtons)
+          setIsCoordSelect(false)
+          setDefect({part : null, defect : null})
+          setDefectCoords({x:0 , y:0})
+      
+    }
+
+  return !isPopperOpen ? (
+    null
+  ) : (
+      //{/* Main form section */}
+            <Container sx={{display:"flex", justifyContent:"center", minWidth: "920px", 
+            }}>
+            <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)', zIndex:200}} />
   const handleSaveClick = ()=>{
           setImgId(data.firstButtons[0].picId)
           setCurrentButtons(data.firstButtons)
@@ -150,6 +202,7 @@ const PopperMenu = () => {
               >
                 {/* Header section */}
                 <HeaderBoxPopperMenu color="secondary">
+                <HeaderBoxPopperMenu color="secondary">
                   <Typography
                     sx={{ marginInlineStart: 1 }}
                     fontWeight="600"
@@ -172,6 +225,7 @@ const PopperMenu = () => {
                       )}
                     </Field>
                   </Box>
+                </HeaderBoxPopperMenu>
                 </HeaderBoxPopperMenu>
 
                 {/* Form fields */}
@@ -264,6 +318,7 @@ const PopperMenu = () => {
                         variant="contained"
                         sx={{ ...SizeProperties }}
                         onClick={toCancel}
+                        onClick={toCancel}
                       >
                         iptal
                       </Button>
@@ -334,6 +389,7 @@ const PopperMenu = () => {
       </Box>
     </Paper>
 
+    </Container >
     </Container >
 );
 
