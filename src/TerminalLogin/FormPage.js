@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 const FormPage = () => {
   // Set the background color of the body
   document.body.style.backgroundColor = "#c6ffc8";
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   // State variables
   const [loginError, setLoginError] = useState(); // Error state for login
@@ -78,7 +78,7 @@ const FormPage = () => {
       // Set login error flag if credentials don't match
       setLoginError(true);
     }
-  }
+  };
 
   // Fetch data from the server on component mount
   useEffect(() => {
@@ -127,11 +127,13 @@ const FormPage = () => {
           width: { xs: "100vw", sm: "100vw", md: "70vw" },
         }}
       >
+        {/* Render the header */}
         <HeaderBox color="secondary">
           <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
             <Typography variant="kazil">CVGS(TMMT)</Typography>
           </Toolbar>
 
+          {/* Render the login error alert */}
           {loginError && (
             <Alert severity="error" sx={{ position: "absolute", top: 0 }}>
               <AlertTitle>{t("error")}</AlertTitle>
@@ -140,6 +142,7 @@ const FormPage = () => {
           )}
         </HeaderBox>
 
+        {/* Render the login form */}
         <LoginForm
           onSubmit={onSubmit}
           getInputValue={getInputValue}
@@ -151,6 +154,7 @@ const FormPage = () => {
           shiftColor={shiftColor}
         />
 
+        {/* Render the virtual keyboard */}
         <div style={{ width: "100%" }}>
           <VirtualKeyboard
             keyboardRef={keyboard}

@@ -7,7 +7,9 @@ import { useTranslation } from "react-i18next";
 const DefectTable = () => {
 
     const {data, setData} = useContext(DefectDataContext)
-    const {initialData, setInitialData} = useContext(DefectDataContext)
+
+    // state to stash filtered and sorted version of original data on 
+    const {initialData, setInitialData} = useContext(DefectDataContext)  
     const tableRef = useContext(DefectDataContext); //hook to hols Virtual Table
     
     const { t } = useTranslation()

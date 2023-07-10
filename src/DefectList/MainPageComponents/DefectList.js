@@ -1,5 +1,11 @@
 import * as React from "react";
-import { Box, OutlinedInput, Button, CssBaseline, Typography } from "@mui/material";
+import {
+  Box,
+  OutlinedInput,
+  Button,
+  CssBaseline,
+  Typography,
+} from "@mui/material";
 import { useState, useRef, useContext } from "react";
 import { IconButton, styled } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -9,25 +15,22 @@ import { DefectDataContext } from "../DefectDataProvider";
 import { StyledButton } from "../Constants";
 import { useTranslation } from "react-i18next";
 
-
 const DefectPage = () => {
   const navigate = useNavigate();
-  const {data, setData} = useContext(DefectDataContext)
-  const {initialData, setInitialData} = useContext(DefectDataContext)
-  const tableRef = useContext(DefectDataContext); //hook to hols Virtual Table
+  const { data, setData } = useContext(DefectDataContext);
+  const { initialData, setInitialData } = useContext(DefectDataContext);
+  const tableRef = useContext(DefectDataContext); // Ref to hold the Virtual Table component
   const [filterValues, setFilterValues] = useState({
-    //state to store filter values
     formattedBodyNo: "",
     formattedAssyNo: "",
   });
-  const intervalRef = useRef(null); // state to store interval for scroll buttons
-  const { t } = useTranslation()
+  const intervalRef = useRef(null); // Ref to hold the interval for scroll buttons
+  const { t } = useTranslation();
 
   // Handle the change event for filter inputs
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
 
-    //changing filterValues
     setFilterValues((prevValues) => ({
       ...prevValues,
       [name]: value,
@@ -38,7 +41,6 @@ const DefectPage = () => {
   const filterData = (rows) => {
     const filterProperties = Object.keys(filterValues);
 
-    // If data is empty, return an empty array
     if (data === "empty") return [];
 
     const filteredData = rows.filter((row) =>
@@ -58,12 +60,12 @@ const DefectPage = () => {
     );
     return filteredData;
   };
-  
+
   // Remove a row from the data based on the provided rowId
   const removeRow = (rowId) => {
     setData((prevData) => {
       const updatedRows = [...prevData.rows];
-      const indexOfRemove = updatedRows.findIndex((obj) => obj.id === rowId)
+      const indexOfRemove = updatedRows.findIndex((obj) => obj.id === rowId);
 
       updatedRows.splice(indexOfRemove, 1);
       setInitialData(filterData(updatedRows));
@@ -104,29 +106,29 @@ const DefectPage = () => {
     clearInterval(intervalRef.current);
   };
 
-  const FilterInputs= () => (
-
-      <Box
+  // Render the filter inputs
+  const FilterInputs = () => (
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column-reverse",
         justifyContent: "center",
         mr: 1,
       }}
-      >
-        {/* Filter by Body No */}
-        <Box sx={{ display: "flex", alignItems: "center", margin: 0 }}>
-          <Typography sx={{ color: "black", width: "7em", fontWeight: 700 }}>
+    >
+      {/* Filter by Body No */}
+      <Box sx={{ display: "flex", alignItems: "center", margin: 0 }}>
+        <Typography sx={{ color: "black", width: "7em", fontWeight: 700 }}>
           {t("BODYNO")}
-          </Typography>
-          <OutlinedInput
-            sx={{ width: { xs: "5em", md: "8em" } }}
-            size="small"
-            type="text"
-            id="formattedBodyNo"
-            name="formattedBodyNo"
-            value={filterValues.formattedBodyNo}
-            onChange={handleFilterChange}
+        </Typography>
+        <OutlinedInput
+          sx={{ width: { xs: "5em", md: "8em" } }}
+          size="small"
+          type="text"
+          id="formattedBodyNo"
+          name="formattedBodyNo"
+          value={filterValues.formattedBodyNo}
+          onChange={handleFilterChange}
         />
         <Button
           sx={{ border: "1px solid black", color: "black", width: "6em" }}
@@ -154,88 +156,88 @@ const DefectPage = () => {
           sx={{ border: "1px solid black", color: "black", width: "6em" }}
           onClick={() => setInitialData(filterData(data.rows))}
         >
-          {t("search")}
+          {t("SEARCH")}
         </Button>
       </Box>
     </Box>
-  )
+  );
 
+  // Render the scroll buttons
   const ScrollButtons = () => (
-
-    <Box
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-      margin: 1,
-      flexWrap: "wrap",
-    }}
-  >
-    {/* Scroll Up Button */}
     <Box
       sx={{
-        backgroundColor: "red",
-        borderRadius: "0.2em",
-        marginBlockStart: 1,
+        display: "flex",
+        flexDirection: "column",
+        margin: 1,
+        flexWrap: "wrap",
       }}
     >
-      <IconButton
-        sx={{ width: "3.5em", height: "1.6em" }}
-        color="secondary"
-        onMouseDown={() => handleMouseDown("up")}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onClick={() => handleMouseClick("up")}
+      {/* Scroll Up Button */}
+      <Box
+        sx={{
+          backgroundColor: "red",
+          borderRadius: "0.2em",
+          marginBlockStart: 1,
+        }}
       >
-        <KeyboardArrowUpIcon />
-      </IconButton>
-    </Box>
+        <IconButton
+          sx={{ width: "3.5em", height: "1.6em" }}
+          color="secondary"
+          onMouseDown={() => handleMouseDown("up")}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onClick={() => handleMouseClick("up")}
+        >
+          <KeyboardArrowUpIcon />
+        </IconButton>
+      </Box>
 
-    {/* Scroll Down Button */}
-    <Box
-      sx={{
-        backgroundColor: "red",
-        borderRadius: "0.2em",
-        marginBlockStart: 0.2,
-      }}
-    >
-      <IconButton
-        sx={{ width: "3.5em", height: "1.6em" }}
-        color="secondary"
-        onMouseDown={() => handleMouseDown("down")}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onClick={() => handleMouseClick("down")}
+      {/* Scroll Down Button */}
+      <Box
+        sx={{
+          backgroundColor: "red",
+          borderRadius: "0.2em",
+          marginBlockStart: 0.2,
+        }}
       >
-        <KeyboardArrowDownIcon />
-      </IconButton>
+        <IconButton
+          sx={{ width: "3.5em", height: "1.6em" }}
+          color="secondary"
+          onMouseDown={() => handleMouseDown("down")}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onClick={() => handleMouseClick("down")}
+        >
+          <KeyboardArrowDownIcon />
+        </IconButton>
+      </Box>
     </Box>
-  </Box>
-  )
+  );
 
+  // Render the navigation buttons
   const NavigationButtons = () => (
-    
     <Box
-    sx={{
-      display: "flex",
-      flexDirection: { xs: "column", lg: "row" },
-      justifyContent: "center",
-    }}
-  >
-    {/* First Row of Buttons */}
-    <Box sx={{ flexDirection: "row" }}>
-      <StyledButton>{t("CARLİST")}</StyledButton>
-      <StyledButton>{t("MANUALDEF")}</StyledButton>
-      <StyledButton>{t("MULTİPLEDEF")}</StyledButton>
-    </Box>
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", lg: "row" },
+        justifyContent: "center",
+      }}
+    >
+      {/* First Rowof Buttons */}
+      <Box sx={{ flexDirection: "row" }}>
+        <StyledButton>{t("CARLİST")}</StyledButton>
+        <StyledButton>{t("MANUALDEF")}</StyledButton>
+        <StyledButton>{t("MULTİPLEDEF")}</StyledButton>
+      </Box>
 
-    {/* Second Row of Buttons */}
-    <Box sx={{ flexDirection: "row" }}>
-      <StyledButton>{t("DEFLİST")}</StyledButton>
-      <StyledButton>{t("DEFCOPY")}</StyledButton>
-      <StyledButton onClick={() => navigate("/")}>{t("EXİT")}</StyledButton>
+      {/* Second Row of Buttons */}
+      <Box sx={{ flexDirection: "row" }}>
+        <StyledButton>{t("DEFLİST")}</StyledButton>
+        <StyledButton>{t("DEFCOPY")}</StyledButton>
+        <StyledButton onClick={() => navigate("/")}>{t("EXİT")}</StyledButton>
+      </Box>
     </Box>
-  </Box>
-  )
+  );
 
   return (
     <>
@@ -247,12 +249,11 @@ const DefectPage = () => {
           backgroundColor: "white",
         }}
       >
-      {FilterInputs()}
+        {FilterInputs()}
 
-      {ScrollButtons()}
+        {ScrollButtons()}
 
-      {NavigationButtons()}
-
+        {NavigationButtons()}
       </Box>
     </>
   );

@@ -16,6 +16,8 @@ const VirtualKeyboard = ({ keyboardRef, inputName, onChangeAll }) => {
   // State to track the current layout of the keyboard
   const [layoutName, setLayoutName] = useState('default');
   const { t } = useTranslation()
+
+  
   /**
    * Event handler for the Shift key on the virtual keyboard.
    * Toggles between the 'default' and 'shift' layouts.
@@ -29,8 +31,6 @@ const VirtualKeyboard = ({ keyboardRef, inputName, onChangeAll }) => {
   /**
    * Event handler for key press events on the virtual keyboard.
    * Handles special keys like Shift and Caps Lock.
-   *
-   * @param {string} button - The pressed key button.
    */
   const onKeyPress = (button) => {
     if (button === '{shift}' || button === '{lock}') {

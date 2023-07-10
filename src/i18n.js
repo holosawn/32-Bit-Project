@@ -6,7 +6,7 @@ i18next
     .use(initReactI18next)
     .use(LanguageDetector)
     .init({
-        fallbackLng:"Tur",
+        fallbackLng:"en",
         resources:{
             en:{
                 translation: {
@@ -87,7 +87,10 @@ i18next
                     hour:"Hour",
                     defManager:"Defect Mng.",
                     minorRes:"Minor Manager",
-                    process:"Process"
+                    process:"Process",
+
+                    noPage:"404 Page Not Found",
+                    noPagep:"The page you are looking for could not be found."
 
                 }
             },
@@ -170,7 +173,10 @@ i18next
                     hour:"Saat",
                     defManager:"Hata Mng.",
                     minorRes:"Alt Sorumlu",
-                    process:"İşlem"
+                    process:"İşlem",
+
+                    noPage:"404 Sayfa Bulunamadı",
+                    noPagep:"Aradığınız sayfa bulunamadı."
 
                 }
             }

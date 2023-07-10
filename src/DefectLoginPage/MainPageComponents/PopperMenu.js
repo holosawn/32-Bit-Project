@@ -1,8 +1,7 @@
-import {InputLabel, Typography, Container, Backdrop, Checkbox, Paper, Button, Box  } from '@mui/material';
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import { InputLabel, Typography, Container, Backdrop, Checkbox, Paper, Button, Box } from '@mui/material';
+import React, { useState, useRef, useContext } from 'react';
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
-import axios from 'axios';
 import CustomInput from '../../ReUsableComponents/Custominput';
 import CustomSelect from '../../ReUsableComponents/CustomSelect';
 import VirtualKeyboard from '../../ReUsableComponents/VirtualKeyboard';
@@ -12,8 +11,7 @@ import { DataContext } from '../DataProvider';
 import { DefectLoginContext } from '../DefectLoginProvider';
 import { useTranslation } from 'react-i18next';
 
-
-//Initial values for the form
+// Initial values for the form
 const initialValues = {
   defectResp: "",
   Harigami: false,
@@ -25,7 +23,8 @@ const initialValues = {
   freqDefect: false,
   RDD: ""
 };
-//schema for the form
+
+// Schema for form validation
 const advancedSchema = yup.object().shape({
   defectResp: yup.string().required("Required"),
   Harigami: yup.string().required("Required"),
@@ -36,31 +35,31 @@ const advancedSchema = yup.object().shape({
   minorResp: yup.string(),
   RDD: yup.string().required("Required")
 });
-//Options array to simulate options
+
+// Options array to simulate options
 const optionss = ["option1", "option2", "option3"];
 
 // PopperMenu component
 const PopperMenu = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   
-  const isMediumScreen = useMediaQuery('(max-width:899px)'); // hook to see if the screen is medium size
-  const {defect, defectCoords,isPopperOpen , setPopperOpen, setImgId,
-     setCurrentButtons, setIsCoordSelect, setDefect, setDefectCoords, } = useContext(DefectLoginContext)
-  const {data, setData} = useContext(DataContext)
-  const [inputs, setInputs] = useState({});  //State to store inputs for Virtual keyboard
-  const [inputName, setInputName] = useState("default");  // State to store name of the fields for Virtual keyboard
-  const keyboard = useRef(); // Hook for Virtual Keyboard
+  const isMediumScreen = useMediaQuery('(max-width:899px)'); // Hook to check if the screen is medium-sized
+  const { defect, defectCoords, isPopperOpen, setPopperOpen, setImgId, setCurrentButtons, setIsCoordSelect, setDefect, setDefectCoords } = useContext(DefectLoginContext);
+  const { data, setData } = useContext(DataContext);
+  const [inputs, setInputs] = useState({}); // State to store inputs for the Virtual Keyboard
+  const [inputName, setInputName] = useState("default"); // State to store the name of the field for the Virtual Keyboard
+  const keyboard = useRef(); // Ref for the Virtual Keyboard component
 
-  // This function handles the cancel action.
+  // Function to handle the cancel action
   const toCancel = () => {
-    // It closes the popper and resets the defectCoords and defect states.
-    setPopperOpen(false)
+    // Close the popper and reset the defectCoords and defect states
+    setPopperOpen(false);
   };
 
-  // Clearing inputs when form is submitted
+  // Function to clear inputs when the form is submitted
   const clearingInputsOnSubmit = () => {
     setInputs({});
-    Object.keys(inputs).forEach(inputName =>
+    Object.keys(inputs).forEach((inputName) =>
       keyboard.current.setInput("", inputName)
     );
   };
@@ -71,8 +70,8 @@ const PopperMenu = () => {
     clearingInputsOnSubmit();
     console.log(defect, defectCoords, values);
     actions.resetForm({ values: initialValues });
-    toCancel()
-    handleSaveClick()
+    toCancel();
+    handleSaveClick();
   };
 
   // onChangeAll function to update all inputs at once
@@ -97,93 +96,92 @@ const PopperMenu = () => {
     return inputs[inputName] || "";
   };
 
-  const handleSaveClick = ()=>{
-          setImgId(data.firstButtons[0].picId)
-          setCurrentButtons(data.firstButtons)
-          setIsCoordSelect(false)
-          setDefect({part : null, defect : null})
-          setDefectCoords({x:0 , y:0})
-      
-    }
+  // Handle click event for the save button
+  const handleSaveClick = () => {
+    setImgId(data.firstButtons[0].picId);
+    setCurrentButtons(data.firstButtons);
+    setIsCoordSelect(false);
+    setDefect({ part: null, defect: null });
+    setDefectCoords({ x: 0, y: 0 });
+  };
 
   return !isPopperOpen ? (
     null
   ) : (
-      //{/* Main form section */}
-            <Container sx={{display:"flex", justifyContent:"center", minWidth: "920px", 
-            }}>
-            <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)', zIndex:200}} />
-    <Paper
-      sx={{
-        backgroundColor: "#c6ffc8",
-        minWidth: "920px",
-        width: "90vw",
-        height: "60vh",
-        minHeight: "700px",
-        maxHeight: "700px",
-        flexDirection: "column",
-        marginBlockStart: "3rem",
-        display: "flex",
-        justifyContent: "center",
-        position: 'absolute',
-        zIndex: 200,
-        maxWidth: "100%",
-      }}
-    >
-      <FormBox>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={advancedSchema}
-          onSubmit={onSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  minWidth: "600px",
-                  width: "90vw",
-                  maxWidth: "1000px",
-                  height: "60vh",
-                  maxHeight: "440px",
-                }}
-              >
-                {/* Header section */}
-                <HeaderBoxPopperMenu color="secondary">
-                  <Typography
-                    sx={{ marginInlineStart: 1 }}
-                    fontWeight="600"
-                    fontSize="1.2em"
-                  >
-                    CVQS(TMMT)
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <InputLabel sx={{ ...labelStyle, marginBlock: 0 }}>
-                    {t("frequentDefect")}
-                    </InputLabel>
-                    <Field name="freqDefect">
-                      {({ field }) => (
-                        <Checkbox
-                          size={isMediumScreen ? "small" : "large"}
-                          checked={field.value}
-                          onChange={field.onChange("freqDefect")}
-                          onBlur={field.onBlur}
-                        />
-                      )}
-                    </Field>
-                  </Box>
-                </HeaderBoxPopperMenu>
+    <Container sx={{ display: "flex", justifyContent: "center", minWidth: "920px" }}>
+      <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)', zIndex:200}} />
+      <Paper
+        sx={{
+          backgroundColor: "#c6ffc8",
+          minWidth: "920px",
+          width: "90vw",
+          height: "60vh",
+          minHeight: "700px",
+          maxHeight: "700px",
+          flexDirection: "column",
+          marginBlockStart: "3rem",
+          display: "flex",
+          justifyContent: "center",
+          position: 'absolute',
+          zIndex: 200,
+          maxWidth: "100%",
+        }}
+      >
+        <FormBox>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={advancedSchema}
+            onSubmit={onSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    minWidth: "600px",
+                    width: "90vw",
+                    maxWidth: "1000px",
+                    height: "60vh",
+                    maxHeight: "440px",
+                  }}
+                >
+                  {/* Header section */}
+                  <HeaderBoxPopperMenu color="secondary">
+                    <Typography
+                      sx={{ marginInlineStart: 1 }}
+                      fontWeight="600"
+                      fontSize="1.2em"
+                    >
+                      CVQS(TMMT)
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <InputLabel sx={{ ...labelStyle, marginBlock: 0 }}>
+                        {t("frequentDefect")}
+                      </InputLabel>
+                      <Field name="freqDefect">
+                        {({ field }) => (
+                          <Checkbox
+                            size={isMediumScreen ? "small" : "large"}
+                            checked={field.value}
+                            onChange={field.onChange("freqDefect")}
+                            onBlur={field.onBlur}
+                          />
+                        )}
+                      </Field>
+                    </Box>
+                  </HeaderBoxPopperMenu>
 
-                {/* Form fields */}
-                <Box sx={{display: "flex", ...SizeProperties, margin: 1}}>
-
-                  <Box sx={{display: "flex", flexDirection: "column", ...SizeProperties,}}>
-                  {/*Defect responsible select*/}
-                    <Box sx={formBoxStyle}>
-                      <InputLabel sx={{ ...labelStyle }}>
-                      {t("defResp")}
+                  {/* Form fields */}
+                  <Box sx={{ display: "flex", ...SizeProperties, margin: 1 }}>
+                    <Box sx={{ display: "flex", flexDirection: "column", ...SizeProperties }}>
+                      {/* Defect responsible select */}
+                      <Box sx={formBoxStyle}>
+                        <InputLabel
+                        sx={{ ...labelStyle }}
+                      >
+                        {t("defResp")}
                       </InputLabel>
                       <CustomSelect
                         name="defectResp"
@@ -191,10 +189,13 @@ const PopperMenu = () => {
                         style={mainInputStyle}
                       />
                     </Box>
-                  {/*Defet Type selec*/}
+
+                    {/* Defect Type select */}
                     <Box sx={formBoxStyle}>
-                      <InputLabel sx={labelStyle}>
-                      {t("defType")}
+                      <InputLabel
+                        sx={labelStyle}
+                      >
+                        {t("defType")}
                       </InputLabel>
                       <CustomSelect
                         name="defectType"
@@ -202,10 +203,11 @@ const PopperMenu = () => {
                         style={mainInputStyle}
                       />
                     </Box>
-                  {/*Exit Department select*/}
+
+                    {/* Exit Department select */}
                     <Box sx={formBoxStyle} overflow="auto">
                       <InputLabel sx={labelStyle}>
-                      {t("exitDept")}
+                        {t("exitDept")}
                       </InputLabel>
                       <CustomSelect
                         name="ExitDepartment"
@@ -216,10 +218,16 @@ const PopperMenu = () => {
                   </Box>
 
                   <Box
-                    sx={{display: "flex", flexDirection: "column", justifyContent: "center", ...SizeProperties, margin: 2, }}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      ...SizeProperties,
+                      margin: 2,
+                    }}
                   >
                     <Box sx={{ display: "flex" }}>
-                      {/*Harigami checkbox*/}
+                      {/* Harigami checkbox */}
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <InputLabel
                           sx={{ ...labelStyle, marginBlock: 0 }}
@@ -237,7 +245,7 @@ const PopperMenu = () => {
                           )}
                         </Field>
                       </Box>
-                      {/*RDD checkbox*/}
+                      {/* RDD checkbox */}
                       <Box sx={formBoxStyle} overflow="auto">
                         <InputLabel sx={{ ...labelStyle }}>
                           RDD
@@ -251,17 +259,22 @@ const PopperMenu = () => {
                     </Box>
 
                     <Box
-                      sx={{width: "100%", display: "flex", justifyContent: "space-between",}}>
-                        {/*Submit Button*/}
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {/* Submit Button */}
                       <Button
-                        variant="contained" 
+                        variant="contained"
                         disabled={isSubmitting}
                         sx={{ ...SizeProperties }}
                         type="submit"
                       >
                         {t("save")}
                       </Button>
-                      {/*Button to close PopperMenu*/}
+                      {/* Button to close PopperMenu */}
                       <Button
                         variant="contained"
                         sx={{ ...SizeProperties }}
@@ -272,13 +285,19 @@ const PopperMenu = () => {
                     </Box>
                   </Box>
                 </Box>
-
+                
                 <Box
-                  sx={{display: "flex", flexDirection: "column", ...SizeProperties, marginInlineEnd: 1, }}>
-                    {/*Description text input*/}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    ...SizeProperties,
+                    marginInlineEnd: 1,
+                  }}
+                >
+                  {/* Description text input */}
                   <Box sx={formBoxStyle}>
                     <InputLabel sx={{ ...labelStyle }}>
-                    {t("exp")}
+                      {t("exp")}
                     </InputLabel>
                     <CustomInput
                       name="explanation"
@@ -290,10 +309,10 @@ const PopperMenu = () => {
                       placeholder="örnek açıklama"
                     />
                   </Box>
-                    {/*ActionTaken text input*/}
+                  {/* ActionTaken text input */}
                   <Box sx={formBoxStyle}>
                     <InputLabel sx={{ ...labelStyle, color: "red" }}>
-                    {t("actTaken")}*
+                      {t("actTaken")}*
                     </InputLabel>
                     <CustomInput
                       name="actionTaken"
@@ -304,10 +323,10 @@ const PopperMenu = () => {
                       style={mainInputStyle}
                     />
                   </Box>
-                    {/*minorResp select*/}
+                  {/* minorResp select */}
                   <Box sx={formBoxStyle} overflow="auto">
                     <InputLabel sx={{ ...labelStyle, color: "red" }}>
-                    {t("minorResp")}*
+                      {t("minorResp")}*
                     </InputLabel>
                     <CustomSelect
                       name="minorResp"
@@ -329,15 +348,13 @@ const PopperMenu = () => {
         inputName={inputName}
         onChangeAll={onChangeAll}
       />
-      
+
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography color="red">{t("techSupport")}</Typography>
         <Typography fontWeight="600">6.2.192-CVQSTerminal</Typography>
       </Box>
     </Paper>
-
-    </Container >
-);
-
-};
-  export default PopperMenu;
+  </Container>
+)
+}
+export default PopperMenu;

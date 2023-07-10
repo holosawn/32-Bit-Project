@@ -9,7 +9,7 @@ export const Header = () => {
     const {data , setData} = useContext(DataContext)
     const { t } = useTranslation()
     
-    // Get background color from session storage
+    // Get background color for Body No Box from session storage
     const bgColor = sessionStorage.getItem("shiftInfo");
 
     return (

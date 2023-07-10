@@ -1,7 +1,7 @@
-import { useState, useEffect} from "react"
-import * as React from "react"
-import SaveIcon from '@mui/icons-material/Save'
-import CreateIcon from '@mui/icons-material/Create'
+import { useState, useEffect } from "react";
+import * as React from "react";
+import SaveIcon from '@mui/icons-material/Save';
+import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -31,10 +31,10 @@ const RemoveConfirmationDialog = ({ open, onConfirm, onClose }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="contained">
-        {t("cancel")}
+          {t("cancel")}
         </Button>
         <Button onClick={onConfirm} variant="contained">
-        {t("remove")}
+          {t("remove")}
         </Button>
       </DialogActions>
     </Dialog>
@@ -44,7 +44,6 @@ const RemoveConfirmationDialog = ({ open, onConfirm, onClose }) => {
 /**
  * VirtualTable component is a virtualized table with sorting and filtering capabilities.
  *
- * @param {object} props - The component props.
  * @param {array} props.columns - Array of column configurations.
  * @param {array} props.data - Array of data to be displayed in the table.
  * @param {array} props.nrReasonList - Array of NR reasons.
@@ -53,19 +52,19 @@ const RemoveConfirmationDialog = ({ open, onConfirm, onClose }) => {
 const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tableRef) => {
   // State for managing the confirmation dialog
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const [processFinish,  setProcessFinish] = useState()
+  const [processFinish, setProcessFinish] = useState();
   const [rowToRemove, setRowToRemove] = useState(null);
   const [filteredProperty, setFilteredProperty] = useState(); // State for tracking the currently filtered property
-  const [initialData, setInitialData] = useState([...data]); // State for storing the filtered, sorted data 
+  const [initialData, setInitialData] = useState([...data]); // State for storing the filtered, sorted data
   const [filterValues, setFilterValues] = useState(
     columns.reduce((obj, column) => {
-      if (column.field ==="colorData"){
-        obj[column.field]= {
+      if (column.field === "colorData") {
+        obj[column.field] = {
           colorExtCode: ""
         }
       }
-      else{
-      obj[column.field] = "";
+      else {
+        obj[column.field] = "";
       }
       return obj;
     }, {})
@@ -82,7 +81,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
 
   const nonSortable = ['save', 'action', 'nrReasons']; // Array of non-sortable columns
 
-  function fixedHeaderContent() {
+  const fixedHeaderContent = () => {
     return (
       <TableRow>
         {/* Render table cells for each column */}
@@ -123,7 +122,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
                   >
                     {column.headerName}
                   </TableSortLabel>
-  
+
                   {/* Display search icon for the column with functionality to open text input field for filtering */}
                   <IconButton
                     sx={{
@@ -195,8 +194,8 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
       </TableRow>
     );
   }
-  
-  function rowContent(index, row, nrReasonList) {
+
+  const rowContent = (index, row, nrReasonList) => {
     return (
       <React.Fragment key={index}>
         {/* Render table cells for each column */}
@@ -337,103 +336,102 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
       </React.Fragment>
     );
   }
-  
-  
-// Callback function to assign the provided ref to tableRef.current
-const scrollerRefCallback = (ref) => {
-  tableRef.current = ref;
-};
 
-// Function to remove a row with the specified rowId from temporaryData
-const removeRow = (rowId) => {
-  setInitialData((prevData) => {
-    const updatedRows = [...prevData];
-    const indexOfRemove = updatedRows.findIndex((obj) => obj.id === rowId);
+  // Callback function to assign the provided ref to tableRef.current
+  const scrollerRefCallback = (ref) => {
+    tableRef.current = ref;
+  };
 
-    updatedRows.splice(indexOfRemove, 1); // Remove the row with the specified rowId from updatedRows
-    setInitialData(filterData(updatedRows)); // Update temporaryData by applying filters to updatedRows
+  // Function to remove a row with the specified rowId from temporaryData
+  const removeRow = (rowId) => {
+    setInitialData((prevData) => {
+      const updatedRows = [...prevData];
+      const indexOfRemove = updatedRows.findIndex((obj) => obj.id === rowId);
 
-    setRemovedRows((prev) => [...prev, rowId]);
-    return [...updatedRows];
-  });
-};
+      updatedRows.splice(indexOfRemove, 1); // Remove the row with the specified rowId from updatedRows
+      setInitialData(filterData(updatedRows)); // Update temporaryData by applying filters to updatedRows
+
+      setRemovedRows((prev) => [...prev, rowId]);
+      return [...updatedRows];
+    });
+  };
 
   // Function to handle filter changes
   const handleFilterChange = (e) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  if (name === "colorData") {
-    // If the filter name is "colorData", update the colorExtCode value of filterValues.colorData
-    setFilterValues((prevValues) => ({
-      ...prevValues,
-      colorData: {
-        colorExtCode: value,
-      },
-    }));
-  } else {
-    // For other filter names, update the corresponding filter value in filterValues
-    setFilterValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  }
-};
+    if (name === "colorData") {
+      // If the filter name is "colorData", update the colorExtCode value of filterValues.colorData
+      setFilterValues((prevValues) => ({
+        ...prevValues,
+        colorData: {
+          colorExtCode: value,
+        },
+      }));
+    } else {
+      // For other filter names, update the corresponding filter value in filterValues
+      setFilterValues((prevValues) => ({
+        ...prevValues,
+        [name]: value,
+      }));
+    }
+  };
 
-const handleProcessButtonClick = () => {
-  setProcessFinish(true)
-  setTimeout(() => {
-    setProcessFinish(false)
-  }, 5000)
-}
+  const handleProcessButtonClick = () => {
+    setProcessFinish(true);
+    setTimeout(() => {
+      setProcessFinish(false);
+    }, 5000);
+  };
 
-// Function to filter rows based on the filterValues
-const filterData = (rows) => {
-  const filterProperties = Object.keys(filterValues);
+  // Function to filter rows based on the filterValues
+  const filterData = (rows) => {
+    const filterProperties = Object.keys(filterValues);
 
-  if (data === "empty") return []; // If the data is empty, return an empty array
+    if (data === "empty") return []; // If the data is empty, return an empty array
 
-  const filteredData = rows.filter((row) =>
-    filterProperties.every((property) => {
-      if (property === "colorData") {
-        // If the property is "colorData", apply colorExtCode filter
-        const colorExtCode = filterValues[property].colorExtCode.toLowerCase();
-        return (
-          !filterValues[property] ||
-          (row[property] &&
-            row[property].colorExtCode
-              .toString()
-              .toLowerCase()
-              .includes(colorExtCode))
-        );
-      } else {
-        // For other properties, apply general text filter
-        const filterValue = filterValues[property].toLowerCase();
-        return (
-          !filterValues[property] ||
-          (row[property] && row[property].toString().toLowerCase().includes(filterValue))
-        );
+    const filteredData = rows.filter((row) =>
+      filterProperties.every((property) => {
+        if (property === "colorData") {
+          // If the property is "colorData", apply colorExtCode filter
+          const colorExtCode = filterValues[property].colorExtCode.toLowerCase();
+          return (
+            !filterValues[property] ||
+            (row[property] &&
+              row[property].colorExtCode
+                .toString()
+                .toLowerCase()
+                .includes(colorExtCode))
+          );
+        } else {
+          // For other properties, apply general text filter
+          const filterValue = filterValues[property].toLowerCase();
+          return (
+            !filterValues[property] ||
+            (row[property] && row[property].toString().toLowerCase().includes(filterValue))
+          );
+        }
+      })
+    );
+
+    return filteredData.filter((row) => !removedRows.includes(row.id)); // Return the filtered data
+  };
+
+  // Function to sort a list of objects by a specified property
+  function sortByProperty(list, property, reverse = false) {
+    return list.slice().sort((a, b) => {
+      const valueB = property === 'colorData' ? b.colorData.colorExtCode : b[property];
+      const valueA = property === 'colorData' ? a.colorData.colorExtCode : a[property];
+
+      if (valueA <valueB) {
+        return reverse ? 1 : -1;
       }
-    })
-  );
-
-  return filteredData.filter((row) => !removedRows.includes(row.id)); // Return the filtered data
-};
-
-// Function to sort a list of objects by a specified property
-function sortByProperty(list, property, reverse = false) {
-  return list.slice().sort((a, b) => {
-    const valueB = property === 'colorData' ? b.colorData.colorExtCode : b[property];
-    const valueA = property === 'colorData' ? a.colorData.colorExtCode : a[property];
-
-    if (valueA < valueB) {
-      return reverse ? 1 : -1;
-    }
-    if (valueA > valueB) {
-      return reverse ? -1 : 1;
-    }
-    return 0;
-  });
-}
+      if (valueA > valueB) {
+        return reverse ? -1 : 1;
+      }
+      return 0;
+    });
+  }
 
   // Function to handle sorting of columns
   const handleSortClick = (fieldName) => {
@@ -457,7 +455,7 @@ function sortByProperty(list, property, reverse = false) {
     });
   };
 
-    
+
   useEffect(() => {
     // Filter the initial data and update temporaryData state
     setInitialData(filterData([...data]));
@@ -493,52 +491,52 @@ function sortByProperty(list, property, reverse = false) {
     }
   }, [columnSorted]);
 
-return (
-  <>
-    {/* Render the TableVirtuoso component */}
-    <TableVirtuoso
-      width={"100%"}
-      scrollerRef={scrollerRefCallback}
-      data={initialData}
-      fixedHeaderContent={fixedHeaderContent}
-      itemContent={(index, row) => rowContent(index, row, nrReasonList)}
-      {...props}
-    />
+  return (
+    <>
+      {/* Render the TableVirtuoso component */}
+      <TableVirtuoso
+        width={"100%"}
+        scrollerRef={scrollerRefCallback}
+        data={initialData}
+        fixedHeaderContent={fixedHeaderContent}
+        itemContent={(index, row) => rowContent(index, row, nrReasonList)}
+        {...props}
+      />
 
-    {/*Alert component to show up when there is an error in user login*/}
-    {processFinish && (
-				<Alert severity="success" sx={{position:"fixed", left:"44%", bottom:"23%"}}>
-				  <AlertTitle>{t("SUCCESS")}</AlertTitle>
-				  <strong>{t("CHANGESAVED")}</strong>
-				</Alert>
-			  )}
+      {/*Alert component to show up when there is an error in user login*/}
+      {processFinish && (
+        <Alert severity="success" sx={{ position: "fixed", left: "44%", bottom: "23%" }}>
+          <AlertTitle>{t("SUCCESS")}</AlertTitle>
+          <strong>{t("CHANGESAVED")}</strong>
+        </Alert>
+      )}
 
-    {/* Render the RemoveConfirmationDialog component */}
-    <RemoveConfirmationDialog
-      open={confirmationDialogOpen}
-      onClose={() => setConfirmationDialogOpen(false)}
-      onConfirm={() => {
-        removeRow(rowToRemove);
-        setConfirmationDialogOpen(false);
-      }}
-    />
+      {/* Render the RemoveConfirmationDialog component */}
+      <RemoveConfirmationDialog
+        open={confirmationDialogOpen}
+        onClose={() => setConfirmationDialogOpen(false)}
+        onConfirm={() => {
+          removeRow(rowToRemove);
+          setConfirmationDialogOpen(false);
+        }}
+      />
 
-    {/* Render the row count */}
-    <Box
-      sx={{
-        backgroundColor: "#9cdb9e",
-        display: "flex",
-        justifyContent: "end",
-        borderBlock: "1px solid black",
-      }}
-    >
-      <Typography sx={{ marginInlineEnd: 1, fontSize: "0.7rem" }}>
-        {t("totalRows")}: {initialData.length}
-      </Typography>
-    </Box>
-  </>
-);
+      {/* Render the row count */}
+      <Box
+        sx={{
+          backgroundColor: "#9cdb9e",
+          display: "flex",
+          justifyContent: "end",
+          borderBlock: "1px solid black",
+        }}
+      >
+        <Typography sx={{ marginInlineEnd: 1, fontSize: "0.7rem" }}>
+          {t("totalRows")}: {initialData.length}
+        </Typography>
+      </Box>
+    </>
+  );
 
 })
 
-export default VirtualTable
+export default VirtualTable;
