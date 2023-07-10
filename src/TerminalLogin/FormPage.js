@@ -6,8 +6,6 @@ import { Box, Container } from "@mui/material";
 import VirtualKeyboard from "../ReUsableComponents/VirtualKeyboard";
 import { Alert, AlertTitle } from "@mui/material";
 import {
-  mainInputStyle,
-  formBoxStyle,
   HeaderBox,
 } from "./constants";
 import LoginForm from "./LoginForm";

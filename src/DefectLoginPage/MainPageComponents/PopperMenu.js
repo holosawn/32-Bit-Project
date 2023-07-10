@@ -1,82 +1,17 @@
-import {InputLabel, Typography, styled, Checkbox, Paper, Button, Box  } from '@mui/material';
-import React, { useState, useRef, useEffect } from 'react';
+import {InputLabel, Typography, Container, Backdrop, Checkbox, Paper, Button, Box  } from '@mui/material';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
 import axios from 'axios';
-import CustomInput from '../ReUsableComponents/Custominput';
-import CustomSelect from '../ReUsableComponents/CustomSelect';
-import VirtualKeyboard from '../ReUsableComponents/VirtualKeyboard';
+import CustomInput from '../../ReUsableComponents/Custominput';
+import CustomSelect from '../../ReUsableComponents/CustomSelect';
+import VirtualKeyboard from '../../ReUsableComponents/VirtualKeyboard';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { HeaderBoxPopperMenu, labelStyle, SizeProperties, mainInputStyle, formBoxStyle, FormBox } from '../constants';
+import { DataContext } from '../DataProvider';
+import { DefectLoginContext } from '../DefectLoginProvider';
 
-// Styling and styled components
-const labelStyle = {
-  fontWeight: 700,
-  fontSize: "1rem",
-  whiteSpace: "normal",
-  marginBlockStart: 2,
-  minWidth:"8em"
-};
 
-const HeaderBox = styled(Box)(({ theme }) => ({
-  boxShadow: "0",
-  padding: 0,
-  margin: 0,
-  width: "100%",
-  minWidth: 350,
-  maxWidth: 1000,
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center"
-}));
-
-const FormBox = styled(Box)(({ theme }) => ({
-  boxShadow: "0",
-  marginInlineStart: { xs: 1, sm: 0 },
-  width: "100%",
-  minWidth: 380,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-around",
-  alignContent: "space-around",
-  alignItems: "center",
-}));
-
-const formBoxStyle = {
-  marginInlineEnd: 1,
-  marginInlineStart: 1,
-  width: "100%",
-  maxWidth: "1000px",
-  display: "flex",
-  justifyContent: "space-between",
-  overflow: "hidden"
-};
-
-const mainInputStyle = {
-  width: { xs: "100%", sm: "100%", md: "70%" },
-  width: "100%",
-  margin: 1,
-  display: "flex",
-  flexGrow: 1,
-  flexBasis: 0
-};
-
-const buttonBoxStyle = {
-  width: "100%",
-  margin: 2,
-  marginBlock: 0.5,
-  display: "flex",
-  alignItems: "center",
-};
-
-const buttonStyle = {
-  width: "100%",
-  flex: 1
-};
-
-const SizeProperties = {
-  width: "100%",
-  maxWidth: "1000px"
-};
 //Initial values for the form
 const initialValues = {
   defectResp: "",
@@ -104,12 +39,21 @@ const advancedSchema = yup.object().shape({
 const optionss = ["option1", "option2", "option3"];
 
 // PopperMenu component
-const PopperMenu = ({ toCancel, defect, defectCoords, toMainPage }) => {
+const PopperMenu = () => {
+  console.log(" PopperMenu")
   const isMediumScreen = useMediaQuery('(max-width:899px)'); // hook to see if the screen is medium size
-  const [data, setData] = useState("empty");
+  const {defect, defectCoords,isPopperOpen , setPopperOpen, setImgId,
+     setCurrentButtons, setIsCoordSelect, setDefect, setDefectCoords, } = useContext(DefectLoginContext)
+  const {data, setData} = useContext(DataContext)
   const [inputs, setInputs] = useState({});  //State to store inputs for Virtual keyboard
   const [inputName, setInputName] = useState("default");  // State to store name of the fields for Virtual keyboard
   const keyboard = useRef(); // Hook for Virtual Keyboard
+
+  // This function handles the cancel action.
+  const toCancel = () => {
+    // It closes the popper and resets the defectCoords and defect states.
+    setPopperOpen(false)
+  };
 
   // Clearing inputs when form is submitted
   const clearingInputsOnSubmit = () => {
@@ -125,51 +69,48 @@ const PopperMenu = ({ toCancel, defect, defectCoords, toMainPage }) => {
     clearingInputsOnSubmit();
     console.log(defect, defectCoords, values);
     actions.resetForm({ values: initialValues });
-    onCancel();
-    toMainPage();
+    toCancel()
+    handleSaveClick()
   };
 
-// useEffect hook to fetch data on component mount
-useEffect(() => {
-  axios
-    .post("/login") // Making a POST request to "/login" endpoint
-    .then(() => axios.get("/user")) // Chaining a GET request to "/user" endpoint after successful login
-    .then((res) => {
-      setData(res.data.LoginPage); // Setting the fetched data in the state variable "data"
-    });
-}, []);
+  // onChangeAll function to update all inputs at once
+  const onChangeAll = (inputs) => {
+    setInputs({ ...inputs });
+  };
 
-// onChangeAll function to update all inputs at once
-const onChangeAll = (inputs) => {
-  setInputs({ ...inputs });
-};
+  // onChangeInput function to handle input change for a specific input field
+  const onChangeInput = (event) => {
+    const inputVal = event.target.value;
 
-// onChangeInput function to handle input change for a specific input field
-const onChangeInput = (event) => {
-  const inputVal = event.target.value;
+    setInputs((prev) => ({
+      ...prev,
+      [inputName]: inputVal,
+    }));
 
-  setInputs((prev) => ({
-    ...prev,
-    [inputName]: inputVal,
-  }));
+    keyboard.current.setInput(inputVal);
+  };
 
-  keyboard.current.setInput(inputVal);
-};
+  // getInputValue function to get the value of a specific input field from the state
+  const getInputValue = (inputName) => {
+    return inputs[inputName] || "";
+  };
 
-// getInputValue function to get the value of a specific input field from the state
-const getInputValue = (inputName) => {
-  return inputs[inputName] || "";
-};
+  const handleSaveClick = ()=>{
+          setImgId(data.firstButtons[0].picId)
+          setCurrentButtons(data.firstButtons)
+          setIsCoordSelect(false)
+          setDefect({part : null, defect : null})
+          setDefectCoords({x:0 , y:0})
+      
+    }
 
-// onCancel function to handle cancellation action
-const onCancel = () => {
-  toCancel();
-};
-
-return data === "empty" ? (
-  <h1></h1>
-) : (
-    //{/* Main form section */}
+  return !isPopperOpen ? (
+    null
+  ) : (
+      //{/* Main form section */}
+            <Container sx={{display:"flex", justifyContent:"center", minWidth: "920px", 
+            }}>
+            <Backdrop open={true} sx={{ backdropFilter: 'blur(4px)', zIndex:200}} />
     <Paper
       sx={{
         backgroundColor: "#c6ffc8",
@@ -208,7 +149,7 @@ return data === "empty" ? (
                 }}
               >
                 {/* Header section */}
-                <HeaderBox color="secondary">
+                <HeaderBoxPopperMenu color="secondary">
                   <Typography
                     sx={{ marginInlineStart: 1 }}
                     fontWeight="600"
@@ -231,7 +172,7 @@ return data === "empty" ? (
                       )}
                     </Field>
                   </Box>
-                </HeaderBox>
+                </HeaderBoxPopperMenu>
 
                 {/* Form fields */}
                 <Box sx={{display: "flex", ...SizeProperties, margin: 1}}>
@@ -322,7 +263,7 @@ return data === "empty" ? (
                       <Button
                         variant="contained"
                         sx={{ ...SizeProperties }}
-                        onClick={onCancel}
+                        onClick={toCancel}
                       >
                         iptal
                       </Button>
@@ -393,6 +334,7 @@ return data === "empty" ? (
       </Box>
     </Paper>
 
+    </Container >
 );
 
 };
