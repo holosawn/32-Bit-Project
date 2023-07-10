@@ -5,13 +5,8 @@ import { useContext, useEffect } from "react";
 
 // Header component
 export const Header = () => {
-  console.log(" Header")
     const {data , setData} = useContext(DataContext)
-
-    useEffect(() => {
-      console.log("DATA CHANGED")
-    },[data])
-
+    
     // Get background color from session storage
     const bgColor = sessionStorage.getItem("shiftInfo");
 

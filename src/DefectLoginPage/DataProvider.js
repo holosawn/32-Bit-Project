@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import PrepareData from './PrepareData';
+import PrepareData from '../DefectLoginPage/PrepareData';
 
 export const DataContext = createContext();
 

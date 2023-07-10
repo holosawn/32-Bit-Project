@@ -40,7 +40,7 @@ const optionss = ["option1", "option2", "option3"];
 
 // PopperMenu component
 const PopperMenu = () => {
-  console.log(" PopperMenu")
+ 
   const isMediumScreen = useMediaQuery('(max-width:899px)'); // hook to see if the screen is medium size
   const {defect, defectCoords,isPopperOpen , setPopperOpen, setImgId,
      setCurrentButtons, setIsCoordSelect, setDefect, setDefectCoords, } = useContext(DefectLoginContext)

@@ -54,30 +54,20 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
   const [processFinish,  setProcessFinish] = useState()
   const [rowToRemove, setRowToRemove] = useState(null);
   const [filteredProperty, setFilteredProperty] = useState(); // State for tracking the currently filtered property
-  const [temporaryData, setTemporaryData] = useState([...data]); // State for storing the filtered, sorted data 
-  const [filterValues, setFilterValues] = useState({
-    // State for storing filter values for different properties
-    depCode: "",
-    formattedBodyNo: "",
-    formattedAssyNo: "",
-    vinNo: "",
-    colorData: {
-      colorExtCode: ""
-    },
-    modelCode: "",
-    termId: "",
-    partName: "",
-    spotCode: "",
-    spotgunName: "",
-    arcnutboltCode: "",
-    arcnutboltgunName: "",
-    defectName: "",
-    defRankCode: "",
-    formattedDefectHour: "",
-    defectType: "",
-    defrespName: "",
-    subResp: ""
-  });
+  const [initialData, setInitialData] = useState([...data]); // State for storing the filtered, sorted data 
+  const [filterValues, setFilterValues] = useState(
+    columns.reduce((obj, column) => {
+      if (column.field ==="colorData"){
+        obj[column.field]= {
+          colorExtCode: ""
+        }
+      }
+      else{
+      obj[column.field] = "";
+      }
+      return obj;
+    }, {})
+  );
   const [columnSorted, setColumnSorted] = useState(() =>
     // State for tracking the sorting order of columns
     columns.reduce((obj, column) => {
@@ -88,7 +78,6 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
   const [removedRows, setRemovedRows] = useState([]);
 
   const nonSortable = ['save', 'action', 'nrReasons']; // Array of non-sortable columns
-
 
   function fixedHeaderContent() {
     return (
@@ -181,7 +170,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
                   onChange={handleFilterChange}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
-                      setTemporaryData([...filterData(data)]);
+                      setInitialData([...filterData(data)]);
                       setFilteredProperty(null);
                     }
                   }}
@@ -190,7 +179,7 @@ const VirtualTable = forwardRef(({ columns, data, nrReasonList, ...props }, tabl
                 <Button
                   sx={{ border: "1px solid black", color: "black", backgroundColor: "red", ":hover": { backgroundColor: "red" } }}
                   onClick={() => {
-                    setTemporaryData([...filterData(data)]);
+                    setInitialData([...filterData(data)]);
                     setFilteredProperty(null);
                   }}
                 >
@@ -354,12 +343,12 @@ const scrollerRefCallback = (ref) => {
 
 // Function to remove a row with the specified rowId from temporaryData
 const removeRow = (rowId) => {
-  setTemporaryData((prevData) => {
+  setInitialData((prevData) => {
     const updatedRows = [...prevData];
     const indexOfRemove = updatedRows.findIndex((obj) => obj.id === rowId);
 
     updatedRows.splice(indexOfRemove, 1); // Remove the row with the specified rowId from updatedRows
-    setTemporaryData(filterData(updatedRows)); // Update temporaryData by applying filters to updatedRows
+    setInitialData(filterData(updatedRows)); // Update temporaryData by applying filters to updatedRows
 
     setRemovedRows((prev) => [...prev, rowId]);
     return [...updatedRows];
@@ -443,63 +432,63 @@ function sortByProperty(list, property, reverse = false) {
   });
 }
 
-// Function to handle sorting of columns
-const handleSortClick = (fieldName) => {
-  const status = columnSorted[fieldName];
-  const newStatus = status === 1 ? -1 : status + 1;
+  // Function to handle sorting of columns
+  const handleSortClick = (fieldName) => {
+    const status = columnSorted[fieldName];
+    const newStatus = status === 1 ? -1 : status + 1;
 
-  setColumnSorted((prev) => {
-    const updatedColumnSorted = { ...prev };
+    setColumnSorted((prev) => {
+      const updatedColumnSorted = { ...prev };
 
-    // Set the values of other fields to 0
-    Object.keys(updatedColumnSorted).forEach((key) => {
-      if (key !== fieldName) {
-        updatedColumnSorted[key] = 0;
-      }
+      // Set the values of other fields to 0
+      Object.keys(updatedColumnSorted).forEach((key) => {
+        if (key !== fieldName) {
+          updatedColumnSorted[key] = 0;
+        }
+      });
+
+      // Update the value associated with the fieldName
+      updatedColumnSorted[fieldName] = newStatus;
+
+      return updatedColumnSorted;
     });
+  };
 
-    // Update the value associated with the fieldName
-    updatedColumnSorted[fieldName] = newStatus;
-
-    return updatedColumnSorted;
-  });
-};
-
-  
-useEffect(() => {
-  // Filter the initial data and update temporaryData state
-  setTemporaryData(filterData([...data]));
-
-  // Remove any rows that have been marked as removedRows from temporaryData
-  setTemporaryData((prevData) =>
-    prevData.filter((row) => !removedRows.includes(row.id))
-  );
-}, [data]);
-
-useEffect(() => {
-  // Find the property that has a non-zero value in columnSorted
-  const sortingProperty = Object.keys(columnSorted).find(
-    (property) => columnSorted[property] !== 0
-  );
-
-  if (sortingProperty) {
-    // Sort the temporaryData based on the sortingProperty and sort order
-    const sortedData = sortByProperty(
-      temporaryData,
-      sortingProperty,
-      columnSorted[sortingProperty] === -1
-    );
-    setTemporaryData([...sortedData]);
-  } else {
-    // If no sortingProperty is found, reset temporaryData to the filtered data
-    setTemporaryData(filterData([...data]));
+    
+  useEffect(() => {
+    // Filter the initial data and update temporaryData state
+    setInitialData(filterData([...data]));
 
     // Remove any rows that have been marked as removedRows from temporaryData
-    setTemporaryData((prevData) =>
+    setInitialData((prevData) =>
       prevData.filter((row) => !removedRows.includes(row.id))
     );
-  }
-}, [columnSorted]);
+  }, [data]);
+
+  useEffect(() => {
+    // Find the property that has a non-zero value in columnSorted
+    const sortingProperty = Object.keys(columnSorted).find(
+      (property) => columnSorted[property] !== 0
+    );
+
+    if (sortingProperty) {
+      // Sort the temporaryData based on the sortingProperty and sort order
+      const sortedData = sortByProperty(
+        initialData,
+        sortingProperty,
+        columnSorted[sortingProperty] === -1
+      );
+      setInitialData([...sortedData]);
+    } else {
+      // If no sortingProperty is found, reset temporaryData to the filtered data
+      setInitialData(filterData([...data]));
+
+      // Remove any rows that have been marked as removedRows from temporaryData
+      setInitialData((prevData) =>
+        prevData.filter((row) => !removedRows.includes(row.id))
+      );
+    }
+  }, [columnSorted]);
 
 return (
   <>
@@ -507,7 +496,7 @@ return (
     <TableVirtuoso
       width={"100%"}
       scrollerRef={scrollerRefCallback}
-      data={temporaryData}
+      data={initialData}
       fixedHeaderContent={fixedHeaderContent}
       itemContent={(index, row) => rowContent(index, row, nrReasonList)}
       {...props}
@@ -541,7 +530,7 @@ return (
       }}
     >
       <Typography sx={{ marginInlineEnd: 1, fontSize: "0.7rem" }}>
-        Total Rows: {temporaryData.length}
+        Total Rows: {initialData.length}
       </Typography>
     </Box>
   </>

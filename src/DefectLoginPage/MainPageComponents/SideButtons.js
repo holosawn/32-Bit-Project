@@ -5,7 +5,7 @@ import { DataContext } from '../DataProvider';
 import { OrdinaryTypography, HeaderBox, SideBox } from "../constants";
 
 export const RightSection = () => {
-  console.log(" SideButtons")
+
   const { data } = useContext(DataContext);
   const { defectCoords, defect } = useContext(DefectLoginContext);
   const { isPopperOpen, setPopperOpen } = useContext(DefectLoginContext)

@@ -12,37 +12,51 @@ import DefectLoginProvider from './DefectLoginProvider';
 export const DefectLoginPage = () => {
   
   document.body.style.backgroundColor = "#c6ffc8";
-  console.log("page rendered")
   return(
   <>  
   <AudioPlayer />
-  <DataProvider>
-    <DefectLoginProvider>
          
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", minWidth: "920px" }}>
       
             {/* Left Section of the Page*/}
             <div style={{ display: "flex", flexDirection: "column", flex: "1", justifyContent:"none", maxWidth: "800px"  }}> 
 
-              <PopperMenu/>
+            <DataProvider>
+              <DefectLoginProvider>
 
-              {/* Header Section */}
-              <Header/>
-          
-              {/* Card Section */}
-              <CanvasAndImage/>
-      
-              {/* Footer component */}
-              <Footer />
-              
+                <PopperMenu/>
+
+              </DefectLoginProvider>
+            </DataProvider>
+
+            <DataProvider>
+                {/*Header section*/}
+                <Header/>
+            </DataProvider>
+
+            <DataProvider>
+              <DefectLoginProvider>
+
+                {/* Card Section */}
+                <CanvasAndImage/>
+        
+                {/* Footer component */}
+                <Footer />
+
+              </DefectLoginProvider>
+            </DataProvider>
             </div>
       
             {/* Right Section */}
-            <RightSection/>
+            <DataProvider>
+              <DefectLoginProvider>
+
+                <RightSection/>
+
+              </DefectLoginProvider>
+            </DataProvider>
       
           </div>
-    </DefectLoginProvider>
-  </DataProvider>
   </>
 )};
 

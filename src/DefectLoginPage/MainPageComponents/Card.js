@@ -6,7 +6,7 @@ import { imgBoxTextStyle, imgBoxProps } from '../constants';
 import BoxWithMenu from './BoxWithMenu';
 
 const CanvasAndImage = () => {
-  console.log(" Header")
+  
     const {data, setData} = useContext(DataContext);
     const {imgId, setImgId} = useContext(DefectLoginContext)
     const {currentButtons, setCurrentButtons} = useContext(DefectLoginContext)

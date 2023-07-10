@@ -8,7 +8,6 @@ import { useContext } from "react";
 
   // Footer component
   export const Footer = ({}) => {
-    console.log("Footer")
 
     const {data, setData} = useContext(DataContext);
     const {imgId, setImgId} = useContext(DefectLoginContext)
@@ -19,7 +18,6 @@ import { useContext } from "react";
     const {isDrawLines, setDrawLines} = useContext(DefectLoginContext)
     const {isPopperOpen} = useContext(DefectLoginContext)
 
-    console.log(isPopperOpen)
     const navigate = useNavigate();
     
     const handleClearButton = () => {
