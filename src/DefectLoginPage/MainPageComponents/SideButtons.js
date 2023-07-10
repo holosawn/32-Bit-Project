@@ -5,10 +5,12 @@ import { DataContext } from '../DataProvider';
 import { OrdinaryTypography, HeaderBox, SideBox } from "../constants";
 
 export const RightSection = () => {
-
+  
   const { data } = useContext(DataContext);
   const { defectCoords, defect } = useContext(DefectLoginContext);
   const { isPopperOpen, setPopperOpen } = useContext(DefectLoginContext)
+
+  
 
   return (
     <Box fontSize={{ xs: "1.1em" }} sx={{ flex: "none", display: "flex", flexDirection: "column", maxWidth: "7em" }}>
@@ -39,7 +41,7 @@ export const RightSection = () => {
                     Hızlı Kaydet
                   </OrdinaryTypography>
                 </SideBox>
-                <SideBox disabled sx={{ marginBlock: "0.2em" }}>
+                <SideBox disabled sx={{ marginBlock: "0.2em" }} >
                   <OrdinaryTypography>
                     Kaydet Ve Geç
                   </OrdinaryTypography>
@@ -59,7 +61,7 @@ export const RightSection = () => {
                 </HeaderBox>
       
                 {/* Buttons */}
-                <SideBox sx={{ marginBlock: "0.2em", height: "5em" }}>
+                <SideBox sx={{ marginBlock: "0.2em", height: "5em" }} >
                   <OrdinaryTypography>
                     Ara
                   </OrdinaryTypography>
