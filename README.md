@@ -254,17 +254,14 @@ The project requires the following dependencies:
 axios: ^1.3.5
 formik: ^2.2.9
 i18next: ^23.1.0
-json-loader: ^0.5.7
 react: ^18.2.0
 react-dom: ^18.2.0
 react-router-dom: ^6.10.0
 react-scripts: 5.0.1
 react-simple-keyboard: ^3.5.69
 react-virtuoso: ^4.3.8
-react-window: ^1.8.9
 save: ^2.9.0
 simple-keyboard-layouts: ^3.1.319
-web-vitals: ^2.1.4
 yup: ^1.0.2
 ```
 # Installation
